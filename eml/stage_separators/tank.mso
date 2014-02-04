@@ -1,0 +1,242 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*
+*-------------------------------------------------------------------
+* Model of tanks
+*-------------------------------------------------------------------- 
+*	Streams:
+*		* an inlet stream
+*		* an outlet stream
+*
+*	Specify:
+*		* the Inlet stream
+*		* the Outlet flow
+*		* the tank Q
+*
+*	Initial:
+*		* the tank temperature (OutletL.T)
+*		* the tank level (h)
+*		* (NoComps - 1) Outlet compositions
+*----------------------------------------------------------------------
+* Author: Paula B. Staudt
+* $Id$
+*--------------------------------------------------------------------*#
+
+using "streams";
+
+Model tank
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/Tank"; 
+	Brief 		= "Model of a cylindrical tank.";
+	Info 		=
+"== Specify ==
+* the Inlet stream;
+* the outlet flow;
+* the tank Q.
+
+== Initial Conditions ==
+* the tank initial temperature (OutletL.T);
+* the tank initial level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions.
+";
+
+	PARAMETERS
+	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	outer NComp as Integer;
+	Across as area (Brief="Tank cross section area", Default=2);
+	
+	VARIABLES
+in	Inlet  as stream (Brief = "Inlet stream", PosX=0.3037, PosY=0, Symbol="_{in}");
+out	Outlet as liquid_stream (Brief = "Outlet liquid stream", PosX=1, PosY=1, Symbol="_{out}");
+in	InletQ as energy_stream (Brief="Rate of heat supply", PosX=1, PosY=0.7859, Symbol="_{in}"); 
+	Level    as length(Brief="Tank level");
+	M(NComp) as mol (Brief="Molar Holdup in the tank");
+	E as energy (Brief="Total Energy Holdup on tank");
+	vL as volume_mol (Brief="Liquid Molar Volume");
+
+	EQUATIONS
+	"Mass balance"
+	diff(M) = Inlet.F*Inlet.z - Outlet.F*Outlet.z;
+	
+	"Energy balance"
+	diff(E) = Inlet.F*Inlet.h - Outlet.F*Outlet.h + InletQ.Q;
+
+	"Energy Holdup"
+	E = sum(M)*Outlet.h;
+
+	"Mechanical Equilibrium"
+	Inlet.P = Outlet.P;
+	
+	"Liquid Volume"
+	vL = PP.LiquidVolume(Outlet.T, Outlet.P, Outlet.z);
+	
+	"Composition"
+	M = Outlet.z*sum(M);
+	
+	"Level of liquid phase"
+	Level = sum(M)*vL/Across;
+end
+
+#*----------------------------------------------------------
+*
+*Model of a tank with a lain cylinder geometry
+*
+*---------------------------------------------------------*#
+Model tank_cylindrical
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/TankHorizontal"; 
+	Brief 		= "Model of a tank with a lain cylinder geometry.";
+	Info 		=
+"== Specify ==
+* the Inlet stream;
+* the outlet flow;
+* the tank Q.
+
+== Initial Conditions ==
+* the tank initial temperature (OutletL.T);
+* the tank initial level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions.
+";
+	
+	PARAMETERS
+	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	outer NComp as Integer;
+	radius as length(Brief="Tank radius");
+	L as length(Brief="Tank length");
+	
+	VARIABLES
+in	Inlet  as stream (Brief = "Inlet stream", PosX=0.1825, PosY=0, Symbol="_{in}");
+out	Outlet as liquid_stream (Brief = "Outlet liquid stream", PosX=1, PosY=1, Symbol="_{out}");
+in	InletQ as energy_stream (Brief="Rate of heat supply", PosX=1, PosY=0.6160, Symbol="_{in}"); 
+	Level    as length(Brief="Tank level");
+	Across as area (Brief="Tank cross section area", Default=2);
+	M(NComp) as mol (Brief="Molar Holdup in the tank");
+	E as energy (Brief="Total Energy Holdup on tank");
+	vL as volume_mol (Brief="Liquid Molar Volume");
+
+	EQUATIONS
+	"Mass balance"
+	diff(M) = Inlet.F*Inlet.z - Outlet.F*Outlet.z;
+	
+	"Energy balance"
+	diff(E) = Inlet.F*Inlet.h - Outlet.F*Outlet.h + InletQ.Q;
+
+	"Energy Holdup"
+	E = sum(M)*Outlet.h;
+	
+	"Mechanical Equilibrium"
+	Inlet.P = Outlet.P;
+	
+	"Liquid Volume"
+	vL = PP.LiquidVolume(Outlet.T, Outlet.P, Outlet.z);
+	
+	"Composition"
+	M = Outlet.z*sum(M);
+	
+	"Cylindrical Area"
+	Across = radius^2 * (asin(1) - asin((radius-Level)/radius) ) + 
+				(Level-radius)*sqrt(Level*(2*radius - Level));
+
+	"Level of liquid phase"
+	L*Across = sum(M)*vL;
+end
+
+Model tank_simplified
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/Tank"; 
+	Brief 		= "Model of a simplified tank.";
+	Info 		=
+"== Specify ==
+* the Inlet flow rate;
+
+== Initial Conditions ==
+* the tank initial level (Level);
+";
+
+	PARAMETERS
+	k as Real (Brief="Valve Constant", Unit = 'm^2.5/h', Default=4);
+	A as area (Brief="Tank area", Default=2);
+
+	VARIABLES
+	Level as length(Brief="Tank level");
+in	Fin  as flow_vol(Brief="Input flow", PosX=0.3037, PosY=0);
+out	Fout as flow_vol(Brief="Output flow", PosX=1, PosY=1);
+
+	EQUATIONS
+	"Mass balance"
+	diff(A*Level) = Fin - Fout;
+
+	"Valve equation"
+	Fout = k*sqrt(Level);		
+end
+
+Model tank_feed
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/Tank"; 
+	Brief 		= "Model of a tank with feed stream.";
+	Info 		=
+"== Specify ==
+* the Inlet stream;
+* the Feed stream;
+* the outlet flow;
+* the tank Q.
+
+== Initial Conditions ==
+* the tank initial temperature (OutletL.T);
+* the tank initial level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions.
+";
+
+	PARAMETERS
+	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	outer NComp as Integer;
+	Across as area (Brief="Tank cross section area", Default=2);
+	
+	VARIABLES
+in	Feed as stream (Brief = "Feed stream", PosX=0.32, PosY=0, Symbol="_{feed}");	
+in	Inlet  as stream (Brief = "Inlet stream", PosX=0.3037, PosY=0, Symbol="_{in}");
+out	Outlet as liquid_stream (Brief = "Outlet liquid stream", PosX=1, PosY=1, Symbol="_{out}");
+in	InletQ as energy_stream (Brief="Rate of heat supply", PosX=1, PosY=0.7859, Symbol="_{in}"); 
+
+	Level    as length(Brief="Tank level");
+	M(NComp) as mol (Brief="Molar Holdup in the tank");
+	E as energy (Brief="Total Energy Holdup on tank");
+	vL as volume_mol (Brief="Liquid Molar Volume");
+
+	EQUATIONS
+	"Mass balance"
+	diff(M) = Feed.F*Feed.z + Inlet.F*Inlet.z - Outlet.F*Outlet.z;
+	
+	"Energy balance"
+	diff(E) = Feed.F*Feed.h + Inlet.F*Inlet.h - Outlet.F*Outlet.h + InletQ.Q;
+
+	"Energy Holdup"
+	E = sum(M)*Outlet.h;
+
+	"Mechanical Equilibrium"
+	Inlet.P = Outlet.P;
+	
+	"Liquid Volume"
+	vL = PP.LiquidVolume(Outlet.T, Outlet.P, Outlet.z);
+	
+	"Composition"
+	M = Outlet.z*sum(M);
+	
+	"Level of liquid phase"
+	Level = sum(M)*vL/Across;
+end

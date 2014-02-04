@@ -1,0 +1,213 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*
+*---------------------------------------------------------------------
+* Author: Estefane Horn, Núbia do Carmo Ferreira
+*$Id$									
+*-------------------------------------------------------------------*#
+
+using "streams";
+	
+
+Model valve
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/Valve"; 
+	Brief 		= "Model of a valve.";
+	Info 		=
+"== Model of valves ==
+* Linear;
+* Parabolic;
+* Equal;
+* Quick;
+* Hyperbolic.
+	
+== Assumptions ==
+* Steady State;
+* Liquid;
+* Isentalpic.
+	
+== Specify ==
+* the valve type;
+* the inlet stream;
+* the Volumetric Flow (Qv);
+* the Valve Coefficient (cv);
+* the opening (x).
+";
+		
+	PARAMETERS
+	valve_type as Switcher (Valid = ["linear", "parabolic", "equal", "quick", "hyperbolic"], Default = "linear");
+outer PP   		as Plugin 	(Brief = "External Physical Properties", Type = "PP");
+outer NComp   	as Integer	(Brief = "Number of chemical components", Lower = 1);
+	rho60F 	as dens_mass;
+
+	VARIABLES
+	Pratio 	as positive			(Brief = "Pressure Ratio", Symbol ="P_{ratio}");	
+	Pdrop	as press_delta		(Brief = "Pressure Drop", DisplayUnit = 'kPa', Symbol ="\Delta P");
+	Qv		as flow_vol			(Brief = "Volumetric Flow");
+	fc 		as positive			(Brief = "Opening Function");
+	cv		as positive			(Brief = "Valve Coefficient", Unit = 'm^3/h/kPa^0.5');
+	Gf		as positive			(Brief = "Specific Gravity");
+	rho 	as dens_mass;	
+	vm		as vol_mol			(Brief = "Mixture Molar Volume");	
+	x 		as fraction 		(Brief = "Opening");
+in	Inlet 	as stream			(Brief = "Inlet stream", PosX=0, PosY=0.7365, Symbol="_{in}");
+out	Outlet 	as streamPH			(Brief = "Outlet stream", PosX=1, PosY=0.7365, Symbol="_{out}");
+	
+	SET
+	rho60F = 999.02	* 'kg/m^3';
+	
+	EQUATIONS
+	"Pressure Drop"
+	Outlet.P  = Inlet.P - Pdrop;
+
+	"Pressure Ratio"
+	Outlet.P = Inlet.P * Pratio;
+	
+	"Enthalpy Balance"
+	Outlet.h = Inlet.h;
+	
+	"Molar Balance"
+	Outlet.F = Inlet.F;
+	
+	"Calculate Outlet Composition"
+	Outlet.z = Inlet.z;
+
+	if Pdrop > 0 then
+		"Valve Equation - Flow"
+		Qv = fc*cv*sqrt(Pdrop/Gf);	
+	else
+		"Valve Equation - Closed"
+		Qv = 0 * 'm^3/h';
+	end
+	
+	"Calculate Gf"
+	Gf = rho/rho60F;
+	
+	"Calculate Specific Mass"
+	rho = PP.LiquidDensity(Inlet.T,Inlet.P,Inlet.z);
+	
+	"Calculate Mass Flow"
+	Qv = Inlet.F*vm;	
+	
+	"Calculate Liquid Molar Volume"
+	vm = PP.LiquidVolume(Inlet.T,Inlet.P,Inlet.z);
+	
+	switch valve_type
+	case "linear":
+
+		"Opening Equation"
+		fc = x;
+
+	case "parabolic":
+
+		"Opening Equation"
+		fc = x^2;
+
+	case "equal":
+
+		"Opening Equation"
+		fc = x^2/(2-x^4)^(1/2);
+
+	case "quick":
+	
+		"Opening Equation"
+		fc = 10*x/sqrt(1+99*x^2);
+
+	case "hyperbolic":
+
+		"Opening Equation"
+		fc = 0.1*x/sqrt(1-0.99*x^2);
+
+	end
+end
+
+#*-------------------------------------------------------------------
+* Model of a valve (simplified)
+*-------------------------------------------------------------------- 
+*
+* Author: Paula B. Staudt
+*--------------------------------------------------------------------*#
+Model valve_simplified
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/Valve"; 
+	Brief 		= "Model of a very simple valve - used in distillation column models.";
+	Info 		=
+"== Assumptions ==
+* no flashing liquid in the valve;
+* the flow in the valve is adiabatic;
+* dynamics in the valve are neglected;
+* linear flow type.
+	
+== Specify ==
+* the inlet stream
+* the plug position (x) OR outlet temperature (Outlet.T) OR outlet pressure (Outlet.P) 
+	
+	OR		
+	
+* the inlet stream excluding its flow (Inlet.F)
+* the outlet pressure (Outlet.P) OR outlet flow (Outlet.F)
+* the plug position (x)
+";
+
+	PARAMETERS
+outer PP as Plugin(Type="PP");
+outer NComp as Integer;
+	
+	VARIABLES
+in	Inlet 	as stream	(Brief = "Inlet stream", PosX=0, PosY=0.7365, Symbol="_{in}");
+out	Outlet 	as streamPH	(Brief = "Outlet stream", PosX=1, PosY=0.7365, Symbol="_{out}");
+	x as fraction (Brief="Plug Position");
+	rho as dens_mass (Brief="Fluid Density", Default=1e3);
+	v as vol_mol (Brief="Specific volume", Default=1e3);
+	Pdrop	  as press_delta (Brief = "Pressure Drop", DisplayUnit = 'kPa', Symbol ="\Delta P");
+	Pratio 	as positive	(Brief = "Pressure Ratio", Symbol ="P_{ratio}");	
+
+	PARAMETERS
+	rho_ref as dens_mass (Brief="Reference Density", Default=1e4);
+	k as Real (Brief="Valve Constant", Unit='gal/min/psi^0.5');
+
+	EQUATIONS
+	"Overall Molar Balance"
+	Inlet.F = Outlet.F;
+	
+	"Componente Molar Balance"
+	Inlet.z = Outlet.z;
+	
+	"Energy Balance"
+	Inlet.h = Outlet.h;
+
+	"Pressure Drop"
+	Outlet.P  = Inlet.P - Pdrop;
+
+	"Pressure Ratio"
+	Outlet.P = Inlet.P * Pratio;
+
+	"Density"
+	rho = Inlet.v*PP.VapourDensity((Inlet.T+Outlet.T)/2, (Inlet.P+Outlet.P)/2, Outlet.z) +
+		(1-Inlet.v)*PP.LiquidDensity((Inlet.T+Outlet.T)/2, (Inlet.P+Outlet.P)/2, Outlet.z);
+
+	"Volume"
+	v = Inlet.v*PP.VapourVolume((Inlet.T+Outlet.T)/2, (Inlet.P+Outlet.P)/2, Outlet.z) +
+		(1-Inlet.v)*PP.LiquidVolume((Inlet.T+Outlet.T)/2, (Inlet.P+Outlet.P)/2, Outlet.z);
+
+	if Pdrop > 0 then
+		"Flow"
+		Outlet.F * v = k*x*sqrt(Pdrop * rho_ref / rho ) ;
+	else
+		"Closed"
+		Outlet.F = 0 * 'kmol/h';
+	end
+end

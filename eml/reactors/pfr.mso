@@ -1,0 +1,122 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*
+*----------------------------------------------------------------------
+* Author: Rafael de P. Soares and Paula B. Staudt
+* $Id$
+*--------------------------------------------------------------------*#
+
+using "streams";
+
+Model pfr
+
+ATTRIBUTES
+	Pallete 	= true;
+	Brief 		= "Model of a Generic PFR with constant mass holdup";
+	Icon		= "icon/pfr";
+	Info 		= 
+"== Requires the information of ==
+* Reaction values
+* Heat of reaction
+* Pressure profile
+";
+
+PARAMETERS
+
+outer PP   							as Plugin 		(Brief = "External Physical Properties", Type="PP");
+outer	NComp 						as Integer		(Brief="Number of components");
+		NReac 						as Integer		(Brief="Number of reactions");
+		stoic(NComp, NReac) 	as Real 			(Brief = "Stoichiometric Matrix");
+		NDisc 						as Integer		(Brief="Number of points of discretization", Default=10);
+		Mw(NComp)  				as molweight 	(Brief="Component Mol Weight");
+		L 								as length		(Brief="Reactor Length");
+		Across 						as area			(Brief="Cross section area");
+
+SET
+	
+	Mw   = PP.MolecularWeight();
+
+VARIABLES
+
+in	Inlet  	as stream	(Brief = "Inlet Stream", PosX=0, PosY=0.5076, Symbol="_{in}");
+out	Outlet 	as stream	(Brief = "Outlet Stream", PosX=1, PosY=0.5236, Symbol="_{out}");
+
+	str(NDisc+1) as vapour_stream;
+	vol(NDisc+1) as vol_mol;
+	rho(NDisc+1) as dens_mass;
+	
+	q(NDisc)    				as heat_rate;
+
+	M(NComp, NDisc)    	as mol 			(Brief = "Molar holdup");
+	Mt(NDisc)    			as mol 			(Brief = "Molar holdup");
+	C(NComp, NDisc)  	as conc_mol	(Brief="Components concentration", Lower=-1e-6);
+	E(NDisc) 				as energy 		(Brief="Total Energy Holdup on element");
+	r(NReac, NDisc) 		as reaction_mol;
+	Hr(NReac, NDisc) 	as heat_reaction;
+	#Hf(NComp, NDisc) 	as heat_reaction;
+
+EQUATIONS
+
+"Inlet boundary"
+	str(1).F = Inlet.F;
+	str(1).T = Inlet.T;
+	str(1).P = Inlet.P;
+	str(1).z = Inlet.z;
+
+"Outlet boundary"
+	Outlet.F = str(NDisc+1).F;
+	Outlet.T = str(NDisc+1).T;
+	Outlet.P = str(NDisc+1).P;
+	Outlet.z = str(NDisc+1).z;
+	Outlet.h = str(NDisc+1).h;
+	Outlet.v = str(NDisc+1).v;
+	
+	for z in [1:NDisc] 
+		for c in [1:NComp] 
+			"Component Molar Balance"
+			diff(M(c,z)) = (str(z).F*str(z).z(c) - str(z+1).F*str(z+1).z(c))
+				+ sum(stoic(c,:)*r(:, z)) * Across*L/NDisc;
+		end
+		
+		"Energy Balance"
+		diff(E(z)) = str(z).F*str(z).h - str(z+1).F*str(z+1).h +
+			sum(Hr(:,z)*r(:,z)) * Across*L/NDisc - q(z);
+
+		"Energy Holdup"
+		E(z) = Mt(z)*str(z+1).h - str(z+1).P*Across*L/NDisc;
+
+		"mass flow is considered constant"
+		str(z+1).F*vol(z+1)*rho(z+1) = str(z).F*vol(z)*rho(z);
+	
+		"Molar concentration"
+		C(:,z) * Across*L/NDisc = M(:,z);
+		
+		"Geometrical constraint"
+		Across*L/NDisc = Mt(z) * vol(z);
+
+		"Molar fraction"
+		str(z+1).z * Mt(z) = M(:,z);
+		
+		#Hf(:,z) = PP.IdealGasEnthalpyOfFormation(str(z+1).T);
+		#Hr(:,z) = -sum(stoic*Hf(:, z));
+	end
+
+	for z in [1:NDisc+1] 
+		"Specific Volume"
+		vol(z) = PP.VapourVolume(str(z).T, str(z).P, str(z).z);
+		
+		"Specific Mass"
+		rho(z) = PP.VapourDensity(str(z).T, str(z).P, str(z).z);
+	end
+end

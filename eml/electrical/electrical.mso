@@ -1,0 +1,108 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*
+*----------------------------------------------------------------------
+* Author: Rafael de Pelegrini Soares
+* $Id$
+*--------------------------------------------------------------------*#
+
+using "types";
+
+Model wire
+	ATTRIBUTES
+	Pallete 	= false;
+	Brief 		= "Wire.";
+	Info 		=
+	"This model holds a current and voltage.";	
+	
+	VARIABLES
+	i as current(Lower=-100);
+	V as voltage;
+end
+
+
+Model Resistor
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon		= "icon/Resistor";
+	Brief 		= "Electrical Resistor.";
+	
+	PARAMETERS
+	R as resistance;
+
+	VARIABLES
+in	inlet  as wire (Brief = "Inlet", PosX=0.3831, PosY=0, Symbol="_{in}");
+out	outlet as wire (Brief = "Outlet", PosX=0.3529, PosY=1, Symbol="_{out}");
+
+	EQUATIONS
+	inlet.V - outlet.V = R * outlet.i;
+	outlet.i = inlet.i;
+end
+
+Model Capacitor
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon		= "icon/Capacitor";
+	Brief 		= "Electrical Capacitor.";
+	
+	PARAMETERS
+	C as capacitance;
+
+	VARIABLES
+	q as charge;
+in	inlet  as wire (Brief = "Inlet", PosX=0.3978, PosY=0, Symbol="_{in}");
+out	outlet as wire (Brief = "Outlet", PosX=0.3965, PosY=1, Symbol="_{out}");
+
+	EQUATIONS
+	diff(q) = inlet.i;
+	inlet.V - outlet.V = (1/C) * q;
+	outlet.i = inlet.i;
+end
+
+Model Indutor
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon		= "icon/Indutor";
+	Brief 		= "Electrical Indutor.";
+	
+	PARAMETERS
+	L as indutance;
+
+	VARIABLES
+in	inlet  as wire (Brief = "Inlet", PosX=0.4638, PosY=0, Symbol="_{in}");
+out	outlet as wire (Brief = "Outlet", PosX=0.4638, PosY=1, Symbol="_{out}");
+
+	EQUATIONS
+	inlet.V - outlet.V = L * diff(inlet.i);
+	outlet.i = inlet.i;
+end
+
+Model Supply
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon		= "icon/Supply";
+	Brief 		= "Electrical Supply.";
+	
+	PARAMETERS
+	V  as voltage;
+	V0 as voltage(Default = 0);
+
+	VARIABLES
+in	inlet  as wire (Brief = "Inlet", PosX=0.3923, PosY=0, Symbol="_{in}");
+out	outlet as wire (Brief = "Outlet", PosX=0.3984, PosY=1, Symbol="_{out}");
+
+	EQUATIONS
+	outlet.V = V0;
+	inlet.V - outlet.V = V;
+end

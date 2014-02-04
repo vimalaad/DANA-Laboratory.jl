@@ -1,0 +1,104 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*
+*-------------------------------------------------------------------
+* Model of costs for a dynamic flash
+*-------------------------------------------------------------------- 
+* 	- Streams
+*		* a liquid outlet stream
+*		* a vapour outlet stream
+*		* a feed stream
+*
+*	- Assumptions
+*		* both phases are perfectly mixed
+*
+*	- Specify:
+*		* the feed stream;
+*		* the outlet flows: OutletV.F and OutletL.F
+*
+*	- Initial:
+*		* the flash initial temperature (OutletL.T)
+*		* the flash initial liquid level (Ll)
+*		* (NoComps - 1) OutletL (OR OutletV) compositions
+*
+*	- This model is valid if:
+*         369 kg < Equipment Weight (horizontal) < 415000kg
+*	      2210 kg < Equipment Weight (vertical) < 103000kg
+*	      0.92m < Di (horizontal) < 3.66m
+*	      1.83m < Di (vertical) < 3.05m
+*	      3.66m < Flash Length (vertical) < 6.10m
+*----------------------------------------------------------------------
+* Author: Núbia do Carmo Ferreira
+* $Id: flash.mso 118 2007-01-15 18:48:01Z rafael $
+*--------------------------------------------------------------------*#
+
+using "stage_separators/flash";
+
+Model flash_cost as flash
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/Flash";
+
+	PARAMETERS
+	Material 		as Switcher (Valid = ["Stainless steell 304", "Stainless steel 316", "Carpenter 20CB_3", "Nickel 200", "Monel 400", "Inconel 600", "Incoloy 825", "Titanium"], 
+										Default = "Stainless steel 304");
+	Cost(6,3) 		as Real;
+	flash_length 	as length (Brief = "Flash Length");
+	Div 			as length (Brief="Internal Diameter for vertical vases");
+	Dih 			as length (Brief="Internal Diameter for horizontal vases");
+	Ts 				as length (Brief="Thickness");
+	dens_mass_material as dens_mass (Brief = "Mass Density of the Material");
+	Pi				as constant (Brief="Pi Number",Default=3.14159265);
+
+	VARIABLES
+	Ce as currency	(Brief="Capital Cost");
+	Cb as currency	(Brief="Basic Cost");
+	Ca as currency	(Brief="Cost for stairs, railing and platform");
+	Fm as positive	(Brief="Cost Factor based on the construction material");
+	Ws as mass		(Brief="Equipment Weight");
+
+	EQUATIONS
+	
+	"Capital Cost"
+	Ce = Cb*Fm + Ca;
+	
+	switch orientation
+		case "vertical":
+		
+	"Basic Cost"
+		Cb = 'US$'*exp(Cost(2,1) - Cost(2,2)*ln(Ws/'kg') + Cost(2,3)*(ln(Ws/'kg'))^2);
+		
+	"Cost for stairs, railing and platform"
+		Ca = 'US$'*Cost(4,1)*((Div^0.73960)/'m^0.73960')*((flash_length^0.70684)/'m^0.70684');
+	
+	"Equipment Weight for vertical vases"
+		Ws = dens_mass_material*Div*(flash_length + Cost(5,1)*Div)*Ts;
+			
+		case "horizontal":
+		
+	"Basic Cost for horizontal flash"
+		Cb = 'US$'*exp(Cost(1,1) - Cost(1,2)*ln(Ws/'kg') + Cost(1,3)*(ln(Ws/'kg'))^2);
+
+	"Cost for stairs, railing and platform"
+		Ca = 'US$'*Cost(3,1)*((Dih^0.20294)/'m^0.20294');
+
+	"Equipment Weight for horizontal vases"
+		Ws = dens_mass_material*Dih*(flash_length + Cost(5,1)*Dih)*Ts*Pi;
+	
+	end	
+	
+	"Cost Factor based on the construction material"
+		Fm = Cost(6,1); 
+
+end

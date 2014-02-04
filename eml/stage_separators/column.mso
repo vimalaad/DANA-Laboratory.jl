@@ -1,0 +1,1375 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*
+*----------------------------------------------------------------------
+* File containg models of columns: distillation, stripping, absorbers
+* rectifier, ....
+*
+* The default nomenclature is:
+*		Type_Column_reboilertype_condensertyper
+*
+* where:
+*	Type = refluxed or reboiled or section
+*	Column = Stripping, Absorption, Rectifier, Distillation
+*	Reboiler type (if exists) = kettle or thermosyphon 
+*	Condenser type (if exists) = with subccoling or without subcooling
+* 
+*-----------------------------------------------------------------------
+* Author: Paula B. Staudt
+* $Id$
+*---------------------------------------------------------------------*#
+
+using "tray";
+using "reboiler";
+using "condenser";
+using "mixers_splitters/splitter";
+using "tank";
+using "pressure_changers/pump";
+
+#*----------------------------------------------------------------------
+* Model of a  column section with:
+*	- NTrays=number of trays.
+* 
+*---------------------------------------------------------------------*# 
+Model Section_Column
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/SectionColumn"; 
+	Brief 		= "Model of a column section.";
+	Info 		=
+"== Model of a column section containing ==
+* NTrays trays.
+	
+== Specify ==
+* the feed stream of each tray (Inlet);
+* the Murphree eficiency for each tray Emv;
+* the InletL stream of the top tray;
+* the InletV stream of the bottom tray.
+	
+== Initial Conditions ==
+* the trays temperature (OutletL.T);
+* the trays liquid level (Level) OR the trays liquid flow (OutletL.F);
+* (NoComps - 1) OutletL (OR OutletV) compositions for each tray.
+";
+	
+	PARAMETERS
+	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	outer NComp as Integer;
+	NTrays as Integer(Brief="Number of trays", Default=2);
+	topdown as Integer(Brief="Trays counting (1=top-down, -1=bottom-up)", Default=1);
+	top as Integer(Brief="Number of top tray");
+	bot as Integer(Brief="Number of bottom tray");
+
+	SET
+	top = (NTrays-1)*(1-topdown)/2+1;
+	bot = NTrays/top;
+	
+	VARIABLES
+	trays(NTrays) as tray;
+
+	CONNECTIONS
+	trays([top+topdown:topdown:bot]).OutletV to trays([top:topdown:bot-topdown]).InletV;
+	trays([top:topdown:bot-topdown]).OutletL to trays([top+topdown:topdown:bot]).InletL;
+end
+
+
+#*----------------------------------------------------------------------
+* Model of a  distillation column containing:
+*	- NTrays like tray;
+*	- a kettle reboiler;
+*	- dymamic condenser;
+*	- a splitter which separate reflux and distillate;
+*	- a pump in reflux stream;
+*---------------------------------------------------------------------*# 
+Model Distillation_kettle_cond
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/DistillationKettleCond"; 
+	Brief 		= "Model of a distillation column with dynamic condenser and dynamic reboiler.";
+	Info 		=
+"== Specify ==
+* the feed stream of each tray (Inlet);
+* the Murphree eficiency for each tray Emv;
+* the pump pressure difference;
+* the heat supllied in reboiler and condenser;
+* the condenser vapor outlet flow (OutletV.F);
+* the reboiler liquid outlet flow (OutletL.F);
+* both splitter outlet flows OR one of the splitter outlet flows and the splitter frac.
+	
+== Initial Conditions ==
+* the trays temperature (OutletL.T);
+* the trays liquid level (Level) OR the trays liquid flow (OutletL.F);
+* (NoComps - 1) OutletL (OR OutletV) compositions for each tray;
+	
+* the condenser temperature (OutletL.T);
+* the condenser liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions;
+	
+* the reboiler temperature (OutletL.T);
+* the reboiler liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions.
+";
+	
+	PARAMETERS
+	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	outer NComp as Integer;
+	NTrays as Integer(Brief="Number of trays", Default=2);
+	topdown as Integer(Brief="Trays counting (1=top-down, -1=bottom-up)", Default=1);
+	top as Integer(Brief="Number of top tray");
+	bot as Integer(Brief="Number of bottom tray");
+	VapourFlow as Switcher(Valid = ["on", "off"], Default = "on");
+	
+	SET
+	top = (NTrays-1)*(1-topdown)/2+1;
+	bot = NTrays/top;
+	
+	VARIABLES
+	trays(NTrays) as tray;
+	cond as condenser;
+	reb as reboiler;
+	sptop as splitter;
+	pump1 as pump;
+	alfaTopo as Real;
+	
+	EQUATIONS
+	switch VapourFlow
+		case "on":
+		cond.InletV.F*trays(top).vV = alfaTopo * trays(top).Ah * sqrt(2*(trays(top).OutletV.P -
+		cond.OutletL.P + 1e-8 * 'atm') / (trays(top).alfa*trays(top).rhoV));
+		when cond.InletV.F < 1e-6 * 'kmol/h' switchto "off";
+		
+		case "off":
+		cond.InletV.F = 0 * 'mol/s';
+		when trays(top).OutletV.P > cond.OutletL.P + 1e-1 * 'atm' switchto "on";
+	end	
+
+	CONNECTIONS
+	#vapor
+	reb.OutletV to trays(bot).InletV;
+	trays([top+topdown:topdown:bot]).OutletV to trays([top:topdown:bot-topdown]).InletV;
+	trays(top).OutletV to cond.InletV;
+	
+	#liquid
+	cond.OutletL to sptop.Inlet;	
+	sptop.Outlet2 to pump1.Inlet;
+	pump1.Outlet to trays(top).InletL;
+	trays([top:topdown:bot-topdown]).OutletL to trays([top+topdown:topdown:bot]).InletL;
+	trays(bot).OutletL to reb.InletL;
+end
+
+
+#* -------------------------------------------------------------------
+* Distillation Column model with:
+*
+*	- NTrays like tray;
+*	- a vessel in the bottom of column;
+*	- a splitter who separate the bottom product and the stream to reboiler;
+*	- steady state reboiler (thermosyphon);
+*	- a steady state condenser with subcooling;
+*	- a vessel drum (layed cilinder);
+*	- a splitter which separate reflux and distillate;
+*	- a pump in reflux stream.
+*
+* ------------------------------------------------------------------*#
+Model Distillation_thermosyphon_subcooling
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/DistillationThermosyphonSubcooling"; 
+	Brief 		= "Model of a distillation column with steady condenser and steady reboiler.";
+	Info 		=
+"== Specify ==
+* the feed stream of each tray (Inlet);
+* the Murphree eficiency for each tray Emv;
+* the pump head;
+* the condenser pressure drop;
+* the heat supllied in top and bottom tanks;
+* the heat supllied in condenser and reboiler;
+* the Outlet1 flow in the bottom splitter (spbottom.Outlet1.F) that corresponds to the bottom product;
+* both  top splitter outlet flows OR one of the splitter outlet flows and the splitter frac.
+	
+== Initial Conditions ==
+* the trays temperature (OutletL.T);
+* the trays liquid level (Level) OR the trays liquid flow (OutletL.F);
+* (NoComps - 1) OutletL (OR OutletV) compositions for each tray;
+	
+* the top tank temperature (OutletL.T);
+* the top tank liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions;
+	
+* the bottom tank temperature (OutletL.T);
+* the bottom tank liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions.
+";
+	
+	PARAMETERS
+	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	outer NComp as Integer;
+	NTrays as Integer(Brief="Number of trays", Default=2);
+	topdown as Integer(Brief="Trays counting (1=top-down, -1=bottom-up)", Default=1);
+	top as Integer(Brief="Number of top tray");
+	bot as Integer(Brief="Number of bottom tray");
+	VapourFlow as Switcher(Valid = ["on", "off"], Default = "on");
+
+	SET
+	top = (NTrays-1)*(1-topdown)/2+1;
+	bot = NTrays/top;
+	
+	VARIABLES
+	trays(NTrays) as tray;
+	cond as condenserSteady;
+	reb as reboilerSteady;
+	tbottom as tank;
+	ttop as tank_cylindrical;
+	spbottom as splitter;
+	sptop as splitter;
+	pump1 as pump;
+	alfaTopo as Real;
+
+	EQUATIONS
+	switch VapourFlow
+		case "on":
+		cond.InletV.F*trays(top).vV = alfaTopo * trays(top).Ah * sqrt(2*(trays(top).OutletV.P -
+		cond.OutletL.P + 1e-8 * 'atm') / (trays(top).alfa*trays(top).rhoV));
+		when cond.InletV.F < 1e-6 * 'kmol/h' switchto "off";
+		
+		case "off":
+		cond.InletV.F = 0 * 'mol/s';
+		when trays(top).OutletV.P > cond.OutletL.P + 1e-1 * 'atm' switchto "on";
+	end	
+	
+	CONNECTIONS
+	#vapor
+	reb.OutletV to trays(bot).InletV;
+	trays([top+topdown:topdown:bot]).OutletV to trays([top:topdown:bot-topdown]).InletV;
+	trays(top).OutletV to cond.InletV;
+	
+	#liquid
+	cond.OutletL to ttop.Inlet;	
+	ttop.Outlet to sptop.Inlet;
+	sptop.Outlet2 to pump1.Inlet;	
+	pump1.Outlet to trays(top).InletL;
+	trays([top:topdown:bot-topdown]).OutletL to trays([top+topdown:topdown:bot]).InletL;
+	trays(bot).OutletL to tbottom.Inlet;
+	tbottom.Outlet to spbottom.Inlet;
+	spbottom.Outlet2 to reb.InletL;
+end
+
+
+#* -------------------------------------------------------------------
+* Distillation Column model with:
+*
+*	- NTrays like tray;
+*	- a vessel in the bottom of column;
+*	- a splitter who separate the bottom product and the stream to reboiler;
+*	- steady state reboiler (thermosyphon);
+*	- a dynamic condenser without subcooling;
+*	- a splitter which separate reflux and distillate;
+*	- a pump in reflux stream.
+*
+* ------------------------------------------------------------------*#
+Model Distillation_thermosyphon_cond
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/DistillationThermosyphonCond"; 
+	Brief 		= "Model of a distillation column with dynamic condenser and steady reboiler.";
+	Info 		=
+"== Specify ==
+* the feed stream of each tray (Inlet);
+* the Murphree eficiency for each tray Emv;
+* the pump head;
+* the condenser vapor outlet flow (OutletV.F);
+* the heat supllied in bottom tank;
+* the heat supllied in condenser and reboiler;
+* the Outlet1 flow in the bottom splitter (spbottom.Outlet1.F) that corresponds to the bottom product;
+	
+== Initial Conditions ==
+* the trays temperature (OutletL.T);
+* the trays liquid level (Level) OR the trays liquid flow (OutletL.F);
+* (NoComps - 1) OutletL (OR OutletV) compositions for each tray;
+	
+* the condenser temperature (OutletL.T);
+* the condenser liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions;
+	
+* the bottom tank temperature (OutletL.T);
+* the bottom tank liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions.
+";
+
+	PARAMETERS
+	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	outer NComp as Integer;
+	NTrays as Integer(Brief="Number of trays", Default=2);
+	topdown as Integer(Brief="Trays counting (1=top-down, -1=bottom-up)", Default=1);
+	top as Integer(Brief="Number of top tray");
+	bot as Integer(Brief="Number of bottom tray");
+	VapourFlow as Switcher(Valid = ["on", "off"], Default = "on");
+
+	SET
+	top = (NTrays-1)*(1-topdown)/2+1;
+	bot = NTrays/top;
+	
+	VARIABLES
+	trays(NTrays) as tray;
+	cond as condenser;
+	reb as reboilerSteady;
+	tbottom as tank;
+	spbottom as splitter;
+	sptop as splitter;
+	pump1 as pump;
+	alfaTopo as Real;
+
+	EQUATIONS
+	switch VapourFlow
+		case "on":
+		cond.InletV.F*trays(top).vV = alfaTopo * trays(top).Ah * sqrt(2*(trays(top).OutletV.P -
+		cond.OutletL.P + 1e-8 * 'atm') / (trays(top).alfa*trays(top).rhoV));
+		when cond.InletV.F < 1e-6 * 'kmol/h' switchto "off";
+		
+		case "off":
+		cond.InletV.F = 0 * 'mol/s';
+		when trays(top).OutletV.P > cond.OutletL.P + 1e-1 * 'atm' switchto "on";
+	end	
+			
+	CONNECTIONS
+	#vapor
+	reb.OutletV to trays(bot).InletV;
+	trays([top+topdown:topdown:bot]).OutletV to trays([top:topdown:bot-topdown]).InletV;
+	trays(top).OutletV to cond.InletV;
+	
+	#liquid
+	cond.OutletL to sptop.Inlet;	
+	sptop.Outlet2 to pump1.Inlet;
+	pump1.Outlet to trays(top).InletL;
+	trays([top:topdown:bot-topdown]).OutletL to trays([top+topdown:topdown:bot]).InletL;
+	trays(bot).OutletL to tbottom.Inlet;
+	tbottom.Outlet to spbottom.Inlet;
+	spbottom.Outlet2 to reb.InletL;
+end
+
+#* -------------------------------------------------------------------
+* Distillation Column model with:
+*
+*	- NTrays like tray;
+*	- a kettle reboiler;
+*	- a steady state condenser with subcooling;
+*	- a vessel drum (layed cilinder);
+*	- a splitter which separate reflux and distillate;
+*	- a pump in reflux stream.
+*
+* ------------------------------------------------------------------*#
+Model Distillation_kettle_subcooling
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/DistillationKettleSubcooling"; 
+	Brief 		= "Model of a distillation column with steady condenser and dynamic reboiler.";
+	Info 		=
+"== Specify ==
+* the feed stream of each tray (Inlet);
+* the Murphree eficiency for each tray (Emv);
+* the pump pressure difference;
+* the heat supllied in reboiler and condenser;
+* the heat supllied in the top tank;
+* the condenser pressure drop;
+* the reboiler liquid outlet flow (OutletL.F);
+* both splitter outlet flows OR one of the splitter outlet flows and the splitter frac.
+	
+== Initial Conditions ==
+* the trays temperature (OutletL.T);
+* the trays liquid level (Level) OR the trays liquid flow (OutletL.F);
+* (NoComps - 1) OutletL (OR OutletV) compositions for each tray;
+	
+* the top tank temperature (OutletL.T);
+* the top tank liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions;
+	
+* the reboiler temperature (OutletL.T);
+* the reboiler liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions.
+";
+	
+	PARAMETERS
+	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	outer NComp as Integer;
+	NTrays as Integer(Brief="Number of trays", Default=2);
+	topdown as Integer(Brief="Trays counting (1=top-down, -1=bottom-up)", Default=1);
+	top as Integer(Brief="Number of top tray");
+	bot as Integer(Brief="Number of bottom tray");
+	VapourFlow as Switcher(Valid = ["on", "off"], Default = "on");
+
+	SET
+	top = (NTrays-1)*(1-topdown)/2+1;
+	bot = NTrays/top;
+	
+	VARIABLES
+	trays(NTrays) as tray;
+	cond as condenserSteady;
+	reb as reboiler;
+	ttop as tank_cylindrical;
+	sptop as splitter;
+	pump1 as pump;
+	alfaTopo as Real;
+
+	EQUATIONS
+	switch VapourFlow
+		case "on":
+		cond.InletV.F*trays(top).vV = alfaTopo * trays(top).Ah * sqrt(2*(trays(top).OutletV.P -
+		cond.OutletL.P + 1e-8 * 'atm') / (trays(top).alfa*trays(top).rhoV));
+		when cond.InletV.F < 1e-6 * 'kmol/h' switchto "off";
+		
+		case "off":
+		cond.InletV.F = 0 * 'mol/s';
+		when trays(top).OutletV.P > cond.OutletL.P + 1e-1 * 'atm' switchto "on";
+	end	
+	
+	CONNECTIONS
+	#vapor
+	reb.OutletV to trays(bot).InletV;
+	trays([top+topdown:topdown:bot]).OutletV to trays([top:topdown:bot-topdown]).InletV;
+	trays(top).OutletV to cond.InletV;
+	
+	#liquid
+	cond.OutletL to ttop.Inlet;	
+	ttop.Outlet to sptop.Inlet;
+	sptop.Outlet2 to pump1.Inlet;	
+	pump1.Outlet to trays(top).InletL;
+	trays([top:topdown:bot-topdown]).OutletL to trays([top+topdown:topdown:bot]).InletL;
+	trays(bot).OutletL to reb.InletL;
+end
+
+
+#*----------------------------------------------------------------------
+* Model of a  rectifier containing:
+*	- NTrays like tray;
+*	- dymamic condenser without subcooling;
+*	- a splitter which separate reflux and distillate;
+*	- a pump in reflux stream;
+*---------------------------------------------------------------------*# 
+Model Rectifier
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/RefluxedCond"; 
+	Brief 		= "Model of a rectifier column with dynamic condenser.";
+	Info 		=
+"== Specify ==
+* the feed stream of each tray (Inlet);
+* the Murphree eficiency for each tray Emv;
+* the InletV stream of the bottom tray unless its flow;
+* the pump pressure difference;
+* the heat supllied in the condenser;
+* the condenser vapor outlet flow (OutletV.F);
+* both splitter outlet flows OR one of the splitter outlet flows and the splitter frac.
+	
+== Initial Conditions ==
+* the trays temperature (OutletL.T);
+* the trays liquid level (Level) OR the trays liquid flow (OutletL.F);
+* (NoComps - 1) OutletL (OR OutletV) compositions for each tray;
+	
+* the condenser temperature (OutletL.T);
+* the condenser liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions;
+";
+
+	PARAMETERS
+	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	outer NComp as Integer;
+	NTrays as Integer(Brief="Number of trays", Default=2);
+	topdown as Integer(Brief="Trays counting (1=top-down, -1=bottom-up)", Default=1);
+	top as Integer(Brief="Number of top tray");
+	bot as Integer(Brief="Number of bottom tray");
+	VapourFlow as Switcher(Valid = ["on", "off"], Default = "on");
+
+	SET
+	top = (NTrays-1)*(1-topdown)/2+1;
+	bot = NTrays/top;
+	
+	VARIABLES
+	trays(NTrays) as tray;
+	cond as condenser;
+	sptop as splitter;
+	pump1 as pump;
+	alfaTopo as Real;
+
+	EQUATIONS
+	switch VapourFlow
+		case "on":
+		cond.InletV.F*trays(top).vV = alfaTopo * trays(top).Ah * sqrt(2*(trays(top).OutletV.P -
+		cond.OutletL.P + 1e-8 * 'atm') / (trays(top).alfa*trays(top).rhoV));
+		when cond.InletV.F < 1e-6 * 'kmol/h' switchto "off";
+		
+		case "off":
+		cond.InletV.F = 0 * 'mol/s';
+		when trays(top).OutletV.P > cond.OutletL.P + 1e-1 * 'atm' switchto "on";
+	end	
+	
+	CONNECTIONS
+	#vapor
+	trays([top+topdown:topdown:bot]).OutletV to trays([top:topdown:bot-topdown]).InletV;
+	trays(top).OutletV to cond.InletV;
+	
+	#liquid
+	cond.OutletL to sptop.Inlet;	
+	sptop.Outlet2 to pump1.Inlet;	
+	pump1.Outlet to trays(top).InletL;
+	trays([top:topdown:bot-topdown]).OutletL to trays([top+topdown:topdown:bot]).InletL;
+end
+
+
+#* -------------------------------------------------------------------
+* Rectifier Column with:
+*
+*	- NTrays like tray;
+*	- a steady state condenser with subcooling;
+*	- a vessel drum (layed cilinder);
+*	- a splitter which separate reflux and distillate;
+*	- a pump in reflux stream.
+*
+* ------------------------------------------------------------------*#
+Model Rectifier_subcooling
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/RefluxedSubcooling"; 
+	Brief 		= "Model of a rectifier column with steady condenser.";
+	Info 		=
+"== Specify ==
+* the feed stream of each tray (Inlet);
+* the Murphree eficiency for each tray Emv;
+* the InletV stream of the bottom tray unless its flow;
+* the pump head;
+* the condenser pressure drop;
+* the heat supllied in  the top tank;
+* the heat supllied in condenser;
+* both  top splitter outlet flows OR one of the splitter outlet flows and the splitter frac.
+	
+== Initial Conditions ==
+* the trays temperature (OutletL.T);
+* the trays liquid level (Level) OR the trays liquid flow (OutletL.F);
+* (NoComps - 1) OutletL (OR OutletV) compositions for each tray;
+	
+* the top tank temperature (OutletL.T);
+* the top tank liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions;
+";
+	
+	PARAMETERS
+	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	outer NComp as Integer;
+	NTrays as Integer(Brief="Number of trays", Default=2);
+	topdown as Integer(Brief="Trays counting (1=top-down, -1=bottom-up)", Default=1);
+	top as Integer(Brief="Number of top tray");
+	bot as Integer(Brief="Number of bottom tray");
+	VapourFlow as Switcher(Valid = ["on", "off"], Default = "on");
+
+	SET
+	top = (NTrays-1)*(1-topdown)/2+1;
+	bot = NTrays/top;
+	
+	VARIABLES
+	trays(NTrays) as tray;
+	cond as condenserSteady;
+	ttop as tank_cylindrical;
+	sptop as splitter;
+	pump1 as pump;
+	alfaTopo as Real;
+
+	EQUATIONS
+	switch VapourFlow
+		case "on":
+		cond.InletV.F*trays(top).vV = alfaTopo * trays(top).Ah * sqrt(2*(trays(top).OutletV.P -
+		cond.OutletL.P + 1e-8 * 'atm') / (trays(top).alfa*trays(top).rhoV));
+		when cond.InletV.F < 1e-6 * 'kmol/h' switchto "off";
+		
+		case "off":
+		cond.InletV.F = 0 * 'mol/s';
+		when trays(top).OutletV.P > cond.OutletL.P + 1e-1 * 'atm' switchto "on";
+	end	
+	
+	CONNECTIONS
+	#vapor
+	trays([top+topdown:topdown:bot]).OutletV to trays([top:topdown:bot-topdown]).InletV;
+	trays(top).OutletV to cond.InletV;
+	
+	#liquid
+	cond.OutletL to ttop.Inlet;	
+	ttop.Outlet to sptop.Inlet;
+	sptop.Outlet2 to pump1.Inlet;	
+	pump1.Outlet to trays(top).InletL;
+	trays([top:topdown:bot-topdown]).OutletL to trays([top+topdown:topdown:bot]).InletL;
+end
+
+
+#*----------------------------------------------------------------------
+* Model of a  Refluxed Stripping column containing:
+*	- NTrays like tray;
+*	- dymamic condenser without subcooling;
+*	- a splitter which separate reflux and distillate;
+*	- a pump in reflux stream;
+*---------------------------------------------------------------------*# 
+Model Refluxed_Stripping
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/RefluxedCond"; 
+	Brief 		= "Model of a refluxed stripping column with dynamic condenser.";
+	Info 		=
+"== Specify ==
+* the feed stream of each tray (Inlet);
+* the Murphree eficiency for each tray Emv;
+* the InletV stream of the bottom tray unless its flow;
+* the pump pressure difference;
+* the heat supllied in the condenser;
+* the condenser vapor outlet flow (OutletV.F);
+* both splitter outlet flows OR one of the splitter outlet flows and the splitter frac.
+	
+== Initial Conditions ==
+* the trays temperature (OutletL.T);
+* the trays liquid level (Level) OR the trays liquid flow (OutletL.F);
+* (NoComps - 1) OutletL (OR OutletV) compositions for each tray;
+	
+* the condenser temperature (OutletL.T);
+* the condenser liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions;
+";
+	
+	PARAMETERS
+	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	outer NComp as Integer;
+	NTrays as Integer(Brief="Number of trays", Default=2);
+	topdown as Integer(Brief="Trays counting (1=top-down, -1=bottom-up)", Default=1);
+	top as Integer(Brief="Number of top tray");
+	bot as Integer(Brief="Number of bottom tray");
+	VapourFlow as Switcher(Valid = ["on", "off"], Default = "on");
+
+	SET
+	top = (NTrays-1)*(1-topdown)/2+1;
+	bot = NTrays/top;
+	
+	VARIABLES
+	trays(NTrays) as tray;
+	cond as condenser;
+	sptop as splitter;
+	pump1 as pump;
+	alfaTopo as Real;
+
+	EQUATIONS
+	switch VapourFlow
+		case "on":
+		cond.InletV.F*trays(top).vV = alfaTopo * trays(top).Ah * sqrt(2*(trays(top).OutletV.P -
+		cond.OutletL.P + 1e-8 * 'atm') / (trays(top).alfa*trays(top).rhoV));
+		when cond.InletV.F < 1e-6 * 'kmol/h' switchto "off";
+		
+		case "off":
+		cond.InletV.F = 0 * 'mol/s';
+		when trays(top).OutletV.P > cond.OutletL.P + 1e-1 * 'atm' switchto "on";
+	end
+	
+	CONNECTIONS
+	#vapor
+	trays([top+topdown:topdown:bot]).OutletV to trays([top:topdown:bot-topdown]).InletV;
+	trays(top).OutletV to cond.InletV;
+	
+	#liquid
+	cond.OutletL to sptop.Inlet;	
+	sptop.Outlet2 to pump1.Inlet;	
+	pump1.Outlet to trays(top).InletL;
+	trays([top:topdown:bot-topdown]).OutletL to trays([top+topdown:topdown:bot]).InletL;
+end
+
+
+#* -------------------------------------------------------------------
+* Refluxed Stripping Column with:
+*
+*	- NTrays like tray;
+*	- a steady state condenser (with subcooling);
+*	- a vessel drum (layed cilinder);
+*	- a splitter which separate reflux and distillate;
+*	- a pump in reflux stream.
+*
+* ------------------------------------------------------------------*#
+Model Refluxed_Stripping_subcooling
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/RefluxedSubcooling"; 
+	Brief 		= "Model of a refluxed stripping column with steady condenser.";
+	Info 		=
+"== Specify ==
+* the feed stream of each tray (Inlet);
+* the Murphree eficiency for each tray Emv;
+* the InletV stream of the bottom tray unless its flow;
+* the pump head;
+* the condenser pressure drop;
+* the heat supllied in  the top tank;
+* the heat supllied in condenser;
+* both  top splitter outlet flows OR one of the splitter outlet flows and the splitter frac.
+	
+== Initial Conditions ==
+* the trays temperature (OutletL.T);
+* the trays liquid level (Level) OR the trays liquid flow (OutletL.F);
+* (NoComps - 1) OutletL (OR OutletV) compositions for each tray;
+	
+* the top tank temperature (OutletL.T);
+* the top tank liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions;
+";
+	
+	PARAMETERS
+	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	outer NComp as Integer;
+	NTrays as Integer(Brief="Number of trays", Default=2);
+	topdown as Integer(Brief="Trays counting (1=top-down, -1=bottom-up)", Default=1);
+	top as Integer(Brief="Number of top tray");
+	bot as Integer(Brief="Number of bottom tray");
+	VapourFlow as Switcher(Valid = ["on", "off"], Default = "on");
+
+	SET
+	top = (NTrays-1)*(1-topdown)/2+1;
+	bot = NTrays/top;
+	
+	VARIABLES
+	trays(NTrays) as tray;
+	cond as condenserSteady;
+	ttop as tank_cylindrical;
+	sptop as splitter;
+	pump1 as pump;
+	alfaTopo as Real;
+
+	EQUATIONS
+	switch VapourFlow
+		case "on":
+		cond.InletV.F*trays(top).vV = alfaTopo * trays(top).Ah * sqrt(2*(trays(top).OutletV.P -
+		cond.OutletL.P + 1e-8 * 'atm') / (trays(top).alfa*trays(top).rhoV));
+		when cond.InletV.F < 1e-6 * 'kmol/h' switchto "off";
+		
+		case "off":
+		cond.InletV.F = 0 * 'mol/s';
+		when trays(top).OutletV.P > cond.OutletL.P + 1e-1 * 'atm' switchto "on";
+	end
+	
+	CONNECTIONS
+	#vapor
+	trays([top+topdown:topdown:bot]).OutletV to trays([top:topdown:bot-topdown]).InletV;
+	trays(top).OutletV to cond.InletV;
+	
+	#liquid
+	cond.OutletL to ttop.Inlet;	
+	ttop.Outlet to sptop.Inlet;
+	sptop.Outlet2 to pump1.Inlet;	
+	pump1.Outlet to trays(top).InletL;
+	trays([top:topdown:bot-topdown]).OutletL to trays([top+topdown:topdown:bot]).InletL;
+end
+
+
+#*----------------------------------------------------------------------
+* Model of a  Refluxed Absorption column containing:
+*	- NTrays like tray;
+*	- dymamic condenser without subcooling;
+*	- a splitter which separate reflux and distillate;
+*	- a pump in reflux stream;
+*---------------------------------------------------------------------*# 
+Model Refluxed_Absorption
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/RefluxedCond"; 
+	Brief 		= "Model of a refluxed absorption column with dynamic condenser.";
+	Info 		=
+"== Specify ==
+* the feed stream of each tray (Inlet);
+* the Murphree eficiency for each tray Emv;
+* the InletV stream of the bottom tray unless its flow;
+* the pump pressure difference;
+* the heat supllied in the condenser;
+* the condenser vapor outlet flow (OutletV.F);
+* both splitter outlet flows OR one of the splitter outlet flows and the splitter frac.
+	
+== Initial Conditions ==
+* the trays temperature (OutletL.T);
+* the trays liquid level (Level) OR the trays liquid flow (OutletL.F);
+* (NoComps - 1) OutletL (OR OutletV) compositions for each tray;
+	
+* the condenser temperature (OutletL.T);
+* the condenser liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions;
+";
+	
+	PARAMETERS
+	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	outer NComp as Integer;
+	NTrays as Integer(Brief="Number of trays", Default=2);
+	topdown as Integer(Brief="Trays counting (1=top-down, -1=bottom-up)", Default=1);
+	top as Integer(Brief="Number of top tray");
+	bot as Integer(Brief="Number of bottom tray");
+	VapourFlow as Switcher(Valid = ["on", "off"], Default = "on");
+
+	SET
+	top = (NTrays-1)*(1-topdown)/2+1;
+	bot = NTrays/top;
+	
+	VARIABLES
+	trays(NTrays) as tray;
+	cond as condenser;
+	sptop as splitter;
+	pump1 as pump;
+	alfaTopo as Real;
+
+	EQUATIONS
+	switch VapourFlow
+		case "on":
+		cond.InletV.F*trays(top).vV = alfaTopo * trays(top).Ah * sqrt(2*(trays(top).OutletV.P -
+		cond.OutletL.P + 1e-8 * 'atm') / (trays(top).alfa*trays(top).rhoV));
+		when cond.InletV.F < 1e-6 * 'kmol/h' switchto "off";
+		
+		case "off":
+		cond.InletV.F = 0 * 'mol/s';
+		when trays(top).OutletV.P > cond.OutletL.P + 1e-1 * 'atm' switchto "on";
+	end
+	
+	CONNECTIONS
+	#vapor
+	trays([top+topdown:topdown:bot]).OutletV to trays([top:topdown:bot-topdown]).InletV;
+	trays(top).OutletV to cond.InletV;
+	
+	#liquid
+	cond.OutletL to cond.InletV;	
+	cond.OutletL to sptop.Inlet;
+	sptop.Outlet2 to pump1.Inlet;	
+	pump1.Outlet to trays(top).InletL;
+	trays([top:topdown:bot-topdown]).OutletL to trays([top+topdown:topdown:bot]).InletL;
+end
+
+
+#* -------------------------------------------------------------------
+* Refluxed Absorption Column with:
+*
+*	- NTrays like tray;
+*	- a steady state condenser (with subcooling);
+*	- a vessel drum (layed cilinder);
+*	- a splitter which separate reflux and distillate;
+*	- a pump in reflux stream.
+*
+* ------------------------------------------------------------------*#
+Model Refluxed_Absorption_subcooling
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/RefluxedSubcooling"; 
+	Brief 		= "Model of a refluxed absorption column with steady condenser.";
+	Info 		=
+"== Specify ==
+* the feed stream of each tray (Inlet);
+* the Murphree eficiency for each tray Emv;
+* the InletV stream of the bottom tray unless its flow;
+* the pump head;
+* the condenser pressure drop;
+* the heat supllied in  the top tank;
+* the heat supllied in condenser;
+* both  top splitter outlet flows OR one of the splitter outlet flows and the splitter frac.
+	
+== Initial Conditions ==
+* the trays temperature (OutletL.T);
+* the trays liquid level (Level) OR the trays liquid flow (OutletL.F);
+* (NoComps - 1) OutletL (OR OutletV) compositions for each tray;
+	
+* the top tank temperature (OutletL.T);
+* the top tank liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions;
+";
+	
+	PARAMETERS
+	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	outer NComp as Integer;
+	NTrays as Integer(Brief="Number of trays", Default=2);
+	topdown as Integer(Brief="Trays counting (1=top-down, -1=bottom-up)", Default=1);
+	top as Integer(Brief="Number of top tray");
+	bot as Integer(Brief="Number of bottom tray");
+	VapourFlow as Switcher(Valid = ["on", "off"], Default = "on");
+
+	SET
+	top = (NTrays-1)*(1-topdown)/2+1;
+	bot = NTrays/top;
+	
+	VARIABLES
+	trays(NTrays) as tray;
+	cond as condenserSteady;
+	ttop as tank_cylindrical;
+	sptop as splitter;
+	pump1 as pump;
+	alfaTopo as Real;
+
+	EQUATIONS
+	switch VapourFlow
+		case "on":
+		cond.InletV.F*trays(top).vV = alfaTopo * trays(top).Ah * sqrt(2*(trays(top).OutletV.P -
+		cond.OutletL.P + 1e-8 * 'atm') / (trays(top).alfa*trays(top).rhoV));
+		when cond.InletV.F < 1e-6 * 'kmol/h' switchto "off";
+		
+		case "off":
+		cond.InletV.F = 0 * 'mol/s';
+		when trays(top).OutletV.P > cond.OutletL.P + 1e-1 * 'atm' switchto "on";
+	end	
+	
+	CONNECTIONS
+	#vapor
+	trays([top+topdown:topdown:bot]).OutletV to trays([top:topdown:bot-topdown]).InletV;
+	trays(top).OutletV to cond.InletV;
+	
+	#liquid
+	cond.OutletL to ttop.Inlet;	
+	ttop.Outlet to sptop.Inlet;
+	sptop.Outlet2 to pump1.Inlet;	
+	pump1.Outlet to trays(top).InletL;
+	trays([top:topdown:bot-topdown]).OutletL to trays([top+topdown:topdown:bot]).InletL;
+end
+
+
+#* -------------------------------------------------------------------
+* Reboiled Stripping Column model with:
+*
+*	- NTrays like tray;
+*	- a kettle reboiler;
+*
+* ------------------------------------------------------------------*#
+Model Reboiled_Stripping_kettle
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/ReboiledKettle"; 
+	Brief 		= "Model of a reboiled stripping column with dynamic reboiler.";
+	Info 		=
+"== Specify ==
+* the feed stream of each tray (Inlet);
+* the Murphree eficiency for each tray Emv;
+* the vapour flow leaving the top of the column;
+* the InletL stream of the top tray;
+* the heat supllied in the reboiler;
+* the reboiler liquid outlet flow (OutletL.F);
+	
+== Initial Conditions ==
+* the trays temperature (OutletL.T);
+* the trays liquid level (Level) OR the trays liquid flow (OutletL.F);
+* (NoComps - 1) OutletL (OR OutletV) compositions for each tray;
+	
+* the reboiler temperature (OutletL.T);
+* the reboiler liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions.
+";
+
+	PARAMETERS
+	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	outer NComp as Integer;
+	NTrays as Integer(Brief="Number of trays", Default=2);
+	topdown as Integer(Brief="Trays counting (1=top-down, -1=bottom-up)", Default=1);
+	top as Integer(Brief="Number of top tray");
+	bot as Integer(Brief="Number of bottom tray");
+
+	SET
+	top = (NTrays-1)*(1-topdown)/2+1;
+	bot = NTrays/top;
+	
+	VARIABLES
+	trays(NTrays) as tray;
+	reb as reboiler;
+
+	CONNECTIONS
+	#vapor
+	reb.OutletV to trays(bot).InletV;
+	trays([top+topdown:topdown:bot]).OutletV to trays([top:topdown:bot-topdown]).InletV;
+	
+	#liquid
+	trays([top:topdown:bot-topdown]).OutletL to trays([top+topdown:topdown:bot]).InletL;
+	trays(bot).OutletL to reb.InletL;
+end
+
+
+#* -------------------------------------------------------------------
+* Reboiled Stripping Column model with:
+*
+*	- NTrays like tray;
+*	- a vessel in the bottom of column;
+*	- a splitter which separate the bottom product and the stream to reboiler;
+*	- steady state reboiler (thermosyphon);
+*
+* ------------------------------------------------------------------*#
+Model Reboiled_Stripping_thermosyphon
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/ReboiledThermosyphon"; 
+	Brief 		= "Model of a reboiled stripping column with steady reboiler.";
+	Info 		=
+"== Specify ==
+* the feed stream of each tray (Inlet);
+* the Murphree eficiency for each tray (Emv);
+* the vapour flow leaving the top of the column;
+* the InletL stream of the top tray;
+* the heat supllied in bottom tank;
+* the heat supllied in the reboiler;
+* the Outlet1 flow in the bottom splitter (spbottom.Outlet1.F) that corresponds to the bottom product;
+	
+== Initial Conditions ==
+* the trays temperature (OutletL.T);
+* the trays liquid level (Level) OR the trays liquid flow (OutletL.F);
+* (NoComps - 1) OutletL (OR OutletV) compositions for each tray;
+
+* the bottom tank temperature (OutletL.T);
+* the bottom tank liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions.
+";
+	
+	PARAMETERS
+	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	outer NComp as Integer;
+	NTrays as Integer(Brief="Number of trays", Default=2);
+	topdown as Integer(Brief="Trays counting (1=top-down, -1=bottom-up)", Default=1);
+	top as Integer(Brief="Number of top tray");
+	bot as Integer(Brief="Number of bottom tray");
+
+	SET
+	top = (NTrays-1)*(1-topdown)/2+1;
+	bot = NTrays/top;
+	
+	VARIABLES
+	trays(NTrays) as tray;
+	reb as reboilerSteady;
+	spbottom as splitter;
+	tbottom as tank;
+
+	CONNECTIONS
+	#vapor
+	reb.OutletV to trays(bot).InletV;
+	trays([top+topdown:topdown:bot]).OutletV to trays([top:topdown:bot-topdown]).InletV;
+	
+	#liquid
+	trays([top:topdown:bot-topdown]).OutletL to trays([top+topdown:topdown:bot]).InletL;
+	trays(bot).OutletL to tbottom.Inlet;
+	tbottom.Outlet to spbottom.Inlet;
+	spbottom.Outlet2 to reb.InletL;
+end
+
+
+#* -------------------------------------------------------------------
+* Reboiled Absorption Column model with:
+*
+*	- NTrays like tray;
+*	- a kettle reboiler;
+*
+* ------------------------------------------------------------------*#
+Model Reboiled_Absorption_kettle
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/ReboiledKettle"; 
+	Brief 		= "Model of a reboiled absorption column with dynamic reboiler.";
+	Info 		=
+"== Specify ==
+* the feed stream of each tray (Inlet);
+* the Murphree eficiency for each tray Emv;
+* the vapour flow leaving the top of the column;
+* the InletL stream of the top tray;
+* the heat supllied in the reboiler;
+* the reboiler liquid outlet flow (OutletL.F);
+	
+== Initial Conditions ==
+* the trays temperature (OutletL.T);
+* the trays liquid level (Level) OR the trays liquid flow (OutletL.F);
+* (NoComps - 1) OutletL (OR OutletV) compositions for each tray;
+	
+* the reboiler temperature (OutletL.T);
+* the reboiler liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions.
+";
+	
+	PARAMETERS
+	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	outer NComp as Integer;
+	NTrays as Integer(Brief="Number of trays", Default=2);
+	topdown as Integer(Brief="Trays counting (1=top-down, -1=bottom-up)", Default=1);
+	top as Integer(Brief="Number of top tray");
+	bot as Integer(Brief="Number of bottom tray");
+
+	SET
+	top = (NTrays-1)*(1-topdown)/2+1;
+	bot = NTrays/top;
+	
+	VARIABLES
+	trays(NTrays) as tray;
+	reb as reboiler;
+
+	CONNECTIONS
+	#vapor
+	reb.OutletV to trays(bot).InletV;
+	trays([top+topdown:topdown:bot]).OutletV to trays([top:topdown:bot-topdown]).InletV;
+	
+	#liquid
+	trays([top:topdown:bot-topdown]).OutletL to trays([top+topdown:topdown:bot]).InletL;
+	trays(bot).OutletL to reb.InletL;
+end
+
+
+#* -------------------------------------------------------------------
+* Reboiled Absorption Column model with:
+*
+*	- NTrays like tray;
+*	- a vessel in the bottom of column;
+*	- a splitter which separate the bottom product and the stream to reboiler;
+*	- steady state reboiler (thermosyphon);
+*
+* ------------------------------------------------------------------*#
+Model Reboiled_Absorption_thermosyphon
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/ReboiledThermosyphon"; 
+	Brief 		= "Model of a reboiled absorption column with steady reboiler.";
+	Info 		=
+"== Specify ==
+* the feed stream of each tray (Inlet);
+* the Murphree eficiency for each tray (Emv);
+* the vapour flow leaving the top of the column;
+* the InletL stream of the top tray;
+* the heat supllied in bottom tank;
+* the heat supllied in the reboiler;
+* the Outlet1 flow in the bottom splitter (spbottom.Outlet1.F) that corresponds to the bottom product;
+	
+== Initial Conditions ==
+* the trays temperature (OutletL.T);
+* the trays liquid level (Level) OR the trays liquid flow (OutletL.F);
+* (NoComps - 1) OutletL (OR OutletV) compositions for each tray;
+
+* the bottom tank temperature (OutletL.T);
+* the bottom tank liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions.
+";
+	
+	PARAMETERS
+	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	outer NComp as Integer;
+	NTrays as Integer(Brief="Number of trays", Default=2);
+	topdown as Integer(Brief="Trays counting (1=top-down, -1=bottom-up)", Default=1);
+	top as Integer(Brief="Number of top tray");
+	bot as Integer(Brief="Number of bottom tray");
+
+	SET
+	top = (NTrays-1)*(1-topdown)/2+1;
+	bot = NTrays/top;
+	
+	VARIABLES
+	trays(NTrays) as tray;
+	reb as reboilerSteady;
+	spbottom as splitter;
+	tbottom as tank;
+	
+	CONNECTIONS
+	#vapor
+	reb.OutletV to trays(bot).InletV;
+	trays([top+topdown:topdown:bot]).OutletV to trays([top:topdown:bot-topdown]).InletV;
+	
+	#liquid
+	trays([top:topdown:bot-topdown]).OutletL to trays([top+topdown:topdown:bot]).InletL;
+	trays(bot).OutletL to tbottom.Inlet;
+	tbottom.Outlet to spbottom.Inlet;
+	spbottom.Outlet2 to reb.InletL;
+end
+
+#* -------------------------------------------------------------------
+*  Reactive Distillation Column
+*
+* ------------------------------------------------------------------*#
+Model ReactiveDistillation
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/DistillationKettleCond"; 
+	Brief 		= "Model of a reactive distillation column with dynamic condenser and reboiler.";
+	Info 		=
+"== Specify ==
+* the reaction related variables for each tray, condenser and reboiler;
+* the feed stream of each tray (Inlet);
+* the Murphree eficiency for each tray Emv;
+* the pump pressure difference;
+* the heat supllied in reboiler and condenser;
+* the condenser vapor outlet flow (OutletV.F);
+* the reboiler liquid outlet flow (OutletL.F);
+* both splitter outlet flows OR one of the splitter outlet flows and the splitter frac.
+	
+== Initial Conditions ==
+* the trays temperature (OutletL.T);
+* the trays liquid level (Level) OR the trays liquid flow (OutletL.F);
+* (NoComps - 1) OutletL (OR OutletV) compositions for each tray;
+	
+* the condenser temperature (OutletL.T);
+* the condenser liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions;
+	
+* the reboiler temperature (OutletL.T);
+* the reboiler liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions.
+";
+	
+	PARAMETERS
+	outer PP as Plugin(Type="PP");
+	outer NComp as Integer;
+	NTrays as Integer(Brief="Number of trays", Default=2);
+	topdown as Integer(Brief="Trays counting (1=top-down, -1=bottom-up)", Default=1);
+	top as Integer(Brief="Number of top tray");
+	bot as Integer(Brief="Number of bottom tray");
+	alfacond as Real;
+
+	VapourFlow as Switcher(Valid = ["on", "off"], Default = "off");
+	
+	SET
+	top = (NTrays-1)*(1-topdown)/2+1;
+	bot = NTrays/top;
+	
+	VARIABLES
+	trays(NTrays) as trayReact;
+	cond as condenserReact;
+	reb as reboilerReact;
+	sp as splitter;
+	p as pump;
+	
+	EQUATIONS
+	
+	switch VapourFlow
+		case "on":
+		"Pressure Drop through the condenser"
+		cond.InletV.F*trays(top).vV / 'm^2' =
+			sqrt((trays(top).OutletV.P - cond.OutletL.P + 1e-8 * 'atm')/(trays(top).rhoV*alfacond));
+		when trays(top).OutletV.P < cond.OutletL.P switchto "off";
+		
+		case "off":
+		"Prato selado"
+		cond.InletV.F = 0.0 * 'mol/s';
+		when trays(top).OutletV.P > cond.OutletL.P + 1e-3 * 'atm' switchto "on";
+	end
+
+	CONNECTIONS
+	#vapor
+	reb.OutletV to trays(bot).InletV;
+	trays([top+topdown:topdown:bot]).OutletV to trays([top:topdown:bot-topdown]).InletV;
+	trays(top).OutletV to cond.InletV;
+	
+	#liquid
+	cond.OutletL to sp.Inlet;	
+	sp.Outlet2 to p.Inlet;
+	p.Outlet to trays(top).InletL;
+	trays([top:topdown:bot-topdown]).OutletL to trays([top+topdown:topdown:bot]).InletL;
+	trays(bot).OutletL to reb.InletL;
+	
+end
+
+#*----------------------------------------------------------------------
+* Model of a  packed column section with:
+*	- NStages = theoretical number of equilibrium stages.
+* 
+*---------------------------------------------------------------------*# 
+Model Packed_Section_Column
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/PackedSectionColumn"; 
+	Brief 		= "Model of a packed column section.";
+	Info 		=
+"== Model of a packed column section containing ==
+* NStages theoretical stages.
+	
+== Specify ==
+* the feed stream of each tray (Inlet);
+* the InletL stream of the top tray;
+* the InletV stream of the bottom tray;
+* the total pressure drop (dP) of the section.
+	
+== Initial Conditions ==
+* the stages temperature (OutletL.T);
+* the stages liquid holdup;
+* (NoComps - 1) OutletL (OR OutletV) compositions for each tray.
+";
+	
+	PARAMETERS
+	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	outer NComp as Integer;
+	NStages as Integer(Brief="Number of trays", Default=2);
+	topdown as Integer(Brief="Trays counting (1=top-down, -1=bottom-up)", Default=1);
+	top as Integer(Brief="Number of top tray");
+	bot as Integer(Brief="Number of bottom tray");
+	H as length (Brief="Height of packing");
+
+	VARIABLES
+	stage(NStages) as packedStage;
+	dP as pressure;
+	
+	SET
+	top = (NStages-1)*(1-topdown)/2+1;
+	bot = NStages/top;
+	stage.hs = H/NStages;	
+	stage.V = stage.hs * stage.d^2*3.14159/4;
+	
+	EQUATIONS
+	#stage.deltaP = dP/NStages;
+	dP = stage(bot).OutletL.P - stage(top).OutletL.P;
+	
+	CONNECTIONS
+	stage([top+topdown:topdown:bot]).OutletV to stage([top:topdown:bot-topdown]).InletV;
+	stage([top:topdown:bot-topdown]).OutletL to stage([top+topdown:topdown:bot]).InletL;
+end
+
+#*----------------------------------------------------------------------
+* Model of a  packed distillation column containing:
+*	- a section with NStages theoretical stages;
+*	- a kettle reboiler;
+*	- dymamic condenser;
+*	- a splitter which separate reflux and distillate;
+*	- a pump in reflux stream;
+*---------------------------------------------------------------------*# 
+Model PackedDistillation_kettle_cond as Packed_Section_Column
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/PackedDistillationKettleCond"; 
+	Brief 		= "Model of a distillation column with dynamic condenser and dynamic reboiler.";
+	Info 		=
+"== Specify ==
+* the feed stream of each tray (Inlet);
+* the pump pressure difference;
+* the total pressure drop (dP) of the packing;
+* the heat supllied in reboiler and condenser;
+* the condenser vapor outlet flow (OutletV.F);
+* the reboiler liquid outlet flow (OutletL.F);
+* both splitter outlet flows OR one of the splitter outlet flows and the splitter frac.
+	
+== Initial Conditions ==
+* the stages temperature (OutletL.T);
+* the stages initial molar holdup;
+* (NoComps - 1) OutletL (OR OutletV) compositions for each stage;
+	
+* the condenser temperature (OutletL.T);
+* the condenser liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions;
+	
+* the reboiler temperature (OutletL.T);
+* the reboiler liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions.
+";
+	
+	VARIABLES
+	cond as condenser;
+	reb as reboiler;
+	sptop as splitter;
+	pump1 as pump;
+	
+	CONNECTIONS
+	#vapor
+	reb.OutletV to stage(bot).InletV;
+	stage(top).OutletV to cond.InletV;
+	
+	#liquid
+	cond.OutletL to sptop.Inlet;	
+	sptop.Outlet2 to pump1.Inlet;
+	pump1.Outlet to stage(top).InletL;
+	stage(bot).OutletL to reb.InletL;
+	
+	EQUATIONS
+	stage(top).InletV.F = stage(top).OutletV.F + stage(top).Inlet.F*stage(top).Inlet.v;
+
+end

@@ -1,0 +1,139 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*
+*----------------------------------------------------------------------
+* Authors: Rafael de Pelegrini Soares
+*          Andrey Copat, Estefane S. Horn, Marcos L. Alencastro
+* $Id$
+*--------------------------------------------------------------------*#
+
+using "streams";
+
+Model expander
+	
+ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/expander"; 
+	Brief 		= "Model of an expansor.";
+	Info 		=
+"To be documented";
+	
+PARAMETERS
+
+outer PP   			as Plugin	 	(Brief = "External Physical Properties", Type="PP");
+outer NComp   	as Integer		(Brief = "Number of chemical components", Lower = 1);
+	Rgas				as positive 	(Brief = "Constant of Gases", Unit= 'kJ/kmol/K', Default = 8.31451,Hidden=true);
+	Mw(NComp) 	as molweight (Brief = "Molar Weight");
+
+VARIABLES
+
+	IseCoeff 	as positive 	(Brief = "Isentropic Coefficient", Lower=0.2); 
+	Pratio	 	as positive		(Brief = "Pressure Ratio", Symbol ="P_{ratio}");	
+	Pdrop		as press_delta	(Brief = "Pressure Drop", DisplayUnit = 'kPa', Symbol ="\Delta P");
+	Pdecrease	as press_delta	(Brief = "Pressure Decrease", DisplayUnit = 'kPa', Symbol ="P_{decr}");
+
+	Head 				as energy_mass	(Brief = "Head",Hidden=true);
+	HeadIsentropic 		as energy_mass	(Brief = "Isentropic Head");
+	Tisentropic			as temperature  (Brief = "Isentropic Temperature"); 
+	
+	IsentropicEff 	as efficiency 	(Brief = "Isentropic efficiency");
+	MechanicalEff 	as efficiency 	(Brief = "Mechanical efficiency");
+	
+	FluidPower	as power	 	(Brief = "Fluid Power");
+	BrakePower	as power	 	(Brief = "Brake Power");
+	PowerLoss	as power	 	(Brief = "Power Losses",Lower=0);
+	Mwm			as molweight    (Brief = "Mixture Molar Weight");
+	rho			as dens_mass    (Brief = "Mass Density");
+	Zfac_in		as fraction    	(Brief = "Compressibility factor at inlet");
+	Zfac_out 	as fraction    	(Brief = "Compressibility factor at outlet");
+
+in	Inlet 		as stream	(Brief = "Inlet stream", PosX=0.05, PosY=0.0, Symbol="_{in}");
+out	Outlet 		as streamPH	(Brief = "Outlet stream", PosX=0.65, PosY=1, Symbol="_{out}");
+
+out	WorkOut		as work_stream	(Brief = "Work Outlet", PosX=1, PosY=0.46);
+
+SET
+
+	Mw = PP.MolecularWeight();
+
+	Rgas	= 8.31451*'kJ/kmol/K';
+
+EQUATIONS
+
+"Overall Molar Balance"
+	Outlet.F = Inlet.F;
+
+"Component Molar Balance"
+	Outlet.z = Inlet.z;
+
+"Average Molecular Weight"
+	Mwm = sum(Mw*Inlet.z);
+
+"Pressure Ratio"
+	Outlet.P = Inlet.P * Pratio;
+
+"Pressure Drop"
+	Outlet.P  = Inlet.P - Pdrop;
+
+"Pressure Decrease"
+	Outlet.P  = Inlet.P - Pdecrease;
+
+"Mass Density"
+	rho = PP.VapourDensity(Inlet.T, Inlet.P, Inlet.z);
+	
+"Compressibility factor at Inlet Conditions"
+	Zfac_in = PP.VapourCompressibilityFactor(Inlet.T,Inlet.P,Inlet.z);
+	
+"Compressibility factor at Outlet Conditions"
+	Zfac_out = PP.VapourCompressibilityFactor(Outlet.T,Outlet.P,Outlet.z);
+
+"Isentropic Head"
+	HeadIsentropic*Mwm = (PP.VapourEnthalpy(Tisentropic,Outlet.P,Outlet.z)-Inlet.h);
+
+"Actual Head"
+	Head*Mwm = (Outlet.h-Inlet.h);
+
+"Isentropic Coefficient"
+	HeadIsentropic = (0.5*Zfac_in+0.5*Zfac_out)*(1/Mwm)*(IseCoeff/(IseCoeff-1.001))*Rgas*Inlet.T*((Outlet.P/Inlet.P)^((IseCoeff-1.001)/IseCoeff) - 1);
+
+"Isentropic Outlet Temperature"
+	PP.VapourEntropy(Tisentropic, Outlet.P, Outlet.z) = PP.VapourEntropy(Inlet.T, Inlet.P, Inlet.z);
+
+
+if IsentropicEff equal 1
+
+	then
+"Discharge Temperature"
+	Outlet.T = Tisentropic;
+
+	else
+
+"Discharge Temperature"
+	(PP.VapourEnthalpy(Outlet.T,Outlet.P,Outlet.z)-Inlet.h)= (PP.VapourEnthalpy(Tisentropic,Outlet.P,Outlet.z)-Inlet.h)*IsentropicEff;
+
+end
+
+"Fluid Power"
+	FluidPower = IsentropicEff*HeadIsentropic*sum(Mw*Inlet.z)*Inlet.F+PowerLoss;
+
+"Brake Power"
+	BrakePower = WorkOut.Work;
+
+"Brake Power"
+	BrakePower = FluidPower*MechanicalEff;
+
+"Power Loss"
+	PowerLoss = BrakePower - FluidPower;
+
+end

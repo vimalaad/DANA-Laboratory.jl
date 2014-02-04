@@ -1,0 +1,510 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*
+*-----------------------------------------------------------------------
+* Author: Núbia do Carmo Ferreira
+* $Id: column.mso 210 2007-03-15 12:52:28Z arge $
+*---------------------------------------------------------------------*#
+
+using "stage_separators/column";
+
+#*----------------------------------------------------------------------
+* Model of cost of a distillation column containing:
+*	- NTrays like tray;
+*	- a kettle reboiler;
+*	- dymamic condenser;
+*	- a splitter which separate reflux and distillate;
+*	- a pump in reflux stream;
+*
+*	- This model is valid if:
+*	   0.91m < Di < 7.32m
+*	   17.57m < Lt < 51.82m
+*	   0.6m < D < 4.8m
+*
+*---------------------------------------------------------------------*# 
+
+Model Distillation_kettle_cond_cost as Distillation_kettle_cond
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/DistillationKettleCond"; 
+	Brief 		= "Model of a distillation column with dynamic condenser and dynamic reboiler.";
+	Info 		=
+"== Specify ==
+* the feed stream of each tray (Inlet);
+* the Murphree eficiency for each tray Emv;
+* the pump pressure difference;
+* the heat supllied in reboiler and condenser;
+* the condenser vapor outlet flow (OutletV.F);
+* the reboiler liquid outlet flow (OutletL.F);
+* both splitter outlet flows OR one of the splitter outlet flows and the splitter frac.
+* all necessary dimensions and materials for cost evaluation
+	
+== Initial Conditions ==
+* the trays temperature (OutletL.T);
+* the trays liquid level (Level) OR the trays liquid flow (OutletL.F);
+* (NoComps - 1) OutletL (OR OutletV) compositions for each tray;
+	
+* the condenser temperature (OutletL.T);
+* the condenser liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions;
+	
+* the reboiler temperature (OutletL.T);
+* the reboiler liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions.
+";
+
+	PARAMETERS
+	Material as Switcher (Valid = ["Stainless steel 316", "Stainless steel 304", "Carpenter 20 CB_3", "Nickel 200", "Monel 400", "Inconel 600", "Incoloy 825", "Titanium"], 
+			Default = "Stainless steel 304");
+	Tray_Type as Switcher (Valid = ["Valve", "Grid", "Bubble cap", "Sieve"], Default= "Valve");
+	Tray_Material as Switcher (Valid = ["Stainless steel 304", "Stainless steel 316", "Carpenter 20 CB_3", "Monel"], Default= "Stainless steel 304");
+	Cost(12,4) as Real;
+	Di as length	(Brief="Internal Diameter for the hoof of the towers");
+	Lt as length 	(Brief="Hoof Length");
+	Tb as length 	(Brief="Bottom thickness");
+	Tp as length	(Brief="Wall thickness");	
+	D  as length	(Brief="Tower diameter");
+	dens_mass_material  as dens_mass (Brief = "Mass Density of the Material");
+	Pi	as constant    (Brief="Pi Number",Default=3.14159265);
+	
+	VARIABLES
+	Cs as currency 	(Brief="Total Cost of the hoof of the towers");
+	Cb as currency 	(Brief="Base Cost for the hoof of the distillation tower");
+	Fm as positive	(Brief="Cost Factor based on the construction material");
+	Cpl as currency	(Brief="Cost for stairs and platform");
+	Cbt as currency (Brief="Base Cost for the trays of the tower");
+	Ftm as positive	(Brief="Cost Factor based on the construction material of the trays");
+	Fnt as positive (Brief="Cost Factor based on the number of trays in the tower");
+	Ftt as positive (Brief="Cost Factor based on the type of the tray");
+	Ct as currency 	(Brief="Total Cost");
+	Ws as mass		(Brief="Equipment Weight");
+	
+	EQUATIONS
+
+	"Total Cost of the hoof of the towers"
+	Cs = Cb*Fm;
+
+	"Base Cost for the hoof of the distillation tower"
+	Cb = 'US$'*exp(Cost(1,1) + Cost(1,2)*ln(Ws/'kg') + Cost(1,3)*(ln(Ws/'kg'))^2 + Cost(1,4)*(Lt/Di)*(ln(Tb/Tp)));
+
+	"Cost for stairs and platform"
+	Cpl = 'US$'*Cost(2,1)*(Di^0.63316)/'m^0.63316'*(Lt^0.80161)/'m^0.80161';
+	
+	"Base Cost for the trays of the tower"
+	Cbt = 'US$'*Cost(6,1)*exp(Cost(6,2)*D/'m');
+
+	switch Tray_Material
+		case "Stainless steel 304":
+
+	"Cost Factor based on the construction material of the trays"
+	Ftm = Cost(7,1) + Cost(7,2)*D/'m';
+	
+		case "Stainless steel 316":
+		
+	"Cost Factor based on the construction material of the trays"
+	Ftm = Cost(8,1) + Cost(8,2)*D/'m';		
+
+		case "Carpenter 20 CB_3":
+	
+	"Cost Factor based on the construction material of the trays"
+	Ftm = Cost(9,1) + Cost(9,2)*D/'m';
+
+		case "Monel":
+
+	"Cost Factor based on the construction material of the trays"
+	Ftm = Cost(10,1) + Cost(10,2)*D/'m';
+
+	end
+
+	"Cost Factor based on the number of trays in the tower"
+	Fnt = Cost(11,1)/(Cost(11,2))^NTrays;
+
+	"Total Cost"
+	Ct = Cb*Fm + NTrays*Cbt*Ftm*Ftt*Fnt + Cpl;
+
+	"Cost Factor based on the type of the tray"
+	Ftt = Cost(12,1);
+
+	"Cost Factor based on the construction material"
+	Fm = Cost(5,1);
+
+	"Equipment Weight"
+	Ws = dens_mass_material*Di*(Lt + 0.8116*Di)*Tp*Pi;
+end
+
+#* -------------------------------------------------------------------
+* Distillation Column cost model with:
+*
+*	- NTrays like tray;
+*	- a vessel in the bottom of column;
+*	- a splitter who separate the bottom product and the stream to reboiler;
+*	- steady state reboiler (thermosyphon);
+*	- a steady state condenser with subcooling;
+*	- a vessel drum (layed cilinder);
+*	- a splitter which separate reflux and distillate;
+*	- a pump in reflux stream.
+*
+* ------------------------------------------------------------------*#
+Model Distillation_thermosyphon_subcooling_cost as Distillation_thermosyphon_subcooling
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/DistillationThermosyphonSubcooling";
+	Brief 		= "Model of a distillation column with steady condenser and steady reboiler.";
+	Info 		=
+"== Specify ==
+* the feed stream of each tray (Inlet);
+* the Murphree eficiency for each tray Emv;
+* the pump head;
+* the condenser pressure drop;
+* the heat supllied in top and bottom tanks;
+* the heat supllied in condenser and reboiler;
+* the Outlet1 flow in the bottom splitter (spbottom.Outlet1.F) that corresponds to the bottom product;
+* both  top splitter outlet flows OR one of the splitter outlet flows and the splitter frac.
+* all necessary dimensions and materials for cost evaluation
+
+== Initial Conditions ==
+* the trays temperature (OutletL.T);
+* the trays liquid level (Level) OR the trays liquid flow (OutletL.F);
+* (NoComps - 1) OutletL (OR OutletV) compositions for each tray;
+	
+* the top tank temperature (OutletL.T);
+* the top tank liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions;
+	
+* the bottom tank temperature (OutletL.T);
+* the bottom tank liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions.
+";
+
+	PARAMETERS
+	Material as Switcher (Valid = ["Stainless steel 316", "Stainless steel 304", "Carpenter 20 CB_3", "Nickel 200", "Monel 400", "Inconel 600", "Incoloy 825", "Titanium"], 
+			Default = "Stainless steel 304");
+	Tray_Type as Switcher (Valid = ["Valve", "Grid", "Bubble cap", "Sieve"], Default= "Valve");
+	Tray_Material as Switcher (Valid = ["Stainless steel 304", "Stainless steel 316", "Carpenter 20 CB_3", "Monel"], Default= "Stainless steel 304");
+	Cost(12,4) as Real;
+
+	Di as length	(Brief="Internal Diameter for the hoof of the towers");
+	Lt as length 	(Brief="Hoof Length");
+	Tb as length 	(Brief="Bottom thickness");
+	Tp as length	(Brief="Wall thickness");	
+	D  as length	(Brief="Tower diameter");
+	dens_mass_material  as dens_mass (Brief = "Mass Density of the Material");
+	Pi	as constant    (Brief="Pi Number",Default=3.14159265);
+	
+	VARIABLES
+	Cs as currency 	(Brief="Total Cost of the hoof of the towers");
+	Cb as currency 	(Brief="Base Cost for the hoof of the distillation tower");
+	Fm as positive	(Brief="Cost Factor based on the construction material");
+	Cpl as currency	(Brief="Cost for stairs and platform");
+	Cbt as currency (Brief="Base Cost for the trays of the tower");
+	Ftm as positive	(Brief="Cost Factor based on the construction material of the trays");
+	Fnt as positive (Brief="Cost Factor based on the number of trays in the tower");
+	Ftt as positive (Brief="Cost Factor based on the type of the tray");
+	Ct as currency 	(Brief="Total Cost");
+	Ws as mass		(Brief="Equipment Weight");
+
+	EQUATIONS
+
+	"Total Cost of the hoof of the towers"
+	Cs = Cb*Fm;
+
+	"Base Cost for the hoof of the distillation tower"
+	Cb = 'US$'*exp(Cost(1,1) + Cost(1,2)*ln(Ws/'kg') + Cost(1,3)*(ln(Ws/'kg'))^2 + Cost(1,4)*(Lt/Di)*(ln(Tb/Tp)));
+
+	"Cost for stairs and platform"
+	Cpl = 'US$'*Cost(2,1)*(Di^0.63316)/'m^0.63316'*(Lt^0.80161)/'m^0.80161';
+	
+	"Base Cost for the trays of the tower"
+	Cbt = 'US$'*Cost(6,1)*exp(Cost(6,2)*D/'m');
+
+	switch Tray_Material
+		case "Stainless steel 304":
+
+	"Cost Factor based on the construction material of the trays"
+	Ftm = Cost(7,1) + Cost(7,2)*D/'m';
+	
+		case "Stainless steel 316":
+		
+	"Cost Factor based on the construction material of the trays"
+	Ftm = Cost(8,1) + Cost(8,2)*D/'m';		
+
+		case "Carpenter 20 CB_3":
+	
+	"Cost Factor based on the construction material of the trays"
+	Ftm = Cost(9,1) + Cost(9,2)*D/'m';
+
+		case "Monel":
+
+	"Cost Factor based on the construction material of the trays"
+	Ftm = Cost(10,1) + Cost(10,2)*D/'m';
+
+	end
+
+	"Cost Factor based on the number of trays in the tower"
+	Fnt = Cost(11,1)/(Cost(11,2))^NTrays;
+
+	"Total Cost"
+	Ct = Cb*Fm + NTrays*Cbt*Ftm*Ftt*Fnt + Cpl;
+
+	"Cost Factor based on the type of the tray"
+	Ftt = Cost(12,1);
+
+	"Cost Factor based on the construction material"
+	Fm = Cost(5,1);
+
+	"Equipment Weight"
+	Ws = dens_mass_material*Di*(Lt + 0.8116*Di)*Tp*Pi;
+end
+
+#* -------------------------------------------------------------------
+* Distillation Column model with:
+*
+*	- NTrays like tray;
+*	- a vessel in the bottom of column;
+*	- a splitter who separate the bottom product and the stream to reboiler;
+*	- steady state reboiler (thermosyphon);
+*	- a dynamic condenser without subcooling;
+*	- a splitter which separate reflux and distillate;
+*	- a pump in reflux stream.
+*
+* ------------------------------------------------------------------*#
+Model Distillation_thermosyphon_cond_cost as Distillation_thermosyphon_cond
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/DistillationThermosyphonCond"; 
+	Brief 		= "Model of a distillation column with dynamic condenser and steady reboiler.";
+	Info 		=
+"== Specify ==
+* the feed stream of each tray (Inlet);
+* the Murphree eficiency for each tray Emv;
+* the pump head;
+* the condenser vapor outlet flow (OutletV.F);
+* the heat supllied in bottom tank;
+* the heat supllied in condenser and reboiler;
+* the Outlet1 flow in the bottom splitter (spbottom.Outlet1.F) that corresponds to the bottom product;
+* all necessary dimensions and materials for cost evaluation
+
+== Initial Conditions ==
+* the trays temperature (OutletL.T);
+* the trays liquid level (Level) OR the trays liquid flow (OutletL.F);
+* (NoComps - 1) OutletL (OR OutletV) compositions for each tray;
+	
+* the condenser temperature (OutletL.T);
+* the condenser liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions;
+	
+* the bottom tank temperature (OutletL.T);
+* the bottom tank liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions.
+";
+
+	PARAMETERS
+	Material as Switcher (Valid = ["Stainless steel 316", "Stainless steel 304", "Carpenter 20 CB_3", "Nickel 200", "Monel 400", "Inconel 600", "Incoloy 825", "Titanium"], 
+			Default = "Stainless steel 304");
+	Tray_Type as Switcher (Valid = ["Valve", "Grid", "Bubble cap", "Sieve"], Default= "Valve");
+	Tray_Material as Switcher (Valid = ["Stainless steel 304", "Stainless steel 316", "Carpenter 20 CB_3", "Monel"], Default= "Stainless steel 304");
+	Cost(12,4) as Real;
+	Di as length	(Brief="Internal Diameter for the hoof of the towers");
+	Lt as length 	(Brief="Hoof Length");
+	Tb as length 	(Brief="Bottom thickness");
+	Tp as length	(Brief="Wall thickness");	
+	D  as length	(Brief="Tower diameter");
+	dens_mass_material  as dens_mass (Brief = "Mass Density of the Material");
+	Pi	as constant    (Brief="Pi Number",Default=3.14159265);
+	
+	VARIABLES
+	Cs as currency 	(Brief="Total Cost of the hoof of the towers");
+	Cb as currency 	(Brief="Base Cost for the hoof of the distillation tower");
+	Fm as positive	(Brief="Cost Factor based on the construction material");
+	Cpl as currency	(Brief="Cost for stairs and platform");
+	Cbt as currency (Brief="Base Cost for the trays of the tower");
+	Ftm as positive	(Brief="Cost Factor based on the construction material of the trays");
+	Fnt as positive (Brief="Cost Factor based on the number of trays in the tower");
+	Ftt as positive (Brief="Cost Factor based on the type of the tray");
+	Ct as currency 	(Brief="Total Cost");
+	Ws as mass		(Brief="Equipment Weight");
+	
+	EQUATIONS
+
+	"Total Cost of the hoof of the towers"
+	Cs = Cb*Fm;
+
+	"Base Cost for the hoof of the distillation tower"
+	Cb = 'US$'*exp(Cost(1,1) + Cost(1,2)*ln(Ws/'kg') + Cost(1,3)*(ln(Ws/'kg'))^2 + Cost(1,4)*(Lt/Di)*(ln(Tb/Tp)));
+
+	"Cost for stairs and platform"
+	Cpl = 'US$'*Cost(2,1)*(Di^0.63316)/'m^0.63316'*(Lt^0.80161)/'m^0.80161';
+	
+	"Base Cost for the trays of the tower"
+	Cbt = 'US$'*Cost(6,1)*exp(Cost(6,2)*D/'m');
+
+	switch Tray_Material
+		case "Stainless steel 304":
+
+	"Cost Factor based on the construction material of the trays"
+	Ftm = Cost(7,1) + Cost(7,2)*D/'m';
+	
+		case "Stainless steel 316":
+		
+	"Cost Factor based on the construction material of the trays"
+	Ftm = Cost(8,1) + Cost(8,2)*D/'m';		
+
+		case "Carpenter 20 CB_3":
+	
+	"Cost Factor based on the construction material of the trays"
+	Ftm = Cost(9,1) + Cost(9,2)*D/'m';
+
+		case "Monel":
+
+	"Cost Factor based on the construction material of the trays"
+	Ftm = Cost(10,1) + Cost(10,2)*D/'m';
+
+	end
+
+	"Cost Factor based on the number of trays in the tower"
+	Fnt = Cost(11,1)/(Cost(11,2))^NTrays;
+
+	"Total Cost"
+	Ct = Cb*Fm + NTrays*Cbt*Ftm*Ftt*Fnt + Cpl;
+
+	"Cost Factor based on the type of the tray"
+	Ftt = Cost(12,1);
+
+	"Cost Factor based on the construction material"
+	Fm = Cost(5,1);
+
+	"Equipment Weight"
+	Ws = dens_mass_material*Di*(Lt + 0.8116*Di)*Tp*Pi;
+end
+
+#* -------------------------------------------------------------------
+* Distillation Column model with:
+*
+*	- NTrays like tray;
+*	- a kettle reboiler;
+*	- a steady state condenser with subcooling;
+*	- a vessel drum (layed cilinder);
+*	- a splitter which separate reflux and distillate;
+*	- a pump in reflux stream.
+*
+* ------------------------------------------------------------------*#
+Model Distillation_kettle_subcooling_cost as Distillation_kettle_subcooling
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/DistillationKettleSubcooling"; 
+	Brief 		= "Model of a distillation column with steady condenser and dynamic reboiler.";
+	Info 		=
+"== Specify ==
+* the feed stream of each tray (Inlet);
+* the Murphree eficiency for each tray (Emv);
+* the pump pressure difference;
+* the heat supllied in reboiler and condenser;
+* the heat supllied in the top tank;
+* the condenser pressure drop;
+* the reboiler liquid outlet flow (OutletL.F);
+* both splitter outlet flows OR one of the splitter outlet flows and the splitter frac.
+* all necessary dimensions and materials for cost evaluation
+
+== Initial Conditions ==
+* the trays temperature (OutletL.T);
+* the trays liquid level (Level) OR the trays liquid flow (OutletL.F);
+* (NoComps - 1) OutletL (OR OutletV) compositions for each tray;
+	
+* the top tank temperature (OutletL.T);
+* the top tank liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions;
+	
+* the reboiler temperature (OutletL.T);
+* the reboiler liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions.
+";
+
+	PARAMETERS
+	Material as Switcher (Valid = ["Stainless steel 316", "Stainless steel 304", "Carpenter 20 CB_3", "Nickel 200", "Monel 400", "Inconel 600", "Incoloy 825", "Titanium"], 
+			Default = "Stainless steel 304");
+	Tray_Type as Switcher (Valid = ["Valve", "Grid", "Bubble cap", "Sieve"], Default= "Valve");
+	Tray_Material as Switcher (Valid = ["Stainless steel 304", "Stainless steel 316", "Carpenter 20 CB_3", "Monel"], Default= "Stainless steel 304");
+	Cost(12,4) as Real;
+	Di as length	(Brief="Internal Diameter for the hoof of the towers");
+	Lt as length 	(Brief="Hoof Length");
+	Tb as length 	(Brief="Bottom thickness");
+	Tp as length	(Brief="Wall thickness");	
+	D  as length	(Brief="Tower diameter");
+	dens_mass_material  as dens_mass (Brief = "Mass Density of the Material");
+	Pi	as constant    (Brief="Pi Number",Default=3.14159265);
+	
+	VARIABLES
+	Cs as currency 	(Brief="Total Cost of the hoof of the towers");
+	Cb as currency 	(Brief="Base Cost for the hoof of the distillation tower");
+	Fm as positive	(Brief="Cost Factor based on the construction material");
+	Cpl as currency	(Brief="Cost for stairs and platform");
+	Cbt as currency (Brief="Base Cost for the trays of the tower");
+	Ftm as positive	(Brief="Cost Factor based on the construction material of the trays");
+	Fnt as positive (Brief="Cost Factor based on the number of trays in the tower");
+	Ftt as positive (Brief="Cost Factor based on the type of the tray");
+	Ct as currency 	(Brief="Total Cost");
+	Ws as mass		(Brief="Equipment Weight");
+	
+	EQUATIONS
+
+	"Total Cost of the hoof of the towers"
+	Cs = Cb*Fm;
+
+	"Base Cost for the hoof of the distillation tower"
+	Cb = 'US$'*exp(Cost(1,1) + Cost(1,2)*ln(Ws/'kg') + Cost(1,3)*(ln(Ws/'kg'))^2 + Cost(1,4)*(Lt/Di)*(ln(Tb/Tp)));
+
+	"Cost for stairs and platform"
+	Cpl = 'US$'*Cost(2,1)*(Di^0.63316)/'m^0.63316'*(Lt^0.80161)/'m^0.80161';
+	
+	"Base Cost for the trays of the tower"
+	Cbt = 'US$'*Cost(6,1)*exp(Cost(6,2)*D/'m');
+
+	switch Tray_Material
+		case "Stainless steel 304":
+
+	"Cost Factor based on the construction material of the trays"
+	Ftm = Cost(7,1) + Cost(7,2)*D/'m';
+	
+		case "Stainless steel 316":
+		
+	"Cost Factor based on the construction material of the trays"
+	Ftm = Cost(8,1) + Cost(8,2)*D/'m';		
+
+		case "Carpenter 20 CB_3":
+	
+	"Cost Factor based on the construction material of the trays"
+	Ftm = Cost(9,1) + Cost(9,2)*D/'m';
+
+		case "Monel":
+
+	"Cost Factor based on the construction material of the trays"
+	Ftm = Cost(10,1) + Cost(10,2)*D/'m';
+
+	end
+
+	"Cost Factor based on the number of trays in the tower"
+	Fnt = Cost(11,1)/(Cost(11,2))^NTrays;
+
+	"Total Cost"
+	Ct = Cb*Fm + NTrays*Cbt*Ftm*Ftt*Fnt + Cpl;
+
+	"Cost Factor based on the type of the tray"
+	Ftt = Cost(12,1);
+
+	"Cost Factor based on the construction material"
+	Fm = Cost(5,1);
+
+	"Equipment Weight"
+	Ws = dens_mass_material*Di*(Lt + 0.8116*Di)*Tp*Pi;
+end

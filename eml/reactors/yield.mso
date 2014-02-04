@@ -1,0 +1,162 @@
+#*---------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*
+*----------------------------------------------------------------------
+* Model of an yield reactor
+*----------------------------------------------------------------------
+*
+*   Description:
+*       Modeling of a reactor based on an yield approach.
+*
+*   Assumptions:
+*		* single- and two-phases involved
+*       * steady-state
+*
+*	Specify:
+*		* inlet stream
+*		* component yield or
+*		* reaction yield
+*
+*----------------------------------------------------------------------
+* Author: Rodolfo Rodrigues
+* $Id$
+*--------------------------------------------------------------------*#
+
+using "tank_basic";
+
+
+#*---------------------------------------------------------------------
+*	only vapour phase
+*--------------------------------------------------------------------*#
+Model yield_vap as tank_vap
+	ATTRIBUTES
+	Pallete = true;
+	Icon 	= "icon/cstr"; 
+	Brief 	= "Model of a generic vapour-phase yield CSTR";
+	Info 	= "
+== Assumptions ==
+* only vapour-phase
+* steady-state
+
+== Specify ==
+* inlet stream
+* component yield or
+* reaction yield
+";
+
+	PARAMETERS
+	NReac	as Integer 	(Brief="Number of reactions", Default=1);
+	KComp 	as Integer	(Brief="Key component", Lower=1, Default=1);
+	
+	VARIABLES
+out Outlet		  as vapour_stream(Brief="Outlet stream", PosX=1, PosY=1, Symbol="_{out}");
+	rate(NComp)   as reaction_mol (Brief="Overall component rate of reaction");
+	conv(NComp)   as Real (Brief="Fractional conversion of component", Symbol="X", Default=0);
+	
+	yield(NComp)  as Real (Brief="Molar component yield (global)", Symbol="Y_G");
+	yield_(NComp) as Real (Brief="Molar reaction yield (instantaneous)", Symbol="Y_I");
+
+	EQUATIONS
+	"Outlet stream"
+	Outlet.F*Outlet.z = Outletm.F*Outletm.z + rate*Tank.V;
+	
+	"Rate of reaction"
+	rate*Tank.V = Outletm.F*(yield/(1 + yield(KComp))*Outletm.z(KComp) - Outletm.z);
+	
+	"Instantaneous yield"
+	rate = yield_*rate(KComp);
+	
+	"Mechanical equilibrium"
+	Outlet.P = Outletm.P;
+	
+	"Energy balance"
+	Outlet.F*Outlet.h = Outletm.F*Outletm.h;
+	
+	for i in [1:NComp]
+	  if (Outletm.z(i) > 1e-16) then
+	    "Molar conversion"
+	    Outlet.F*Outlet.z(i) = Outletm.F*Outletm.z(i)*(1 - conv(i));
+	  else if (Outlet.z(i) > 0) then
+			"Molar conversion"
+				conv(i) = 1;	# ?
+			else
+			"Molar conversion"
+				conv(i) = 0;	# ?
+			end
+	  end
+	end
+end
+
+
+#*---------------------------------------------------------------------
+*	only liquid phase
+*--------------------------------------------------------------------*#
+Model yield_liq as tank_liq
+	ATTRIBUTES
+	Pallete = true;
+	Icon 	= "icon/cstr"; 
+	Brief 	= "Model of a generic liquid-phase yield CSTR";
+	Info 	= "
+== Assumptions ==
+* only liquid-phase
+* steady-state
+
+== Specify ==
+* inlet stream
+* component yield or
+* reaction yield
+";
+
+	PARAMETERS
+	NReac	as Integer 	(Brief="Number of reactions", Default=1);
+	KComp 	as Integer	(Brief="Key component", Lower=1, Default=1);
+	
+	VARIABLES
+out Outlet		  as liquid_stream(Brief="Outlet stream", PosX=1, PosY=1, Symbol="_{out}");
+	rate(NComp)   as reaction_mol (Brief="Overall component rate of reaction");
+	conv(NComp)   as Real (Brief="Fractional conversion of component", Symbol="X", Default=0);
+	
+	yield(NComp)  as Real (Brief="Molar component yield (global)", Symbol="Y_G");
+	yield_(NComp) as Real (Brief="Molar reaction yield (instantaneous)", Symbol="Y_I");
+
+	EQUATIONS
+	"Outlet stream"
+	Outlet.F*Outlet.z = Outletm.F*Outletm.z + rate*Tank.V;
+	
+	"Rate of reaction"
+	rate*Tank.V = Outletm.F*(yield/(1 + yield(KComp))*Outletm.z(KComp) - Outletm.z);
+	
+	"Molar reaction yield"
+	rate = yield_*rate(KComp);
+	
+	"Mechanical equilibrium"
+	Outlet.P = Outletm.P;
+	
+	"Energy balance"
+	Outlet.F*Outlet.h = Outletm.F*Outletm.h;
+	
+	for i in [1:NComp]
+	  if (Outletm.z(i) > 0) then
+	    "Molar conversion"
+	    Outlet.F*Outlet.z(i) = Outletm.F*Outletm.z(i)*(1 - conv(i));
+	  else if (Outlet.z(i) > 0) then
+			"Molar conversion"
+				conv(i) = 1;	# ?
+			else
+			"Molar conversion"
+				conv(i) = 0;	# ?
+			end
+	  end
+	end
+end

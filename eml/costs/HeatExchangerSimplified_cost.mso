@@ -1,0 +1,251 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*
+*--------------------------------------------------------------------
+* Author: Núbia do Carmo Ferreira 
+* $Id: HeatExchangerDetailed.mso 197 2007-03-08 14:31:57Z bicca $
+*------------------------------------------------------------------*#
+
+using "heat_exchangers/Heatex"; 
+
+# This model is valid if 14m^2 < A < 1100 m^2
+
+Model HeatExchanger_LMTD_cost as Heatex_LMTD
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/HeatExchanger_LMTD";		
+	Brief 		= "Heat Exchanger Block - LMTD Method";
+	Info 		=
+	"to be documented.";
+
+	PARAMETERS
+	Material as Switcher (Valid = ["Stainless steel 316", "Stainless steel 304", "Stainless steel 347", "Nickel 200", "Monel 400", "Inconel 600", "Incoloy 825", "Titanium", "Hastelloy"], 
+			Default = "Stainless steel 316");
+	Cost(8,3) as Real;
+	
+	VARIABLES	
+	Ce as currency		(Brief="Capital Cost");
+	Cb as currency		(Brief="Basic Cost");
+	Fd as positive		(Brief="Cost Factor based on the type of the heat exchanger");
+	Fp as positive		(Brief="Cost Factor based on the project pressure");
+	Fm as positive		(Brief="Cost Factor based on the construction material");
+	Pmax  as pressure	(Brief="Average  Pressure");
+
+	EQUATIONS
+	"Average pressure"
+	Pmax = max( [OutletHot.P , OutletCold.P] );
+	
+	"Capital Cost"
+	Ce = Cb*Fd*Fp*Fm;
+	
+	"Basic Cost"
+	Cb = 'US$'*exp(Cost(1,1) + Cost(1,2)*ln(A/'m^2') + Cost(1,3)*(ln(A/'m^2'))^2);
+
+	"Cost Factor based on the type of the heat exchanger"
+	Fd = exp(Cost(2,1) + Cost(2,2)*ln(A/'m^2') + Cost(2,3)*ln(A/'m^2'));
+
+	if Pmax <= 700 * 'kPa' then
+		"Cost Factor based on the project pressure" # verificar
+		Fp = Cost(5,1) + Cost(5,2)*ln(A/'m^2');
+	else if 700 * 'kPa' < Pmax and Pmax < 2100 * 'kPa' then
+		Fp = Cost(5,1) + Cost(5,2)*ln(A/'m^2');
+	else if 2100 * 'kPa' < Pmax and Pmax < 4200 * 'kPa' then
+		Fp = Cost(6,1) + Cost(6,2)*ln(A/'m^2');
+	else if 4200 * 'kPa' < Pmax and Pmax < 6200 * 'kPa' then
+		Fp = Cost(7,1) + Cost(7,2)*ln(A/'m^2');
+	else
+		Fp = Cost(7,1) + Cost(7,2)*ln(A/'m^2'); # verificar
+	end
+	end
+	end
+	end
+	
+	"Cost Factor based on the construction material"
+	Fm = Cost(8,1) + Cost(8,2)*ln(A/'m^2');
+	
+end
+
+Model Shell_and_tubes_LMTD_cost as Heatex_LMTD
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/Shell_and_Tubes_LMTD";
+	Brief 		= "Shell and Tubes Heat Exchanger with 1 or 2 shell pass - LMTD Method";
+	Info 		=
+	"to be documented.";
+
+	PARAMETERS
+	Material as Switcher (Valid = ["Stainless steel 316", "Stainless steel 304", "Stainless steel 347", "Nickel 200", "Monel 400", "Inconel 600", "Incoloy 825", "Titanium", "Hastelloy"], 
+			Default = "Stainless steel 316");
+	Cost(8,3) as Real;
+	
+	VARIABLES	
+	Ce as currency		(Brief="Capital Cost");
+	Cb as currency		(Brief="Basic Cost");
+	Fd as positive		(Brief="Cost Factor based on the type of the heat exchanger");
+	Fp as positive		(Brief="Cost Factor based on the project pressure");
+	Fm as positive		(Brief="Cost Factor based on the construction material");
+	Pmax  as pressure	(Brief="Average  Pressure");
+
+SET
+
+ExchangerType = "Shell and Tube";
+
+	EQUATIONS
+	"Average pressure"
+	Pmax = max( [OutletHot.P , OutletCold.P] );
+	
+	"Capital Cost"
+	Ce = Cb*Fd*Fp*Fm;
+	
+	"Basic Cost"
+	Cb = 'US$'*exp(Cost(1,1) + Cost(1,2)*ln(A/'m^2') + Cost(1,3)*(ln(A/'m^2'))^2);
+
+	"Cost Factor based on the type of the heat exchanger"
+	Fd = exp(Cost(2,1) + Cost(2,2)*ln(A/'m^2') + Cost(2,3)*ln(A/'m^2'));
+
+	if Pmax <= 700 * 'kPa' then
+		"Cost Factor based on the project pressure" # verificar
+		Fp = Cost(5,1) + Cost(5,2)*ln(A/'m^2');
+	else if 700 * 'kPa' < Pmax and Pmax < 2100 * 'kPa' then
+		Fp = Cost(5,1) + Cost(5,2)*ln(A/'m^2');
+	else if 2100 * 'kPa' < Pmax and Pmax < 4200 * 'kPa' then
+		Fp = Cost(6,1) + Cost(6,2)*ln(A/'m^2');
+	else if 4200 * 'kPa' < Pmax and Pmax < 6200 * 'kPa' then
+		Fp = Cost(7,1) + Cost(7,2)*ln(A/'m^2');
+	else
+		Fp = Cost(7,1) + Cost(7,2)*ln(A/'m^2'); # verificar
+	end
+	end
+	end
+	end
+	
+	"Cost Factor based on the construction material"
+	Fm = Cost(8,1) + Cost(8,2)*ln(A/'m^2');
+	
+end
+
+Model HeatExchanger_NTU_cost as Heatex_NTU
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/HeatExchanger_NTU";	
+	Brief 		= "Heat Exchanger Block - NTU Method";
+	Info 		=
+	"to be documented.";
+
+	PARAMETERS
+	Material as Switcher (Valid = ["Stainless steel 316", "Stainless steel 304", "Stainless steel 347", "Nickel 200", "Monel 400", "Inconel 600", "Incoloy 825", "Titanium", "Hastelloy"], 
+			Default = "Stainless steel 316");
+	Cost(8,3) as Real;
+	
+	VARIABLES	
+	Ce as currency		(Brief="Capital Cost");
+	Cb as currency		(Brief="Basic Cost");
+	Fd as positive		(Brief="Cost Factor based on the type of the heat exchanger");
+	Fp as positive		(Brief="Cost Factor based on the project pressure");
+	Fm as positive		(Brief="Cost Factor based on the construction material");
+	Pmax  as pressure	(Brief="Average  Pressure");
+
+	EQUATIONS
+	"Average pressure"
+	Pmax = max( [OutletHot.P , OutletCold.P] );
+	
+	"Capital Cost"
+	Ce = Cb*Fd*Fp*Fm;
+	
+	"Basic Cost"
+	Cb = 'US$'*exp(Cost(1,1) + Cost(1,2)*ln(A/'m^2') + Cost(1,3)*(ln(A/'m^2'))^2);
+
+	"Cost Factor based on the type of the heat exchanger"
+	Fd = exp(Cost(2,1) + Cost(2,2)*ln(A/'m^2') + Cost(2,3)*ln(A/'m^2'));
+
+	if Pmax <= 700 * 'kPa' then
+		"Cost Factor based on the project pressure" # verificar
+		Fp = Cost(5,1) + Cost(5,2)*ln(A/'m^2');
+	else if 700 * 'kPa' < Pmax and Pmax < 2100 * 'kPa' then
+		Fp = Cost(5,1) + Cost(5,2)*ln(A/'m^2');
+	else if 2100 * 'kPa' < Pmax and Pmax < 4200 * 'kPa' then
+		Fp = Cost(6,1) + Cost(6,2)*ln(A/'m^2');
+	else if 4200 * 'kPa' < Pmax and Pmax < 6200 * 'kPa' then
+		Fp = Cost(7,1) + Cost(7,2)*ln(A/'m^2');
+	else
+		Fp = Cost(7,1) + Cost(7,2)*ln(A/'m^2'); # verificar
+	end
+	end
+	end
+	end
+	
+	"Cost Factor based on the construction material"
+	Fm = Cost(8,1) + Cost(8,2)*ln(A/'m^2');
+	
+end
+
+Model Shell_and_tubes_NTU_cost as Heatex_NTU
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/Shell_and_Tubes_NTU";		
+	Brief 		= "Shell and Tubes Heat Exchanger with 1 or 2 shell pass - NTU Method";
+	Info 		=
+	"to be documented.";
+
+	PARAMETERS
+	Material as Switcher (Valid = ["Stainless steel 316", "Stainless steel 304", "Stainless steel 347", "Nickel 200", "Monel 400", "Inconel 600", "Incoloy 825", "Titanium", "Hastelloy"], 
+			Default = "Stainless steel 316");
+	Cost(8,3) as Real;
+	
+	VARIABLES	
+	Ce as currency		(Brief="Capital Cost");
+	Cb as currency		(Brief="Basic Cost");
+	Fd as positive		(Brief="Cost Factor based on the type of the heat exchanger");
+	Fp as positive		(Brief="Cost Factor based on the project pressure");
+	Fm as positive		(Brief="Cost Factor based on the construction material");
+	Pmax  as pressure	(Brief="Average  Pressure");
+
+SET
+
+ExchangerType = "Shell and Tube";
+
+	EQUATIONS
+	"Average pressure"
+	Pmax = max( [OutletHot.P , OutletCold.P] );
+	
+	"Capital Cost"
+	Ce = Cb*Fd*Fp*Fm;
+	
+	"Basic Cost"
+	Cb = 'US$'*exp(Cost(1,1) + Cost(1,2)*ln(A/'m^2') + Cost(1,3)*(ln(A/'m^2'))^2);
+
+	"Cost Factor based on the type of the heat exchanger"
+	Fd = exp(Cost(2,1) + Cost(2,2)*ln(A/'m^2') + Cost(2,3)*ln(A/'m^2'));
+
+	if Pmax <= 700 * 'kPa' then
+		"Cost Factor based on the project pressure" # verificar
+		Fp = Cost(5,1) + Cost(5,2)*ln(A/'m^2');
+	else if 700 * 'kPa' < Pmax and Pmax < 2100 * 'kPa' then
+		Fp = Cost(5,1) + Cost(5,2)*ln(A/'m^2');
+	else if 2100 * 'kPa' < Pmax and Pmax < 4200 * 'kPa' then
+		Fp = Cost(6,1) + Cost(6,2)*ln(A/'m^2');
+	else if 4200 * 'kPa' < Pmax and Pmax < 6200 * 'kPa' then
+		Fp = Cost(7,1) + Cost(7,2)*ln(A/'m^2');
+	else
+		Fp = Cost(7,1) + Cost(7,2)*ln(A/'m^2'); # verificar
+	end
+	end
+	end
+	end
+	
+	"Cost Factor based on the construction material"
+	Fm = Cost(8,1) + Cost(8,2)*ln(A/'m^2');
+	
+end
+

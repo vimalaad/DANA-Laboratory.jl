@@ -1,0 +1,54 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*-----------------------------------------------------------------------
+* Author: Tiago Osório
+* $Id$
+*---------------------------------------------------------------------*#
+
+using "types";
+ 
+ 
+Model IAE
+
+ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/IAE"; 
+	Brief 		= "Model IAE.";
+	Info 		=
+"== Inputs ==
+* One input signal.
+* One setpoint signal.
+	
+== Outputs ==
+* One output signal.
+";
+	
+	VARIABLES
+	input    as Real (Brief="input signal");
+	output   as Real (Brief="output signal", Unit='s');
+	setPoint as Real (Brief="setpoint");
+	absError as Real (Brief="absolute error");
+	
+	EQUATIONS
+	
+	"Absolute error definition"
+	absError = abs(setPoint-input);
+
+	"Calculate output"
+	diff(output)=absError;
+	
+	INITIAL
+	output=0*'s';
+
+end

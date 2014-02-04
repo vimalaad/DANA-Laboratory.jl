@@ -1,0 +1,629 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*----------------------------------------------------------------------
+* Author: Paula B. Staudt
+* $Id$
+*--------------------------------------------------------------------*#
+
+using "streams";
+
+Model flash
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/Flash"; 
+	Brief 		= "Model of a dynamic flash.";
+	Info 		=
+"== Assumptions ==
+* both phases are perfectly mixed.
+	
+== Specify ==
+* the feed stream;
+* the outlet flows: OutletV.F and OutletL.F.
+
+== Initial Conditions ==
+* the flash initial temperature (OutletL.T);
+* the flash initial level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions.
+";
+	
+	PARAMETERS
+outer PP as Plugin (Brief = "External Physical Properties", Type="PP");
+outer NComp as Integer (Brief = "Number of chemical components", Lower = 1); 
+	V as volume (Brief="Total Volume of the flash");
+	Mw(NComp) as molweight;
+	orientation as Switcher (Valid=["vertical","horizontal"],Default="vertical");
+	diameter as length (Brief="Vessel diameter");
+
+	SET
+	Mw=PP.MolecularWeight();
+
+	VARIABLES
+in	Inlet as stream(Brief="Feed Stream", PosX=0, PosY=0.5421, Symbol="_{in}");
+out	OutletL as liquid_stream(Brief="Liquid outlet stream", PosX=0.4790, PosY=1, Symbol="_{outL}");
+out	OutletV as vapour_stream(Brief="Vapour outlet stream", PosX=0.4877, PosY=0, Symbol="_{outV}");
+in	InletQ as energy_stream (Brief="Rate of heat supply", PosX=1, PosY=0.7559, Symbol="_{in}");
+
+	M(NComp) as mol (Brief="Molar Holdup in the tray");
+	ML as mol (Brief="Molar liquid holdup");
+	MV as mol (Brief="Molar vapour holdup");
+	E as energy (Brief="Total Energy Holdup on tray");
+	vL as volume_mol (Brief="Liquid Molar Volume");
+	vV as volume_mol (Brief="Vapour Molar volume");
+	Level as length (Brief="liquid height");
+	Across as area (Brief="Flash Cross section area");
+	vMfrac as positive (Brief="Vapour Molar fraction", Symbol="\ksi");
+	vfrac as positive (Brief="Vapourization fraction", Symbol="\phi");
+	Pratio as positive	(Brief = "Pressure Ratio", Symbol ="P_{ratio}");	
+	Pdrop as press_delta (Brief = "Pressure Drop", DisplayUnit = 'kPa', Symbol ="\Delta P");
+
+	EQUATIONS
+	"Component Molar Balance"
+	diff(M)=Inlet.F*Inlet.z - OutletL.F*OutletL.z - OutletV.F*OutletV.z;
+	
+	"Energy Balance"
+	diff(E) = Inlet.F*Inlet.h - OutletL.F*OutletL.h - OutletV.F*OutletV.h + InletQ.Q;
+	
+	"Molar Holdup"
+	M = ML*OutletL.z + MV*OutletV.z; 
+	
+	"Energy Holdup"
+	E = ML*OutletL.h + MV*OutletV.h - OutletL.P*V;
+	
+	"Mol fraction normalisation"
+	sum(OutletL.z)=1.0;
+
+	"Mol fraction normalisation"
+	sum(OutletL.z)=sum(OutletV.z);
+
+	if Inlet.F > 0 then
+		"Vaporization Ratio"
+		OutletV.F = Inlet.F * vfrac;
+	else
+		"Vaporization Ratio"
+		OutletV.F = (OutletV.F + OutletL.F) * vfrac;
+	end
+
+	"Vaporization Fraction"
+	MV = (ML + MV) * vMfrac;
+
+	"Liquid Volume"
+	vL = PP.LiquidVolume(OutletL.T, OutletL.P, OutletL.z);
+
+	"Vapour Volume"
+	vV = PP.VapourVolume(OutletV.T, OutletV.P, OutletV.z);
+	
+	"Chemical Equilibrium"
+	PP.LiquidFugacityCoefficient(OutletL.T, OutletL.P, OutletL.z)*OutletL.z = 
+		PP.VapourFugacityCoefficient(OutletV.T, OutletV.P, OutletV.z)*OutletV.z;
+	
+	"Thermal Equilibrium"
+	OutletV.T = OutletL.T;
+	
+	"Mechanical Equilibrium"
+	OutletV.P = OutletL.P;
+
+	"Pressure Drop"
+	OutletL.P  = Inlet.P - Pdrop;
+
+	"Pressure Ratio"
+	OutletL.P = Inlet.P * Pratio;
+
+	"Geometry Constraint"
+	V = ML * vL + MV * vV;
+
+	switch orientation
+	case "vertical":
+	"Cross Section Area"
+		Across = 0.5 * asin(1) * diameter^2;
+	
+	"Liquid Level"
+		ML * vL = Across * Level;
+
+	case "horizontal":
+	"Cylindrical Side Area"
+		Across = 0.25*diameter^2 * (asin(1) - asin((diameter - 2*Level)/diameter)) + 
+				(Level - 0.5*diameter)*sqrt(Level*(diameter - Level));
+
+	"Liquid Level"
+		0.5 * asin(1) * diameter^2 * ML* vL = Across * V;
+	end
+end
+
+#*----------------------------------------------------------------------
+* Model of a  Steady State flash
+*---------------------------------------------------------------------*# 
+Model flash_steady
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/Flash"; 
+	Brief 		= "Model of a Steady State flash.";
+	Info 		=
+"== Assumptions ==
+* both phases are perfectly mixed.
+	
+== Specify ==
+* the feed stream;
+* the outlet pressure (OutletV.P);
+* the outlet temperature OR the heat supplied.
+";
+	
+	PARAMETERS
+outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	
+	VARIABLES
+in	Inlet as stream(Brief="Feed Stream", PosX=0, PosY=0.5421, Symbol="_{in}");
+out	OutletL as liquid_stream(Brief="Liquid outlet stream", PosX=0.4790, PosY=1, Symbol="_{outL}");
+out	OutletV as vapour_stream(Brief="Vapour outlet stream", PosX=0.4877, PosY=0, Symbol="_{outV}");
+in	InletQ as energy_stream (Brief="Rate of heat supply", PosX=1, PosY=0.7559, Symbol="_{in}");
+	vfrac as fraction (Brief="Vapourization fraction", Symbol="\phi");
+	Pratio as positive	(Brief = "Pressure Ratio", Symbol ="P_{ratio}");	
+	Pdrop as press_delta (Brief = "Pressure Drop", DisplayUnit = 'kPa', Symbol ="\Delta P");
+
+	EQUATIONS
+	"The flash calculation"
+	[vfrac, OutletL.z, OutletV.z] = PP.Flash(OutletV.T, OutletV.P, Inlet.z);
+	
+	"Global Molar Balance"
+	Inlet.F = OutletV.F + OutletL.F;
+	
+	"Vaporization Fraction"
+	OutletV.F = Inlet.F * vfrac;
+	
+	"Energy Balance"
+	Inlet.F*Inlet.h  + InletQ.Q = OutletL.F*OutletL.h + OutletV.F*OutletV.h;
+	
+	"Thermal Equilibrium"
+	OutletV.T = OutletL.T;
+	
+	"Mechanical Equilibrium"
+	OutletV.P = OutletL.P;
+
+	"Pressure Drop"
+	OutletL.P  = Inlet.P - Pdrop;
+
+	"Pressure Ratio"
+	OutletL.P = Inlet.P * Pratio;
+end
+
+#*----------------------------------------------------------------------
+* Model of a Steady State Bubble flash
+*---------------------------------------------------------------------*# 
+Model bubble_steady
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/Flash"; 
+	Brief 		= "Model of a Steady State flash.";
+	Info 		=
+"== Assumptions ==
+* both phases are perfectly mixed.
+	
+== Specify ==
+* the feed stream;
+* the outlet pressure (OutletV.P);
+* the outlet temperature OR the heat supplied.
+";
+	
+	PARAMETERS
+outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	
+	VARIABLES
+in	Inlet as stream(Brief="Feed Stream", PosX=0, PosY=0.5421, Symbol="_{in}");
+out	OutletL as liquid_stream(Brief="Liquid outlet stream", PosX=0.4790, PosY=1, Symbol="_{outL}");
+out	OutletV as vapour_stream(Brief="Vapour outlet stream", PosX=0.4877, PosY=0, Symbol="_{outV}");
+in	InletQ as energy_stream (Brief="Rate of heat supply", PosX=1, PosY=0.7559, Symbol="_{in}");
+	vfrac as fraction (Brief="Vapourization fraction", Symbol="\phi");
+	Pratio as positive	(Brief = "Pressure Ratio", Symbol ="P_{ratio}");	
+	Pdrop as press_delta (Brief = "Pressure Drop", DisplayUnit = 'kPa', Symbol ="\Delta P");
+
+	EQUATIONS
+	"The flash calculation"
+	PP.LiquidFugacityCoefficient(OutletL.T, OutletL.P, OutletL.z)*OutletL.z = 
+		PP.VapourFugacityCoefficient(OutletV.T, OutletV.P, OutletV.z)*OutletV.z;
+
+	"Component Molar Balance"
+	Inlet.z = OutletL.z;
+	sum(OutletL.z) = sum(OutletV.z);
+
+	"Global Molar Balance"
+	Inlet.F = OutletV.F + OutletL.F;
+	
+	"Vaporization Fraction"
+	OutletV.F = Inlet.F * vfrac;
+
+	"Energy Balance"
+	Inlet.F*Inlet.h  + InletQ.Q = OutletL.F*OutletL.h + OutletV.F*OutletV.h;
+	
+	"Thermal Equilibrium"
+	OutletV.T = OutletL.T;
+	
+	"Mechanical Equilibrium"
+	OutletV.P = OutletL.P;
+
+	"Pressure Drop"
+	OutletL.P  = Inlet.P - Pdrop;
+
+	"Pressure Ratio"
+	OutletL.P = Inlet.P * Pratio;
+	
+	"Vapor fraction"
+	vfrac = 0;
+end
+
+#*----------------------------------------------------------------------
+* Model of a Steady State Dew flash
+*---------------------------------------------------------------------*# 
+Model dew_steady
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/Flash"; 
+	Brief 		= "Model of a Steady State flash.";
+	Info 		=
+"== Assumptions ==
+* both phases are perfectly mixed.
+	
+== Specify ==
+* the feed stream;
+* the outlet pressure (OutletV.P);
+* the outlet temperature OR the heat supplied.
+";
+	
+	PARAMETERS
+outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	
+	VARIABLES
+in	Inlet as stream(Brief="Feed Stream", PosX=0, PosY=0.5421, Symbol="_{in}");
+out	OutletL as liquid_stream(Brief="Liquid outlet stream", PosX=0.4790, PosY=1, Symbol="_{outL}");
+out	OutletV as vapour_stream(Brief="Vapour outlet stream", PosX=0.4877, PosY=0, Symbol="_{outV}");
+in	InletQ as energy_stream (Brief="Rate of heat supply", PosX=1, PosY=0.7559, Symbol="_{in}");
+	vfrac as fraction (Brief="Vapourization fraction", Symbol="\phi");
+	Pratio as positive	(Brief = "Pressure Ratio", Symbol ="P_{ratio}");	
+	Pdrop as press_delta (Brief = "Pressure Drop", DisplayUnit = 'kPa', Symbol ="\Delta P");
+
+	EQUATIONS
+	"The flash calculation"
+	PP.LiquidFugacityCoefficient(OutletL.T, OutletL.P, OutletL.z)*OutletL.z = 
+		PP.VapourFugacityCoefficient(OutletV.T, OutletV.P, OutletV.z)*OutletV.z;
+
+	"Component Molar Balance"
+	Inlet.z = OutletV.z;
+	sum(OutletL.z) = sum(OutletV.z);
+
+	"Global Molar Balance"
+	Inlet.F = OutletV.F + OutletL.F;
+	
+	"Vaporization Fraction"
+	OutletV.F = Inlet.F * vfrac;
+
+	"Energy Balance"
+	Inlet.F*Inlet.h  + InletQ.Q = OutletL.F*OutletL.h + OutletV.F*OutletV.h;
+	
+	"Thermal Equilibrium"
+	OutletV.T = OutletL.T;
+	
+	"Mechanical Equilibrium"
+	OutletV.P = OutletL.P;
+
+	"Pressure Drop"
+	OutletL.P  = Inlet.P - Pdrop;
+
+	"Pressure Ratio"
+	OutletL.P = Inlet.P * Pratio;
+	
+	"Vapor fraction"
+	vfrac = 1;
+end
+
+#*----------------------------------------------------------------------
+* Model of a Steady State flash
+*---------------------------------------------------------------------*# 
+Model flash_steady_full
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/Flash"; 
+	Brief 		= "Model of a Steady State flash.";
+	Info 		=
+"== Assumptions ==
+* both phases are perfectly mixed.
+	
+== Specify ==
+* the feed stream;
+* the outlet pressure (OutletV.P);
+* the outlet temperature OR the heat supplied.
+";
+	
+	PARAMETERS
+outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	
+	VARIABLES
+in	Inlet as stream(Brief="Feed Stream", PosX=0, PosY=0.5421, Symbol="_{in}");
+out	OutletL as liquid_stream(Brief="Liquid outlet stream", PosX=0.4790, PosY=1, Symbol="_{outL}");
+out	OutletV as vapour_stream(Brief="Vapour outlet stream", PosX=0.4877, PosY=0, Symbol="_{outV}");
+in	InletQ as energy_stream (Brief="Rate of heat supply", PosX=1, PosY=0.7559, Symbol="_{in}");
+	vfrac as fraction (Brief="Vapourization fraction", Symbol="\phi");
+	Pratio as positive	(Brief = "Pressure Ratio", Symbol ="P_{ratio}");	
+	Pdrop as press_delta (Brief = "Pressure Drop", DisplayUnit = 'kPa', Symbol ="\Delta P");
+
+	EQUATIONS
+	"The flash calculation"
+	PP.LiquidFugacityCoefficient(OutletL.T, OutletL.P, OutletL.z)*OutletL.z = 
+		PP.VapourFugacityCoefficient(OutletV.T, OutletV.P, OutletV.z)*OutletV.z;
+
+	"Component Molar Balance"
+	Inlet.F*Inlet.z = OutletL.F*OutletL.z + OutletV.F*OutletV.z;
+	sum(OutletL.z) = sum(OutletV.z);
+
+	"Global Molar Balance"
+	Inlet.F = OutletV.F + OutletL.F;
+	
+	"Vaporization Fraction"
+	OutletV.F = Inlet.F * vfrac;
+
+	"Energy Balance"
+	Inlet.F*Inlet.h  + InletQ.Q = OutletL.F*OutletL.h + OutletV.F*OutletV.h;
+	
+	"Thermal Equilibrium"
+	OutletV.T = OutletL.T;
+	
+	"Mechanical Equilibrium"
+	OutletV.P = OutletL.P;
+
+	"Pressure Drop"
+	OutletL.P  = Inlet.P - Pdrop;
+
+	"Pressure Ratio"
+	OutletL.P = Inlet.P * Pratio;
+end
+
+#*----------------------------------------------------------------------
+* Model of a Steady State flash
+*---------------------------------------------------------------------*# 
+Model flash_steady_bd
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/Flash"; 
+	Brief 		= "Model of a Steady State flash.";
+	Info 		=
+"== Assumptions ==
+* both phases are perfectly mixed.
+	
+== Specify ==
+* the feed stream;
+* the outlet pressure (OutletV.P);
+* the outlet temperature OR the heat supplied.
+";
+	
+	PARAMETERS
+outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+outer NComp as Integer;
+
+	VARIABLES
+in	Inlet as stream(Brief="Feed Stream", PosX=0, PosY=0.5421, Symbol="_{in}");
+out	OutletL as liquid_stream(Brief="Liquid outlet stream", PosX=0.4790, PosY=1, Symbol="_{outL}");
+out	OutletV as vapour_stream(Brief="Vapour outlet stream", PosX=0.4877, PosY=0, Symbol="_{outV}");
+in	InletQ as energy_stream (Brief="Rate of heat supply", PosX=1, PosY=0.7559, Symbol="_{in}");
+	vfrac as fraction (Brief="Vapourization fraction", Symbol="\phi");
+	Pratio as positive	(Brief = "Pressure Ratio", Symbol ="P_{ratio}");	
+	Pdrop as press_delta (Brief = "Pressure Drop", DisplayUnit = 'kPa', Symbol ="\Delta P");
+	T_dew as temperature (Brief="Dew-point Temperature");
+	T_bubble as temperature (Brief="Bubble-point Temperature");
+	x_dew(NComp) as fraction (Brief="Dew-point liquid composition");
+	y_bubble(NComp) as fraction (Brief="Bubble-point Vapour composition");
+
+	EQUATIONS
+	
+	if OutletL.T > T_bubble and OutletL.T < T_dew then
+	   "The flash calculation"
+		PP.LiquidFugacityCoefficient(OutletL.T, OutletL.P, OutletL.z)*OutletL.z = 
+		PP.VapourFugacityCoefficient(OutletV.T, OutletV.P, OutletV.z)*OutletV.z;
+
+	   "Composition constraint"
+		sum(OutletL.z) = sum(OutletV.z);
+
+	   "Component Molar Balance"
+		Inlet.F*Inlet.z = OutletL.F*OutletL.z + OutletV.F*OutletV.z;
+
+	else if OutletL.T <= T_bubble then
+			"Bubble-point result"
+			OutletL.z = Inlet.z;
+			OutletV.z = y_bubble;
+			vfrac = 0;
+		 else
+			"Dew-point result"
+			OutletL.z = x_dew;
+			OutletV.z = Inlet.z;
+			vfrac = 1;
+		 end
+	end
+
+	"Dew-point equations"
+	PP.LiquidFugacityCoefficient(T_dew, OutletL.P, x_dew)*x_dew = 
+		PP.VapourFugacityCoefficient(T_dew, OutletV.P, Inlet.z)*Inlet.z;
+	sum(x_dew) = 1;
+
+	"Bubble-point equations"
+	PP.LiquidFugacityCoefficient(T_bubble, OutletL.P, Inlet.z)*Inlet.z = 
+		PP.VapourFugacityCoefficient(T_bubble, OutletV.P, y_bubble)*y_bubble;
+	sum(y_bubble) = 1;
+
+	"Global Molar Balance"
+	Inlet.F = OutletV.F + OutletL.F;
+	
+	"Vaporization Fraction"
+	OutletV.F = Inlet.F * vfrac;
+
+	"Energy Balance"
+	Inlet.F*Inlet.h  + InletQ.Q = OutletL.F*OutletL.h + OutletV.F*OutletV.h;
+	
+	"Thermal Equilibrium"
+	OutletV.T = OutletL.T;
+	
+	"Mechanical Equilibrium"
+	OutletV.P = OutletL.P;
+
+	"Pressure Drop"
+	OutletL.P  = Inlet.P - Pdrop;
+
+	"Pressure Ratio"
+	OutletL.P = Inlet.P * Pratio;
+end
+
+
+#*----------------------------------------------------------------------
+* Model of a steady-state PH flash.
+*---------------------------------------------------------------------*# 
+Model FlashPHSteady
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/Flash"; 
+	Brief 		= "Model of a static PH flash.";
+	Info 		=
+"This model is for using the flashPH routine available on VRTherm.
+
+== Assumptions ==
+* perfect mixing of both phases;
+
+== Specify ==
+* the feed stream;
+* the heat duty;
+* the outlet pressure.
+";	
+
+	PARAMETERS
+outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+outer NComp as Integer;
+
+	VARIABLES
+in	Inlet as stream(Brief="Feed Stream", PosX=0, PosY=0.5421, Symbol="_{in}");
+out	OutletL as liquid_stream(Brief="Liquid outlet stream", PosX=0.4790, PosY=1, Symbol="_{outL}");
+out	OutletV as vapour_stream(Brief="Vapour outlet stream", PosX=0.4877, PosY=0, Symbol="_{outV}");
+in	InletQ as energy_stream (Brief="Rate of heat supply", PosX=1, PosY=0.7559, Symbol="_{in}");
+	vfrac as fraction(Brief="Vaporization fraction", Symbol="\phi");
+	h as enth_mol(Brief="Mixture enthalpy");
+	Pratio as positive (Brief = "Pressure Ratio", Symbol ="P_{ratio}");	
+	Pdrop as press_delta (Brief = "Pressure Drop", DisplayUnit = 'kPa', Symbol ="\Delta P");
+
+	EQUATIONS
+
+	"Chemical equilibrium"
+	[vfrac,OutletL.z,OutletV.z]=PP.FlashPH(OutletL.P,h,Inlet.z);
+
+	"Global Molar Balance"
+	Inlet.F = OutletV.F + OutletL.F;
+	OutletV.F = Inlet.F * vfrac;
+
+	"Energy Balance"
+	Inlet.F*(h - Inlet.h) = InletQ.Q;
+	Inlet.F*h = Inlet.F*(1-vfrac)*OutletL.h + Inlet.F*vfrac*OutletV.h;
+
+	"Thermal Equilibrium"
+	OutletV.T = OutletL.T;
+	
+	"Mechanical Equilibrium"
+	OutletV.P = OutletL.P;
+
+	"Pressure Drop"
+	OutletL.P  = Inlet.P - Pdrop;
+
+	"Pressure Ratio"
+	OutletL.P = Inlet.P * Pratio;
+end
+
+#*----------------------------------------------------------------------
+* Another model of a steady-state PH flash.
+* It is recommended to use [v,x,y]=PP.FlashPH(P,h,z) instead of.
+*---------------------------------------------------------------------*# 
+Model FlashPHSteadyA
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/Flash"; 
+	Brief 		= "Another model of a static PH flash.";
+	Info 		=
+"This model shows how to model a pressure enthalpy flash
+directly with the EMSO modeling language.
+
+This model is for demonstration purposes only, the flashPH
+routine available on VRTherm is much more robust.
+
+== Assumptions ==
+* perfect mixing of both phases;
+
+== Specify ==
+* the feed stream;
+* the heat duty;
+* the outlet pressure.
+";	
+	
+	PARAMETERS
+outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+outer NComp as Integer;
+	B as Real(Default=1000, Brief="Regularization Factor");
+
+	VARIABLES
+in	Inlet as stream(Brief="Feed Stream", PosX=0, PosY=0.5421, Symbol="_{in}");
+out	OutletL as liquid_stream(Brief="Liquid outlet stream", PosX=0.4790, PosY=1, Symbol="_{outL}");
+out	OutletV as vapour_stream(Brief="Vapour outlet stream", PosX=0.4877, PosY=0, Symbol="_{outV}");
+in	InletQ as energy_stream (Brief="Rate of heat supply", PosX=1, PosY=0.7559, Symbol="_{in}");
+	vfrac as fraction(Brief="Vaporization fraction", Symbol="\phi");
+	vsat as Real(Lower=-0.1, Upper=1.1, Brief="Vaporization fraction if saturated", Symbol="\phi_{sat}");
+	Tsat as temperature(Lower=173, Upper=1473, Brief="Temperature if saturated");
+	xsat(NComp) as Real(Lower=0, Upper=1, Brief="Liquid composition if saturated");
+	ysat(NComp) as Real(Lower=0, Upper=1, Brief="Vapour composition if saturated");
+	Pratio as positive (Brief = "Pressure Ratio", Symbol ="P_{ratio}");	
+	Pdrop as press_delta (Brief = "Pressure Drop", DisplayUnit = 'kPa', Symbol ="\Delta P");
+	
+	zero_one as fraction(Brief="Regularization Variable");
+	one_zero as fraction(Brief="Regularization Variable");
+
+	EQUATIONS
+	"Chemical equilibrium"
+	PP.LiquidFugacityCoefficient(Tsat, OutletL.P, xsat)*xsat = 
+		PP.VapourFugacityCoefficient(Tsat, OutletV.P, ysat)*ysat;
+
+	"Global Molar Balance"
+	Inlet.F = OutletV.F + OutletL.F;
+	OutletV.F = Inlet.F * vfrac;
+
+	"Component Molar Balance"
+	Inlet.F*Inlet.z = OutletL.F*xsat + OutletV.F*ysat;
+	sum(xsat) = sum(ysat);
+
+	"Energy Balance if saturated"
+	Inlet.F*Inlet.h  + InletQ.Q =
+		Inlet.F*(1-vsat)*PP.LiquidEnthalpy(Tsat, OutletL.P, xsat) +
+		Inlet.F*vsat*PP.VapourEnthalpy(Tsat, OutletV.P, ysat);
+
+	"Real Energy Balance"
+	Inlet.F*Inlet.h  + InletQ.Q =
+		Inlet.F*(1-vfrac)*OutletL.h + Inlet.F*vfrac*OutletV.h;
+
+	"Thermal Equilibrium"
+	OutletV.T = OutletL.T;
+	
+	"Mechanical Equilibrium"
+	OutletV.P = OutletL.P;
+
+	"Pressure Drop"
+	OutletL.P  = Inlet.P - Pdrop;
+
+	"Pressure Ratio"
+	OutletL.P = Inlet.P * Pratio;
+
+	# regularization functions
+	zero_one = (1 + tanh(B * vsat))/2;
+	one_zero = (1 - tanh(B * (vsat - 1)))/2;
+	
+	vfrac = zero_one * one_zero * vsat + 1 - one_zero;
+	OutletL.z = zero_one*one_zero*xsat + (1-zero_one*one_zero)*Inlet.z;
+	OutletV.z = zero_one*one_zero*ysat + (1-zero_one*one_zero)*Inlet.z;
+end

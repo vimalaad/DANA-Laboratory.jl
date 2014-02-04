@@ -1,0 +1,106 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*----------------------------------------------------------------------
+* Author: Gerson Balbueno Bicca 
+* $Id$
+*--------------------------------------------------------------------*#
+
+using "HEX_Engine.mso";
+
+Model Mheatex
+	
+ATTRIBUTES
+	Icon = "icon/Mheatex";
+	Pallete = true;
+	Brief = "Model of a Multistream heat exchangers";
+	Info 		=
+"Heat Transfer between multiple hot and cold streams.
+
+== Specify ==
+The user must specify the following variables:
+* The Inlet Hot streams: Any Number
+* The Inlet Cold streams: Any Number
+* The LMTD correction factor
+* The outlet temperature and the outlet pressure for each stream on one side (hot or cold) of the heat exchanger
+* On the other side the user must leave at least one unespecified outlet stream.
+
+== Setting The Mheatex Parameters ==
+* FlowDirection: counter or cocurrent flow
+* Number of hot streams (Nhot)
+* Number of cold streams (Ncold)
+";
+
+PARAMETERS
+
+outer PP 			as Plugin	(Brief="Physical Properties", Type="PP");
+outer NComp   		as Integer 	(Brief="Number of Components");	
+	FlowDirection	as Switcher	(Brief="Flow Direction",Valid=["counter","cocurrent"],Default="cocurrent");
+	Ncold   		as Integer	(Brief="Number of Inlet Cold Streams",Lower=1, Symbol = "N_{cold}");
+	Nhot    		as Integer	(Brief="Number of Inlet Hot Streams",Lower=1, Symbol = "N_{hot}");
+	
+VARIABLES
+
+in  InletHot(Nhot)  	as stream 	(Brief="Inlet Hot Streams", PosX=0, PosY=0.7156, Symbol="_{hot}^{in}");	
+out OutletHot(Nhot) 	as streamPH (Brief="Outlet Hot Streams", PosX=1, PosY=0.7156, Symbol="_{hot}^{out}");
+in  InletCold(Ncold)  	as stream 	(Brief="Inlet Cold Streams", PosX=1, PosY=0.2793, Symbol="_{cold}^{in}");
+out OutletCold(Ncold) 	as streamPH	(Brief="Outlet Cold Streams", PosX=0, PosY=0.2793, Symbol="_{cold}^{out}");
+
+	Method 	as LMTD_Basic	(Brief="Log Mean Temperature Difference Method", Symbol = " ");
+	Q    		as power	(Brief="Heat Transfer", Default=7000, Lower=1e-6, Upper=1e10);
+	UA      	as Real     (Brief="UA product",Unit='W/K',Lower=1e-8);
+	
+EQUATIONS
+
+"Hot Flow"
+	OutletHot.F = InletHot.F;	
+
+"Cold Flow"
+	OutletCold.F = InletCold.F;
+	
+"Hot Composition"
+	OutletHot.z = InletHot.z;
+	
+"Cold Composition"
+	OutletCold.z = InletCold.z;
+	
+"Heat Duty Hot Stream"
+	Q =  sum(InletHot.F*(InletHot.h- OutletHot.h));
+	
+"Heat Duty Cold Stream"
+	Q = -sum(InletCold.F*(InletCold.h- OutletCold.h));
+	
+"Heat Duty"
+	Q = UA*Method.LMTD*Method.Fc;
+
+switch FlowDirection
+	
+case	"cocurrent":
+
+"Temperature Difference at Inlet"
+	Method.DT0 = max(InletHot.T) - min(InletCold.T);
+
+"Temperature Difference at Outlet"
+	Method.DTL = min(OutletHot.T) - max(OutletCold.T);
+	
+case "counter":
+	
+"Temperature Difference at Inlet"
+	Method.DT0 = max(InletHot.T) - max(OutletCold.T);
+
+"Temperature Difference at Outlet"
+	Method.DTL = min(OutletHot.T) - min(InletCold.T);
+	
+end
+
+end

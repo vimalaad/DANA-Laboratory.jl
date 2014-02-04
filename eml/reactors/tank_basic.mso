@@ -1,0 +1,183 @@
+#*---------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*
+*----------------------------------------------------------------------
+* Model of a tank basic
+*----------------------------------------------------------------------
+*
+*   Description:
+*       Generic model for a dynamic tank.
+*
+*   Assumptions:
+*		* single- and two-phases involved
+*       * dynamic
+*
+*----------------------------------------------------------------------
+* Author: Rodolfo Rodrigues
+* $Id$
+*--------------------------------------------------------------------*#
+
+using "streams";
+using "vol_tank";
+
+
+Model tank_basic
+	ATTRIBUTES
+	Brief 	= "Basic model for a dynamic tank";
+	
+	PARAMETERS
+outer PP	as Plugin 	(Brief="External physical properties", Type="PP");
+outer NComp as Integer 	(Brief="Number of components", Default=1);
+	
+	VARIABLES
+in	Inlet 	as stream	(Brief="Inlet stream", PosX=0, PosY=0, Symbol="_{in}");
+	Outletm	as stream	(Brief="Intermediary outlet stream", Symbol="_{outm}", Hidden=true);
+	Tank	as vol_tank	(Brief="Routine to volume tank calculation", Symbol="_{tank}");
+	
+	M(NComp)as mol		(Brief="Component molar holdup", Protected=true);
+	Mt		as mol		(Brief="Total component molar holdup", Protected=true);
+	E		as energy	(Brief="Internal energy", Protected=true);
+	Q		as heat_rate(Brief="Reactor duty", Default=0);
+	
+	EQUATIONS
+	"Component molar balance"
+	diff(M) = Inlet.F*Inlet.z - Outletm.F*Outletm.z;
+	
+	"Component molar"
+	M = Mt*Outletm.z;
+	
+	"Mole fraction normalisation"
+	sum(Outletm.z) = 1;
+	
+	"Energy balance"
+	diff(E) = Inlet.F*Inlet.h - Outletm.F*Outletm.h + Q;
+end
+
+
+#*---------------------------------------------------------------------
+*	only vapour phase
+*--------------------------------------------------------------------*#
+Model tank_vap as tank_basic
+	ATTRIBUTES
+	Brief 	= "Model of a generic vapour-phase tank";
+	
+	EQUATIONS
+	"Vapourisation fraction"
+	Outletm.v = 1;
+
+	"Vapour Enthalpy"
+	Outletm.h = PP.VapourEnthalpy(Outletm.T,Outletm.P,Outletm.z);
+
+	"Volume constraint"
+	Tank.V = Mt*PP.VapourVolume(Outletm.T,Outletm.P,Outletm.z);
+
+	"Total internal energy"
+	E = Mt*Outletm.h;
+end
+
+
+#*---------------------------------------------------------------------
+*	only liquid phase
+*--------------------------------------------------------------------*#
+Model tank_liq as tank_basic
+	ATTRIBUTES
+	Brief 	= "Model of a generic liquid-phase tank";
+	
+	EQUATIONS
+	"Vapourisation fraction"
+	Outletm.v = 0;
+
+	"Liquid Enthalpy"
+	Outletm.h = PP.LiquidEnthalpy(Outletm.T,Outletm.P,Outletm.z);
+	
+	"Volume constraint"
+	Tank.V = Mt*PP.LiquidVolume(Outletm.T,Outletm.P,Outletm.z);
+	
+	"Total internal energy"
+	E = Mt*Outletm.h - Outletm.P*Tank.V;
+end
+
+
+#*---------------------------------------------------------------------
+*	liquid and vapour phases
+*--------------------------------------------------------------------*#
+Model tank_liqvap
+	ATTRIBUTES
+	Brief 	= "Model of a generic two-phase tank";
+	
+	PARAMETERS
+outer PP		as Plugin(Brief="External physical properties", Type="PP");
+outer NComp 	as Integer 	(Brief="Number of components", Default=1);
+
+	VARIABLES
+in	Inlet	 as stream			(Brief="Inlet stream", PosX=0, PosY=0, Symbol="_{in}");
+	OutletmL as liquid_stream	(Brief="Intermediary liquid outlet stream", Symbol="_{outmL}", Hidden=true);
+out	OutletV  as vapour_stream 	(Brief="Outlet vapour stream", Symbol="_{outV}");
+	Tank	 as vol_tank		(Brief="Routine to volume tank calculation", Symbol="_{tank}");
+	
+	M(NComp)as mol			(Brief="Component molar holdup", Protected=true);
+	ML 		as mol 			(Brief="Molar liquid holdup", Protected=true);
+	MV 		as mol 			(Brief="Molar vapour holdup", Protected=true);
+	E		as energy		(Brief="Internal energy", Protected=true);
+	Q		as heat_rate	(Brief="Reactor duty", Default=0);
+	vL 		as volume_mol 	(Brief="Liquid Molar Volume", Protected=true);
+	
+	EQUATIONS
+	"Component molar balance"
+	diff(M) = Inlet.F*Inlet.z - (OutletmL.F*OutletmL.z + OutletV.F*OutletV.z);
+
+	"Molar holdup"
+	M = ML*OutletmL.z + MV*OutletV.z;
+	
+	
+	"Mole fraction normalisation"
+	sum(OutletmL.z) = 1;
+	
+	"Mole fraction normalisation"
+	sum(OutletmL.z) = sum(OutletV.z);
+	
+	
+	"Vapourisation fraction"
+	OutletV.v = 1;
+	
+	"Vapourisation fraction"
+	OutletmL.v = 0;
+	
+	
+	"Energy balance"
+	diff(E) = Inlet.F*Inlet.h - (OutletmL.F*OutletmL.h + OutletV.F*OutletV.h) + Q;
+	
+	"Total internal energy"
+	E = ML*OutletmL.h + MV*OutletV.h;
+	
+	"Geometry constraint"
+	Tank.V = ML*vL + MV*PP.VapourVolume(OutletV.T,OutletV.P,OutletV.z);
+	
+	
+	"Chemical Equilibrium"
+	PP.LiquidFugacityCoefficient(OutletmL.T,OutletmL.P,OutletmL.z)*OutletmL.z = 
+		PP.VapourFugacityCoefficient(OutletV.T,OutletV.P,OutletV.z)*OutletV.z;
+	
+	"Mechanical Equilibrium"
+	OutletmL.P = OutletV.P;
+	
+	"Thermal Equilibrium"
+	OutletmL.T = OutletV.T;
+	
+	"Liquid Volume"
+	vL = PP.LiquidVolume(OutletmL.T,OutletmL.P,OutletmL.z);
+	
+	"Tank Level"
+	ML*vL = Tank.V;
+end

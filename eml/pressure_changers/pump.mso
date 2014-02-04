@@ -1,0 +1,333 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*
+*----------------------------------------------------------------------
+* Author: Andrey Copat, Estefane S. Horn, Marcos L. Alencastro
+* $Id$
+*--------------------------------------------------------------------*#
+
+using "streams";
+
+Model centrifugal_pump
+ATTRIBUTES
+
+	Pallete 	= true;
+
+	Icon 		= "icon/Pump"; 
+
+	Brief 		= "Model of a centrifugal pump.";
+
+	Info 		=
+
+"== Assumptions ==
+
+* Steady State;
+
+* Only Liquid;
+
+* Adiabatic;
+
+* Isentropic.
+
+";
+
+	
+
+PARAMETERS
+
+	outer PP			as Plugin			(Brief = "External Physical Properties", Type="PP");
+
+	outer NComp	as Integer			(Brief = "Number of chemical components", Lower = 1);
+
+	Mw(NComp) 		as molweight 	(Brief = "Molar Weight");
+
+	
+
+	PumpEfficiency		as positive 		(Brief = "Pump Efficiency", Default = 0.75, Lower=1E-3);
+
+	MechanicalEff 		as positive 		(Brief = "Mechanical efficiency", Default = 0.95, Lower=1E-3);
+
+	NPSH_Options       as Switcher		(Brief = "NPSH Options", Valid = ["Default","Include Kinetic Head"], Default = "Default");
+
+	g							as acceleration	(Brief = "Gravity Acceleration", Default = 9.81,Hidden = true);
+
+	SuctionArea			as area				(Brief = "Inlet Nozzle Suction Area", Default = 0.001);
+
+	
+
+VARIABLES
+
+	Fvol		  		as flow_vol		(Brief = "Volumetric Flow Rate" ,Protected=true);
+
+	Fw_in		  	as flow_mass	(Brief = "Inlet Mass Flow Rate" ,Protected=true);
+
+	Fw_out		  	as flow_mass	(Brief = "Outlet Mass Flow Rate", Protected=true);
+
+	rho_in			as dens_mass    (Brief = "Mass Density at inlet conditions", Lower = 1E-6, Protected=true);
+
+	rho_out			as dens_mass    (Brief = "Mass Density at outlet conditions", Lower = 1E-6, Protected=true);
+
+	Mwm 	 		as molweight	(Brief = "Mixture Molar Weight" ,Protected=true);
+
+	Pvapor		  	as pressure		(Brief = "Mixture Vapour Pressure" ,Protected=true);	
+
+	
+
+	FluidPower 	  as power			(Brief = "Fluid Power");
+
+	BrakePower 	 as power			(Brief = "Brake Power");
+
+	EletricPower 	  as power			(Brief = "Eletrical Potency");
+
+	
+
+	Pratio 	  	as positive		(Brief = "Pressure Ratio", Symbol ="P_{ratio}");	
+
+	Pdrop	  	as press_delta	(Brief = "Pressure Drop", DisplayUnit = 'kPa', Symbol ="\Delta P");
+
+	Pincrease	as press_delta	(Brief = "Pressure Increase",Lower = 0,  DisplayUnit = 'kPa', Symbol ="P_{incr}");
+
+	
+
+	StaticHead			as length				(Brief = "Static Head");
+
+	Head 					as energy_mass	(Brief = "Actual Head", Protected=true);
+
+	HeadIsentropic 		as energy_mass	(Brief = "Isentropic Head", Protected=true);
+
+	NPSH_available	  	as length				(Brief = "Available Net Positive Suction Head" ,Protected=true);
+
+
+
+	VelocityHead			as length			(Brief = "Velocity Head",Protected=true);
+
+	NozzleVelocity		as velocity			(Brief = "Velocity Inlet Nozzle",Hidden=true);
+
+
+
+	
+
+in		Inlet 	  	as stream			(Brief = "Inlet stream", PosX=0, PosY=0.4025, Symbol="_{in}");
+
+out	Outlet	as streamPH		(Brief = "Outlet stream", PosX=1, PosY=0.20, Symbol="_{out}");
+
+
+
+in 	WorkIn	as work_stream	(Brief = "Work Inlet", PosX=0.5, PosY=1, Protected=true);
+
+
+
+SET
+
+	Mw 	= PP.MolecularWeight();
+
+	g		= 9.81*'m/s^2';
+
+	
+
+EQUATIONS
+
+
+
+ "Velocity Inlet Nozzle"
+
+	Fvol = NozzleVelocity*SuctionArea;
+
+
+
+"Velocity Head"
+
+	VelocityHead = 0.5*NozzleVelocity^2/g;
+
+
+
+"Average Molecular Weight"
+
+	Mwm = sum(Mw*Inlet.z);
+
+
+
+"Mass Density at inlet conditions"
+
+	rho_in = PP.LiquidDensity(Inlet.T, Inlet.P, Inlet.z);
+
+
+
+"Mass Density at outlet conditions"
+
+	rho_out= PP.LiquidDensity(Outlet.T, Outlet.P, Outlet.z);
+
+
+
+"Inlet Flow Mass"
+
+	Fw_in	=  Mwm*Inlet.F;
+
+
+
+"Outlet Flow Mass"
+
+	Fw_out	=  Fw_in;
+
+	
+
+"Pressure Increase"
+
+	Outlet.P  = Inlet.P + Pincrease;
+
+	
+
+"Mixture Vapour Pressure"
+
+	Pvapor = PP.BubbleP(Inlet.T,Inlet.z); 
+
+	
+
+"Pressure Ratio"
+
+	Outlet.P = Inlet.P * Pratio;
+
+
+
+"Pressure Drop"
+
+	Outlet.P  = Inlet.P - Pdrop;
+
+
+
+"Isentropic Head"
+
+	HeadIsentropic = -Pdrop/rho_in;
+
+
+
+"Pump Efficiency"
+
+	Head = HeadIsentropic/PumpEfficiency; 
+
+	
+
+"Actual Head"
+
+	Head*Mwm = (Outlet.h-Inlet.h);
+
+	
+
+"Fluid Power"
+
+	FluidPower = HeadIsentropic *Mwm* Inlet.F;
+
+
+
+"Brake Power"
+
+	BrakePower * PumpEfficiency = FluidPower;
+
+
+
+"Eletric Power"
+
+	EletricPower = -WorkIn.Work;
+
+
+
+"Eletric Power"
+
+	BrakePower = EletricPower * MechanicalEff;
+
+	
+
+"Molar Balance"
+
+	Outlet.F = Inlet.F;
+
+
+
+"Outlet Composition"
+
+	Outlet.z = Inlet.z;
+
+
+
+"Volumetric Flow Rate"
+
+	Fvol = Fw_in/rho_in;
+
+
+
+switch NPSH_Options
+
+	
+
+	case "Default":
+
+	
+
+"Net Positive Suction Head Available - Without Velocity Head"
+
+	NPSH_available = (Inlet.P - Pvapor)/(rho_in*g) + StaticHead;	
+
+	
+
+	case "Include Kinetic Head":
+
+	
+
+"Net Positive Suction Head Available - Included Velocity Head"
+
+	NPSH_available = (Inlet.P - Pvapor)/(rho_in*g)+VelocityHead+StaticHead;
+
+
+end
+
+end
+
+#*-------------------------------------------------------------------
+* Model of a pump (simplified, used in distillation column model)
+*----------------------------------------------------------------------
+* Author: Paula B. Staudt
+*--------------------------------------------------------------------*#
+
+Model pump
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/Pump"; 
+	Brief 		= "Model of a simplified pump, used in distillation column model.";
+	Info 		=
+	"Specify: 
+	 * the inlet stream;
+	 * the pump press delta dP.
+	";
+	
+	PARAMETERS
+outer PP as Plugin (Brief = "External Physical Properties", Type="PP");
+outer NComp as Integer;
+	
+	VARIABLES
+in	Inlet 		as stream		(Brief = "Inlet stream", PosX=0, PosY=0.4727, Symbol="_{in}");
+out	Outlet 		as streamPH		(Brief = "Outlet stream", PosX=1, PosY=0.1859, Symbol="_{out}");
+	
+	dP as press_delta (Brief="Pump head");
+	
+	EQUATIONS
+	"Molar Balance"
+	Inlet.F = Outlet.F;
+	Inlet.z = Outlet.z;
+	
+	"Pump head"
+	Outlet.P = Inlet.P + dP;
+	
+	"FIXME: pump potency"
+	Outlet.h = Inlet.h;
+end

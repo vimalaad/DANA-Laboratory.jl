@@ -1,0 +1,966 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*--------------------------------------------------------------------
+* Author: Gerson Balbueno Bicca 
+* $Id: DoublePipeIncr.mso								$
+*------------------------------------------------------------------*#
+
+using "streams";
+
+Model Properties_Average
+	
+ATTRIBUTES
+	Pallete = false;
+	Brief = "Average incremental physical properties of the streams.";
+	Info =
+	"to be documented.";
+
+PARAMETERS
+
+outer N   			as Integer   	(Brief="Number of zones", Default = 2);
+
+VARIABLES
+	Mw				as molweight    		(Brief="Average Mol Weight",Default=75, Lower=1, Upper=1e8);
+	T(N)				as temperature  	(Brief="Average  Incremental Temperature",Lower=50);
+	P(N)				as pressure			(Brief="Average  Incremental Pressure",Default=1, Lower=1e-10, Upper=2e4, DisplayUnit='kPa');
+	rho(N)			as dens_mass			(Brief="Stream Incremental Density" ,Default=1000, Lower=1e-3, Upper=5e5, Symbol = "\rho");
+	Mu(N)			as viscosity				(Brief="Stream Incremental Viscosity",Lower=0.0001, Symbol = "\mu");
+	Cp(N)			as cp_mol				(Brief="Stream Incremental Molar Heat Capacity", Upper=1e10);
+	K(N)				as conductivity 		(Brief="Stream Incremental Thermal Conductivity", Default=1.0, Lower=1e-5, Upper=500);
+
+end
+
+Model Properties_In_Out
+	
+ATTRIBUTES
+	Pallete = false;
+	Brief = "Inlet and outlet physical properties of the streams.";
+	Info =
+	"to be documented.";
+	
+VARIABLES
+Fw		as flow_mass		(Brief="Stream Mass Flow");
+rho		as dens_mass		(Brief="Stream Density" ,Default=1000, Lower=1e-3, Upper=5e5, Symbol = "\rho");
+end
+
+Model Properties_Wall
+	
+ATTRIBUTES
+	Pallete = false;
+	Brief = "Incremental Physical properties of the streams at wall temperature.";
+	Info =
+	"to be documented.";
+
+PARAMETERS
+
+outer N   			as Integer   	(Brief="Number of zones", Default = 2);
+
+VARIABLES
+	Mu(N)			as viscosity			(Brief="Stream Incremental Viscosity",Default=1, Lower=1e-5, Upper=1e5, Symbol = "\mu");
+	Twall(N)   	as temperature	(Brief="Incremental Wall Temperature",Lower=50);
+
+end
+
+Model Physical_Properties
+	
+ATTRIBUTES
+	Pallete = false;
+	Brief = "to be documented";
+	Info =
+	"to be documented";
+	
+VARIABLES
+	Inlet  			as Properties_In_Out 	(Brief="Properties at Inlet Stream", Symbol = "^{in}");
+	Average 		as Properties_Average	(Brief="Properties at Average Temperature", Symbol = "^{avg}");
+	Outlet 		as Properties_In_Out		(Brief="Properties at Outlet Stream", Symbol = "^{out}");
+	Wall    			as Properties_Wall			(Brief="Properties at Wall Temperature", Symbol = "^{wall}");
+
+end
+
+Model Details_Main
+	
+ATTRIBUTES
+	Pallete = false;
+	Brief = "to be documented";
+	Info =
+	"to be documented";
+
+PARAMETERS
+
+outer N   			as Integer   	(Brief="Number of zones", Default = 2);
+
+VARIABLES
+	A 				as area							(Brief="Total Exchange Surface Area");
+	Q(N)	   	as power							(Brief="Incremental Duty", Default=7000, Lower=1e-6, Upper=1e10);
+	Qtotal	   	as power							(Brief="Total Duty", Default=7000, Lower=1e-6, Upper=1e10);
+	Uc(N) 		as heat_trans_coeff 		(Brief="Incremental Overall Heat Transfer Coefficient Clean",Default=1,Lower=1e-6,Upper=1e10);
+	Ud(N) 		as heat_trans_coeff 		(Brief="Incremental Overall Heat Transfer Coefficient Dirty",Default=1,Lower=1e-6,Upper=1e10);
+
+end
+
+Model DoublePipe_HeatTransfer
+	
+ATTRIBUTES
+	Pallete = false;
+	Brief = "to be documented";
+	Info =
+	"to be documented";
+
+PARAMETERS
+
+As	 		as area			(Brief="Cross Sectional Area for Flow",Default=0.05,Lower=1e-8);
+Dh  			as length		(Brief="Hydraulic Diameter of Pipe for Heat Transfer",Lower=1e-8);
+outer N   			as Integer   	(Brief="Number of zones", Default = 2);
+outer Npoints   	as Integer   	(Brief="Number of incremental points", Default = 3);
+
+VARIABLES
+
+Tlocal(Npoints)		as temperature  			(Brief="Incremental Local  Temperature",Lower=50);
+Re(N) 	  			as positive		  			(Brief="Incremental Reynolds Number",Default=100,Lower=1);
+hcoeff(N) 			as heat_trans_coeff 		(Brief="Incremental Film Coefficient",Default=1,Lower=1e-12, Upper=1e6, DisplayUnit = 'W/m^2/K');
+fi(N)      			as fricfactor					(Brief="Incremental Friction Factor", Default=0.05, Lower=1e-10, Upper=2000);
+Nu(N) 	  			as positive		  			(Brief="Incremental Nusselt Number",Default=0.5,Lower=1e-8);
+PR(N) 	  			as positive		  			(Brief="Incremental Prandtl Number",Default=0.5,Lower=1e-8);
+Phi(N)   			as positive		  			(Brief="Incremental Phi Correction",Default=1,Lower=1e-3);
+Vmean(N) 		as velocity		  			(Brief="Incremental Tube Velocity",Lower=1e-8);
+Enth(Npoints) 		as enth_mol 				(Brief="Incremental Stream Enthalpy");
+
+end
+
+Model DoublePipe_PressureDrop
+	
+ATTRIBUTES
+	Pallete = false;
+	Brief = "to be documented";
+	Info =
+	"to be documented";
+	
+PARAMETERS
+
+Dh  			as length		(Brief="Hydraulic Diameter of Pipe for Pressure Drop",Lower=1e-6);
+outer N   			as Integer   	(Brief="Number of zones", Default = 2);
+outer Npoints   	as Integer   	(Brief="Number of incremental points", Default = 3);
+
+VARIABLES
+
+Plocal(Npoints)		as pressure		(Brief="Incremental Local  Pressure",Default=1, Lower=1e-10, Upper=2e4, DisplayUnit='kPa');
+Pdrop						as press_delta	(Brief="Total Pressure Drop",Default=0.01, Lower=0,DisplayUnit='kPa', Symbol ="\Delta P");
+Pd_fric(Npoints)		as press_delta	(Brief="Incremental Pressure Drop for friction",Default=0.01, Lower=0,DisplayUnit='kPa', Symbol ="\Delta P_{fric}");
+fi(N)      					as fricfactor		(Brief="Incremental Friction Factor", Default=0.05, Lower=1e-10, Upper=2000);
+Re(N) 						as positive			(Brief="Incremental Reynolds Number",Default=100,Lower=1);
+Pdnozzle_in  		as press_delta		(Brief="Inlet Nozzle Pressure Drop",Default=0.01, Lower=0,DisplayUnit='kPa');
+Pdnozzle_out  		as press_delta		(Brief="Outlet Nozzle Pressure Drop",Default=0.01, Lower=0,DisplayUnit='kPa');
+Vnozzle_in  		as velocity			(Brief="Inlet Nozzle Velocity",Default=1, Upper=1e5, Lower=0);
+Vnozzle_out  		as velocity			(Brief="Outlet Nozzle Velocity",Default=1, Upper=1e5, Lower=0);
+RVsquare_in     	as positive 			(Brief = "Inlet Nozzle rho-V^2", Default=1, Upper=1e6, Unit = 'kg/s^2/m');
+RVsquare_out    	as positive 			(Brief = "Outlet Nozzle rho-V^2", Default=1, Upper=1e6, Unit = 'kg/s^2/m');
+end	
+
+Model Main_DoublePipe
+	
+ATTRIBUTES
+	Pallete = false;
+	Brief = "to be documented";
+	Info =
+	"to be documented";
+	
+VARIABLES
+
+HeatTransfer 	as DoublePipe_HeatTransfer 	(Brief="Double Pipe Heat Transfer");
+PressureDrop 	as DoublePipe_PressureDrop 	(Brief="Double Pipe Pressure Drop");
+Properties   		as Physical_Properties   			(Brief="Double Pipe Properties");
+
+end
+
+Model DoublePipeIncr
+
+ATTRIBUTES
+	Pallete 	= true;
+	Icon = "icon/DoublePipe";
+	Brief 		= "Incremental Double Pipe Heat Exchanger. ";
+	Info 			=
+	"Incremental approach for a single double pipe heat exchanger. ";
+
+PARAMETERS
+
+outer PP 	    	as Plugin		(Brief="External Physical Properties", Type="PP");
+outer NComp   	as Integer   	(Brief="Number of Components");
+	N   			as Integer   	(Brief="Number of zones", Default = 2);
+ Npoints   	as Integer   	(Brief="Number of incremental points", Default = 3);
+
+	CalculationApproach			 	as Switcher		(Brief="Options for convergence Calculations ",Valid=["Simplified","Full"],Default="Full");
+	Qestimated								as power				(Brief="Estimated Duty", Default=70, Lower=1e-6, Upper=1e10);
+	
+	M(NComp)  	as molweight 	(Brief="Component Mol Weight");
+	
+	FlowDirection 	as Switcher	(Brief="Flow Direction",Valid=["counter","cocurrent"],Default="cocurrent");
+	
+	HotSide			 		as Switcher	(Brief="Flag for Fluid Alocation ",Valid=["outer","inner"],Default="outer");
+	innerFlowRegime 	as Switcher	(Brief="Inner Flow Regime ",Valid=["laminar","transition","turbulent"],Default="laminar");
+	outerFlowRegime 	as Switcher	(Brief="Outer Flow Regime ",Valid=["laminar","transition","turbulent"],Default="laminar");
+
+	InnerLaminarCorrelation  	as Switcher	(Brief="Heat Transfer Correlation in Laminar Flow for the Inner Side",Valid=["Hausen","Schlunder"],Default="Hausen");
+	InnerTransitionCorrelation  as Switcher		(Brief="Heat Transfer Correlation in Transition Flow for the Inner Side",Valid=["Gnielinski","Hausen"],Default="Gnielinski");
+	InnerTurbulentCorrelation   as Switcher	(Brief="Heat Transfer Correlation in Turbulent Flow for the Inner Side",Valid=["Petukhov","SiederTate"],Default="Petukhov");
+
+	OuterLaminarCorrelation  	as Switcher		(Brief="Heat Transfer Correlation in Laminar Flow for the Outer Side",Valid=["Hausen","Schlunder"],Default="Hausen");
+	OuterTransitionCorrelation  as Switcher		(Brief="Heat Transfer Correlation in Transition Flow for the OuterSide",Valid=["Gnielinski","Hausen"],Default="Gnielinski");
+	OuterTurbulentCorrelation   as Switcher		(Brief="Heat Transfer Correlation in Turbulent Flow for the Outer Side",Valid=["Petukhov","SiederTate"],Default="Petukhov");
+
+	Pi				as constant 		(Brief="Pi Number",Default=3.14159265, Symbol = "\pi");
+	DoInner 	as length			(Brief="Outside Diameter of Inner Pipe",Lower=1e-6);
+	DiInner	as length			(Brief="Inside Diameter of Inner Pipe",Lower=1e-10);
+	DiOuter	as length			(Brief="Inside Diameter of Outer pipe",Lower=1e-10);
+	Lpipe		as length			(Brief="Effective Tube Length of one segment of Pipe",Lower=0.1, Symbol = "L_{pipe}");
+	Kwall		as conductivity 	(Brief="Tube Wall Material Thermal Conductivity",Default=1.0, Symbol = "K_{wall}");
+	Rfi			as positive			(Brief="Inside Fouling Resistance",Unit='m^2*K/kW',Default=1e-6,Lower=0);
+	Rfo			as positive			(Brief="Outside Fouling Resistance",Unit='m^2*K/kW',Default=1e-6,Lower=0);
+
+Donozzle_Inner  	as length		(Brief="Inner Side Outlet Nozzle Diameter",Default = 0.036,Lower=10e-6);
+Dinozzle_Inner  	as length		(Brief="Inner Side Inlet Nozzle Diameter",Default = 0.036,Lower=10e-6);
+
+Donozzle_Outer  	as length		(Brief="Outer Side Outlet Nozzle Diameter",Default = 0.036,Lower=10e-6);
+Dinozzle_Outer 	as length		(Brief="Outer Side Inlet Nozzle Diameter",Default = 0.036,Lower=10e-6);
+
+InnerKinlet   		as positive			(Brief="Inner Side Inlet Nozzle Pressure Loss Coeff",Default=1.1);
+InnerKoutlet  	as positive			(Brief="Inner Side Outlet Nozzle Pressure Loss Coeff",Default=0.7);
+
+OuterKinlet   		as positive			(Brief="Outer Side Inlet Nozzle Pressure Loss Coeff",Default=1.1);
+OuterKoutlet  	as positive			(Brief="Outer Side Outlet Nozzle Pressure Loss Coeff",Default=0.7);
+
+VARIABLES
+
+in  InletInner	   	as stream 		(Brief="Inlet Inner Stream", PosX=0, PosY=0.5225, Symbol="_{inInner}");	
+in  InletOuter	   	as stream 		(Brief="Inlet Outer Stream", PosX=0.2805, PosY=0, Symbol="_{inOuter}");
+
+out OutletInner    	as streamPH 	(Brief="Outlet Inner Stream", PosX=1, PosY=0.5225, Symbol="_{outInner}");
+out OutletOuter    	as streamPH 	(Brief="Outlet Outer Stream", PosX=0.7264, PosY=1, Symbol="_{outOuter}");
+
+	Details     	as Details_Main			(Brief="Some Details in the Heat Exchanger", Symbol=" ");
+	Inner 			as Main_DoublePipe	(Brief="Inner Side of the Heat Exchanger", Symbol="_{Inner}");
+	Outer 			as Main_DoublePipe	(Brief="Outer Side of the Heat Exchanger", Symbol="_{Outer}");
+
+	Lincr(Npoints) 		as length 		(Brief = "Incremental Tube Length", Symbol = "L_{incr}");
+
+SET
+
+#"Number of incremental points"
+	Npoints  = N+1;
+
+#"Component Molecular Weight"
+	M  = PP.MolecularWeight();
+
+#"Pi Number"
+	Pi  	= 3.14159265;
+
+#"Inner Pipe Cross Sectional Area for Flow"
+	Inner.HeatTransfer.As=0.25*Pi*DiInner*DiInner;
+
+#"Outer Pipe Cross Sectional Area for Flow"
+	Outer.HeatTransfer.As=0.25*Pi*(DiOuter*DiOuter - DoInner*DoInner);
+
+#"Inner Pipe Hydraulic Diameter for Heat Transfer"
+	Inner.HeatTransfer.Dh=DiInner;
+	
+#"Outer Pipe Hydraulic Diameter for Heat Transfer"
+	Outer.HeatTransfer.Dh=(DiOuter*DiOuter-DoInner*DoInner)/DoInner;
+
+#"Inner Pipe Hydraulic Diameter for Pressure Drop"
+	Inner.PressureDrop.Dh=DiInner;
+	
+#"Outer Pipe Hydraulic Diameter for Pressure Drop"
+	Outer.PressureDrop.Dh=DiOuter-DoInner;
+
+EQUATIONS
+
+"Outer	Stream Average Temperature"
+	Outer.Properties.Average.T(1:N) = 0.5*Outer.HeatTransfer.Tlocal(1:N) + 0.5*Outer.HeatTransfer.Tlocal(2:Npoints);
+
+"Inner Stream Average Temperature"
+	Inner.Properties.Average.T(1:N)  = 0.5*Inner.HeatTransfer.Tlocal(1:N) + 0.5*Inner.HeatTransfer.Tlocal(2:Npoints);
+	
+"Outer Stream Average Pressure"
+	Outer.Properties.Average.P(1:N) = 0.5*Outer.PressureDrop.Plocal(1:N) + 0.5*Outer.PressureDrop.Plocal(2:Npoints);
+	
+"Inner Stream Average Pressure"
+	Inner.Properties.Average.P(1:N) = 0.5*Inner.PressureDrop.Plocal(1:N) + 0.5*Inner.PressureDrop.Plocal(2:Npoints);
+
+"Inner Stream Wall Temperature"
+	Inner.Properties.Wall.Twall =   0.5*Outer.Properties.Average.T + 0.5*Inner.Properties.Average.T;
+
+"Outer Stream Wall Temperature"
+	Outer.Properties.Wall.Twall =   0.5*Outer.Properties.Average.T + 0.5*Inner.Properties.Average.T;
+
+"Outer Stream Average Molecular Weight"
+	Outer.Properties.Average.Mw = sum(M*InletOuter.z);
+
+"Inner Stream Average Molecular Weight"
+	Inner.Properties.Average.Mw = sum(M*InletInner.z);
+
+
+if InletInner.v equal 0
+
+then
+"Inlet Mass Density Inner Stream"
+	Inner.Properties.Inlet.rho 		= 	PP.LiquidDensity(InletInner.T,InletInner.P,InletInner.z);
+
+"Outlet Mass Density Inner Stream"
+	Inner.Properties.Outlet.rho 	= 	PP.LiquidDensity(OutletInner.T,OutletInner.P,OutletInner.z);
+
+else
+"Inlet Mass Density Inner Stream"
+	Inner.Properties.Inlet.rho 		=	PP.VapourDensity(InletInner.T,InletInner.P,InletInner.z);
+	
+"Outlet Mass Density Inner Stream"
+	Inner.Properties.Outlet.rho 	=	PP.VapourDensity(OutletInner.T,OutletInner.P,OutletInner.z);
+
+end
+
+if InletOuter.v equal 0
+
+then
+"Inlet Mass Density Outer Stream"
+	Outer.Properties.Inlet.rho 		=		PP.LiquidDensity(InletOuter.T,InletOuter.P,InletOuter.z);
+
+"Outlet Mass Density Outer Stream"
+	Outer.Properties.Outlet.rho 	=		PP.LiquidDensity(OutletOuter.T,OutletOuter.P,OutletOuter.z);
+
+else
+"Inlet Mass Density Outer Stream"
+	Outer.Properties.Inlet.rho 		=		PP.VapourDensity(InletOuter.T,InletOuter.P,InletOuter.z);
+	
+"Outlet Mass Density Outer Stream"
+	Outer.Properties.Outlet.rho 	=		PP.VapourDensity(OutletOuter.T,OutletOuter.P,OutletOuter.z);
+
+end
+
+for i in [1:N]
+
+if InletInner.v equal 0
+	
+	then	
+
+"Average Heat Capacity Inner Stream"
+	Inner.Properties.Average.Cp(i) 	= 	PP.LiquidCp(Inner.Properties.Average.T(i),Inner.Properties.Average.P(i),InletInner.z);
+
+"Average Mass Density Inner Stream"
+	Inner.Properties.Average.rho(i) 	= 	PP.LiquidDensity(Inner.Properties.Average.T(i),Inner.Properties.Average.P(i),InletInner.z);
+
+"Average Viscosity Inner Stream"
+	Inner.Properties.Average.Mu(i) 	= 	PP.LiquidViscosity(Inner.Properties.Average.T(i),Inner.Properties.Average.P(i),InletInner.z);
+
+"Average	Conductivity Inner Stream"
+	Inner.Properties.Average.K(i)	 	= 	PP.LiquidThermalConductivity(Inner.Properties.Average.T(i),Inner.Properties.Average.P(i),InletInner.z);
+
+"Viscosity Inner Stream at wall temperature"
+	Inner.Properties.Wall.Mu(i) 		= 	PP.LiquidViscosity(Inner.Properties.Wall.Twall(i),Inner.Properties.Average.P(i),InletInner.z);
+
+	else
+
+"Average Heat Capacity InnerStream"
+	Inner.Properties.Average.Cp(i) 	=	PP.VapourCp(Inner.Properties.Average.T(i),Inner.Properties.Average.P(i),InletInner.z);
+
+"Average Mass Density Inner Stream"
+	Inner.Properties.Average.rho(i) 	=	PP.VapourDensity(Inner.Properties.Average.T(i),Inner.Properties.Average.P(i),InletInner.z);
+
+"Average Viscosity Inner Stream"
+	Inner.Properties.Average.Mu(i) 	=	PP.VapourViscosity(Inner.Properties.Average.T(i),Inner.Properties.Average.P(i),InletInner.z);
+
+"Average Conductivity Inner Stream"
+	Inner.Properties.Average.K(i) 		= 	PP.VapourThermalConductivity(Inner.Properties.Average.T(i),Inner.Properties.Average.P(i),InletInner.z);
+
+"Viscosity Inner Stream at wall temperature"
+	Inner.Properties.Wall.Mu(i) 		=	PP.VapourViscosity(Inner.Properties.Wall.Twall(i),Inner.Properties.Average.P(i),InletInner.z);
+
+end
+
+if InletOuter.v equal 0
+
+	then
+
+"Average Heat Capacity Outer Stream"
+	Outer.Properties.Average.Cp(i) 	=		PP.LiquidCp(Outer.Properties.Average.T(i),Outer.Properties.Average.P(i),InletOuter.z);
+
+"Average Mass Density Outer Stream"
+	Outer.Properties.Average.rho(i) =		PP.LiquidDensity(Outer.Properties.Average.T(i),Outer.Properties.Average.P(i),InletOuter.z);
+
+"Average Viscosity Outer Stream"
+	Outer.Properties.Average.Mu(i) 	=		PP.LiquidViscosity(Outer.Properties.Average.T(i),Outer.Properties.Average.P(i),InletOuter.z);	
+
+"Average Conductivity Outer Stream"
+	Outer.Properties.Average.K(i) 	=		PP.LiquidThermalConductivity(Outer.Properties.Average.T(i),Outer.Properties.Average.P(i),InletOuter.z);	
+
+"Viscosity Outer Stream at wall temperature"
+	Outer.Properties.Wall.Mu(i) 		=		PP.LiquidViscosity(Outer.Properties.Wall.Twall(i),Outer.Properties.Average.P(i),InletOuter.z);	
+
+
+	else
+
+"Average Heat Capacity Outer Stream"
+	Outer.Properties.Average.Cp(i) 	=		PP.VapourCp(Outer.Properties.Average.T(i),Outer.Properties.Average.P(i),InletOuter.z);
+
+"Average Mass Density Outer Stream"
+	Outer.Properties.Average.rho(i) =		PP.VapourDensity(Outer.Properties.Average.T(i),Outer.Properties.Average.P(i),InletOuter.z);
+
+"Average Viscosity Outer Stream"
+	Outer.Properties.Average.Mu(i) 	=		PP.VapourViscosity(Outer.Properties.Average.T(i),Outer.Properties.Average.P(i),InletOuter.z);
+
+"Average Conductivity Outer Stream"
+	Outer.Properties.Average.K(i) 	=		PP.VapourThermalConductivity(Outer.Properties.Average.T(i),Outer.Properties.Average.P(i),InletOuter.z);	
+
+"Viscosity Outer Stream at wall temperature"
+	Outer.Properties.Wall.Mu(i) 		=		PP.VapourViscosity(Outer.Properties.Wall.Twall(i),Outer.Properties.Average.P(i),InletOuter.z);
+
+end
+
+end
+
+switch HotSide
+
+	case "outer":
+
+switch FlowDirection
+
+	case "cocurrent":
+	"Energy Balance Outer Stream in cocurrent flow"
+		Details.Q(1:N) = InletOuter.F*(Outer.HeatTransfer.Enth(1:N) - Outer.HeatTransfer.Enth(2:Npoints));
+		
+	case "counter":
+	"Energy Balance Outer Stream in counter flow"
+		Details.Q(1:N) = InletOuter.F*(Outer.HeatTransfer.Enth(2:Npoints) - Outer.HeatTransfer.Enth(1:N));
+		
+end
+
+"Energy Balance Inner Stream"
+	Details.Q(1:N) = -InletInner.F*(Inner.HeatTransfer.Enth(1:N)	-	Inner.HeatTransfer.Enth(2:Npoints));
+
+	when InletInner.T > InletOuter.T switchto "inner";
+
+	case "inner":
+
+"Energy Balance Hot Stream"
+	Details.Q(1:N) = InletInner.F*(Inner.HeatTransfer.Enth(1:N)-Inner.HeatTransfer.Enth(2:Npoints));
+
+switch FlowDirection
+
+	case "cocurrent":
+	"Energy Balance Cold Stream in cocurrent flow"
+		Details.Q(1:N) = -InletOuter.F*(Outer.HeatTransfer.Enth(1:N) - Outer.HeatTransfer.Enth(2:Npoints));
+		
+	case "counter":
+	"Energy Balance Cold Stream in counter flow"
+		Details.Q(1:N) = -InletOuter.F*(Outer.HeatTransfer.Enth(2:Npoints) - Outer.HeatTransfer.Enth(1:N));
+		
+end
+
+	when InletInner.T < InletOuter.T switchto "outer";
+
+end
+
+"Flow Mass Inlet Inner Stream"
+	Inner.Properties.Inlet.Fw		=  sum(M*InletInner.z)*InletInner.F;
+
+"Flow Mass Outlet Inner Stream"
+	Inner.Properties.Outlet.Fw		=  sum(M*OutletInner.z)*OutletInner.F;
+
+"Flow Mass Inlet Outer Stream"
+	Outer.Properties.Inlet.Fw		=  sum(M*InletOuter.z)*InletOuter.F;
+
+"Flow Mass Outlet Outer Stream"	
+	Outer.Properties.Outlet.Fw	=  sum(M*OutletOuter.z)*OutletOuter.F;
+
+"Molar Balance Outer Stream"
+	OutletOuter.F = InletOuter.F;
+	
+"Molar Balance Inner Stream"
+	OutletInner.F = InletInner.F;
+
+"Outer Stream Molar Fraction Constraint"
+	OutletOuter.z=InletOuter.z;
+	
+"InnerStream Molar Fraction Constraint"
+	OutletInner.z=InletInner.z;
+
+"Total Exchange Surface Area for one segment of pipe"
+	Details.A=Pi*DoInner*Lpipe;
+
+"Pipe Initial Length from Left to Right - OBS: Left: Always Inlet inner side"
+	Lincr(1) = 0*'m';
+
+for i in [1:N]
+
+"Incremental Length"
+	Lincr(i+1) = i*abs(Lpipe)/N;
+
+end
+
+for i in [1:N]
+
+switch innerFlowRegime
+	
+	case "laminar":
+	
+"Inner Side Friction Factor for Pressure Drop - laminar Flow"
+	Inner.PressureDrop.fi(i)*Inner.PressureDrop.Re(i) = 16;
+	
+	when Inner.PressureDrop.Re(i) > 2300 switchto "transition";
+
+	case "transition":
+	
+"using Turbulent Flow - to be implemented" 
+	(Inner.PressureDrop.fi(i)-0.0035)*(Inner.PressureDrop.Re(i)^0.42) = 0.264;
+
+	when Inner.PressureDrop.Re(i) < 2300 switchto "laminar";
+	when Inner.PressureDrop.Re(i) > 10000 switchto "turbulent";
+
+	case "turbulent":
+
+"Inner Side Friction Factor - Turbulent Flow"
+	(Inner.PressureDrop.fi(i)-0.0035)*(Inner.PressureDrop.Re(i)^0.42) = 0.264;
+
+	when Inner.PressureDrop.Re(i) < 10000 switchto "transition";
+	
+end	
+
+end
+
+for i in [1:N]
+
+switch outerFlowRegime
+	
+	case "laminar":
+	
+"Outer Side Friction Factor - laminar Flow"
+	Outer.PressureDrop.fi(i)*Outer.PressureDrop.Re(i) = 16;
+	
+	when Outer.PressureDrop.Re(i) > 2300 switchto "transition";
+
+	case "transition":
+	
+"using Turbulent Flow - Transition Flow must be implemented" 
+	(Outer.PressureDrop.fi(i)-0.0035)*(Outer.PressureDrop.Re(i)^0.42) = 0.264;
+
+	when Outer.PressureDrop.Re(i) < 2300 switchto "laminar";
+	when Outer.PressureDrop.Re(i) > 10000 switchto "turbulent";
+
+	case "turbulent":
+
+"Outer Side Friction Factor - Turbulent Flow"
+	(Outer.PressureDrop.fi(i)-0.0035)*(Outer.PressureDrop.Re(i)^0.42) = 0.264;
+
+	when Outer.PressureDrop.Re(i) < 10000 switchto "transition";
+	
+end
+
+end
+
+for i in [1:N]
+
+switch innerFlowRegime
+	
+	case "laminar":
+	
+"Inner Side Friction Factor for Heat Transfer - laminar Flow"
+	Inner.HeatTransfer.fi(i)   = 1/(0.79*ln(Inner.HeatTransfer.Re(i))-1.64)^2;
+	
+switch InnerLaminarCorrelation
+	
+	case "Hausen":
+
+"Nusselt Number"
+	Inner.HeatTransfer.Nu(i) = 3.665 + ((0.19*((DiInner/Lpipe)*Inner.HeatTransfer.Re(i)*Inner.HeatTransfer.PR(i))^0.8)/(1+0.117*((DiInner/Lpipe)*Inner.HeatTransfer.Re(i)*Inner.HeatTransfer.PR(i))^0.467));
+	
+	case "Schlunder":
+
+"Nusselt Number"
+	Inner.HeatTransfer.Nu(i) = (49.027896+4.173281*Inner.HeatTransfer.Re(i)*Inner.HeatTransfer.PR(i)*(DiInner/Lpipe))^(1/3);
+
+end
+	
+	when Inner.HeatTransfer.Re(i) > 2300 switchto "transition";
+	
+	case "transition":
+	
+"Inner Side Friction Factor for Heat Transfer - transition Flow"
+	Inner.HeatTransfer.fi(i)   = 1/(0.79*ln(Inner.HeatTransfer.Re(i))-1.64)^2;
+	
+switch InnerTransitionCorrelation
+	
+	case "Gnielinski":
+	
+"Nusselt Number"
+	Inner.HeatTransfer.Nu(i)*(1+(12.7*sqrt(0.125*Inner.HeatTransfer.fi(i))*((Inner.HeatTransfer.PR(i))^(2/3) -1))) = 0.125*Inner.HeatTransfer.fi(i)*(Inner.HeatTransfer.Re(i)-1000)*Inner.HeatTransfer.PR(i);
+
+	case "Hausen":
+
+"Nusselt Number"
+	Inner.HeatTransfer.Nu(i) =0.116*(Inner.HeatTransfer.Re(i)^(0.667)-125)*Inner.HeatTransfer.PR(i)^(0.333)*(1+(DiInner/Lpipe)^0.667);
+	
+end
+
+	when Inner.HeatTransfer.Re(i) < 2300 switchto "laminar";
+	when Inner.HeatTransfer.Re(i) > 10000 switchto "turbulent";
+
+	case "turbulent":
+
+switch InnerTurbulentCorrelation
+	
+	case "Petukhov":
+	
+"Inner Side Friction Factor for Heat Transfer - turbulent Flow"
+	Inner.HeatTransfer.fi(i)   = 1/(1.82*log(Inner.HeatTransfer.Re(i))-1.64)^2;
+
+"Nusselt Number"
+	Inner.HeatTransfer.Nu(i)*(1.07+(12.7*sqrt(0.125*Inner.HeatTransfer.fi(i))*((Inner.HeatTransfer.PR(i))^(2/3) -1))) = 0.125*Inner.HeatTransfer.fi(i)*Inner.HeatTransfer.Re(i)*Inner.HeatTransfer.PR(i);
+	
+	case "SiederTate":
+
+"Nusselt Number"
+	Inner.HeatTransfer.Nu(i) = 0.027*(Inner.HeatTransfer.PR(i))^(1/3)*(Inner.HeatTransfer.Re(i))^(4/5);
+
+"Inner Side Friction Factor for Heat Transfer - turbulent Flow"
+	Inner.HeatTransfer.fi(i)   = 1/(1.82*log(Inner.HeatTransfer.Re(i))-1.64)^2;
+	
+end
+	
+	when Inner.HeatTransfer.Re(i) < 10000 switchto "transition";
+	
+end
+
+end
+
+for i in [1:N]
+
+switch outerFlowRegime
+	
+	case "laminar":
+	
+"Outer Side Friction Factor for Heat Transfer - laminar Flow"
+	Outer.HeatTransfer.fi(i)   = 1/(0.79*ln(Outer.HeatTransfer.Re(i))-1.64)^2;
+	
+switch OuterLaminarCorrelation
+	
+	case "Hausen":
+
+"Nusselt Number"
+	Outer.HeatTransfer.Nu(i) = 3.665 + ((0.19*((Outer.HeatTransfer.Dh/Lpipe)*Outer.HeatTransfer.Re(i)*Outer.HeatTransfer.PR(i))^0.8)/(1+0.117*((Outer.HeatTransfer.Dh/Lpipe)*Outer.HeatTransfer.Re(i)*Outer.HeatTransfer.PR(i))^0.467));
+	
+	case "Schlunder":
+
+"Nusselt Number"
+	Outer.HeatTransfer.Nu(i) = (49.027896+4.173281*Outer.HeatTransfer.Re(i)*Outer.HeatTransfer.PR(i)*(Outer.HeatTransfer.Dh/Lpipe))^(1/3);
+
+end
+	
+	when Outer.HeatTransfer.Re(i) > 2300 switchto "transition";
+	
+	case "transition":
+	
+switch OuterTransitionCorrelation
+	
+	case "Gnielinski":
+
+"Outer Side Friction Factor for Heat Transfer - transition Flow"
+	Outer.HeatTransfer.fi(i)   = 1/(0.79*ln(Outer.HeatTransfer.Re(i))-1.64)^2;
+
+"Nusselt Number"
+	Outer.HeatTransfer.Nu(i)*(1+(12.7*sqrt(0.125*Outer.HeatTransfer.fi(i))*((Outer.HeatTransfer.PR(i))^(2/3) -1))) = 0.125*Outer.HeatTransfer.fi(i)*(Outer.HeatTransfer.Re(i)-1000)*Outer.HeatTransfer.PR(i);
+
+	case "Hausen":
+
+"Nusselt Number"
+	Outer.HeatTransfer.Nu(i) =	0.116*(Outer.HeatTransfer.Re(i)^(0.667)-125)*Outer.HeatTransfer.PR(i)^(0.333)*(1+(Outer.HeatTransfer.Dh/Lpipe)^0.667);
+
+
+"Outer Side Friction Factor for Heat Transfer - transition Flow"
+	Outer.HeatTransfer.fi(i)   = 1/(0.79*ln(Outer.HeatTransfer.Re(i))-1.64)^2;
+	
+end
+	
+	when Outer.HeatTransfer.Re(i) < 2300 switchto "laminar";
+	when Outer.HeatTransfer.Re(i) > 10000 switchto "turbulent";
+	
+	case "turbulent":
+	
+switch OuterTurbulentCorrelation
+	
+	case "Petukhov":
+
+"Outer Side Friction Factor for Heat Transfer - turbulent Flow"
+	Outer.HeatTransfer.fi(i)   = 1/(1.82*log(Outer.HeatTransfer.Re(i))-1.64)^2;
+	
+"Nusselt Number"
+	Outer.HeatTransfer.Nu(i)*(1.07+(12.7*sqrt(0.125*Outer.HeatTransfer.fi(i))*((Outer.HeatTransfer.PR(i))^(2/3) -1))) = 0.125*Outer.HeatTransfer.fi(i)*Outer.HeatTransfer.Re(i)*Outer.HeatTransfer.PR(i);
+	
+	case "SiederTate":
+
+"Nusselt Number"
+	Outer.HeatTransfer.Nu(i) = 0.027*(Outer.HeatTransfer.PR(i))^(1/3)*(Outer.HeatTransfer.Re(i))^(4/5);
+
+"Outer Side Friction Factor for Heat Transfer - turbulent Flow"
+	Outer.HeatTransfer.fi(i)   = 1/(1.82*log(Outer.HeatTransfer.Re(i))-1.64)^2;
+	
+end
+
+	when Outer.HeatTransfer.Re(i) < 10000 switchto "transition";
+
+end
+
+end
+
+"Inner Pipe Film Coefficient"
+	Inner.HeatTransfer.hcoeff = (Inner.HeatTransfer.Nu*Inner.Properties.Average.K/DiInner)*Inner.HeatTransfer.Phi;
+
+"Outer Pipe Film Coefficient"
+	Outer.HeatTransfer.hcoeff= (Outer.HeatTransfer.Nu*Outer.Properties.Average.K/Outer.HeatTransfer.Dh)*Outer.HeatTransfer.Phi;
+
+"Outer Pipe Phi correction"
+	Outer.HeatTransfer.Phi = (Outer.Properties.Average.Mu/Outer.Properties.Wall.Mu)^0.14;
+	
+"Inner Pipe Phi correction"
+	Inner.HeatTransfer.Phi  = (Inner.Properties.Average.Mu/Inner.Properties.Wall.Mu)^0.14;
+
+"Outer Pipe Prandtl Number"
+	Outer.HeatTransfer.PR = ((Outer.Properties.Average.Cp/Outer.Properties.Average.Mw)*Outer.Properties.Average.Mu)/Outer.Properties.Average.K;
+
+"Inner Pipe Prandtl Number"
+	Inner.HeatTransfer.PR = ((Inner.Properties.Average.Cp/Inner.Properties.Average.Mw)*Inner.Properties.Average.Mu)/Inner.Properties.Average.K;
+
+"Outer Pipe Reynolds Number for Heat Transfer"
+	Outer.HeatTransfer.Re =	(Outer.Properties.Average.rho*Outer.HeatTransfer.Vmean*Outer.HeatTransfer.Dh)/Outer.Properties.Average.Mu;
+
+"Outer Pipe Reynolds Number for Pressure Drop"
+	Outer.PressureDrop.Re =	(Outer.Properties.Average.rho*Outer.HeatTransfer.Vmean*Outer.PressureDrop.Dh)/Outer.Properties.Average.Mu;
+
+"Inner Pipe Reynolds Number for Heat Transfer"
+	Inner.HeatTransfer.Re =	(Inner.Properties.Average.rho*Inner.HeatTransfer.Vmean*Inner.HeatTransfer.Dh)/Inner.Properties.Average.Mu;
+
+"Inner Pipe Reynolds Number for Pressure Drop"
+	Inner.PressureDrop.Re =	Inner.HeatTransfer.Re;
+
+"Outer Pipe Velocity"
+	Outer.HeatTransfer.Vmean*(Outer.HeatTransfer.As*Outer.Properties.Average.rho)  = Outer.Properties.Inlet.Fw;
+
+"Inner Pipe Velocity"
+	Inner.HeatTransfer.Vmean*(Inner.HeatTransfer.As*Inner.Properties.Average.rho)  = Inner.Properties.Inlet.Fw;
+
+"Overall Heat Transfer Coefficient Clean"
+	Details.Uc*((DoInner/(Inner.HeatTransfer.hcoeff*DiInner) )+(DoInner*ln(DoInner/DiInner)/(2*Kwall))+(1/(Outer.HeatTransfer.hcoeff)))=1;
+
+"Overall Heat Transfer Coefficient Dirty"
+	Details.Ud*(Rfi*(DoInner/DiInner) +  Rfo + (DoInner/(Inner.HeatTransfer.hcoeff*DiInner) )+(DoInner*ln(DoInner/DiInner)/(2*Kwall))+(1/(Outer.HeatTransfer.hcoeff)))=1;
+
+"Total Duty"
+	Details.Qtotal = sum(Details.Q);
+
+switch CalculationApproach
+	
+	case "Full":
+
+switch HotSide
+
+	case "outer":
+
+"Incremental Duty"
+	Details.Q = Details.Ud*Pi*DoInner*(Lpipe/N)*(Outer.Properties.Average.T - Inner.Properties.Average.T);
+
+	when InletInner.T > InletOuter.T switchto "inner";
+
+	case "inner":
+
+"Incremental Duty"
+	Details.Q = Details.Ud*Pi*DoInner*(Lpipe/N)*(Inner.Properties.Average.T - Outer.Properties.Average.T);
+
+	when InletInner.T < InletOuter.T switchto "outer";
+
+end
+
+	case "Simplified":
+	
+"Duty"
+	Details.Q = Qestimated/N;
+
+end
+
+for i in [2:N]
+
+"Incremental Enthalpy Inner Stream"
+	Inner.HeatTransfer.Enth(i) = (1-InletInner.v)*PP.LiquidEnthalpy(Inner.HeatTransfer.Tlocal(i), Inner.PressureDrop.Plocal(i), InletInner.z) + InletInner.v*PP.VapourEnthalpy(Inner.HeatTransfer.Tlocal(i), Inner.PressureDrop.Plocal(i), InletInner.z);
+
+"Incremental Enthalpy Outer Stream"
+	Outer.HeatTransfer.Enth(i) = (1-InletOuter.v)*PP.LiquidEnthalpy(Outer.HeatTransfer.Tlocal(i), Outer.PressureDrop.Plocal(i), InletOuter.z) + InletOuter.v*PP.VapourEnthalpy(Outer.HeatTransfer.Tlocal(i), Outer.PressureDrop.Plocal(i), InletOuter.z);
+
+end
+
+"Enthalpy of Inner Side - Inlet Boundary"
+	Inner.HeatTransfer.Enth(1) = InletInner.h;
+
+"Enthalpy of inner Side - Outlet Boundary"
+	Inner.HeatTransfer.Enth(Npoints) = OutletInner.h;
+
+"Temperature of Inner Side - Inlet Boundary"
+	Inner.HeatTransfer.Tlocal(1) = InletInner.T;
+
+"Temperature of Inner Side - Outlet Boundary"
+	Inner.HeatTransfer.Tlocal(Npoints) = OutletInner.T;
+
+"Pressure of Inner Side - Inlet Boundary"
+	Inner.PressureDrop.Plocal(1) = InletInner.P;
+
+"Pressure of Inner Side - Outlet Boundary"
+	Inner.PressureDrop.Plocal(Npoints) = OutletInner.P;
+
+switch FlowDirection
+
+	case "cocurrent":
+
+"Enthalpy of Outer Side - Inlet Boundary"
+	Outer.HeatTransfer.Enth(1) = InletOuter.h;
+
+"Enthalpy of Outer Side - Outlet Boundary"
+	Outer.HeatTransfer.Enth(Npoints) = OutletOuter.h;
+
+"Temperature of Outer Side - Inlet Boundary"
+	Outer.HeatTransfer.Tlocal(1) = InletOuter.T;
+
+"Temperature of Outer Side - Outlet Boundary"
+	Outer.HeatTransfer.Tlocal(Npoints) = OutletOuter.T;
+
+"Pressure of Outer Side - Inlet Boundary"
+	Outer.PressureDrop.Plocal(1) = InletOuter.P;
+
+"Pressure of Outer Side - Outlet Boundary"
+	Outer.PressureDrop.Plocal(Npoints) = OutletOuter.P;
+
+	case "counter":
+
+"Enthalpy of Outer Side - Inlet Boundary"
+	Outer.HeatTransfer.Enth(Npoints) = InletOuter.h;
+
+"Enthalpy of Outer Side - Outlet Boundary"
+	Outer.HeatTransfer.Enth(1) = OutletOuter.h;
+
+"Temperature of Outer Side - Inlet Boundary"
+	Outer.HeatTransfer.Tlocal(Npoints) = InletOuter.T;
+
+"Temperature of Outer Side - Outlet Boundary"
+	Outer.HeatTransfer.Tlocal(1) = OutletOuter.T;
+
+"Pressure of Outer Side - Inlet Boundary"
+	Outer.PressureDrop.Plocal(Npoints) = InletOuter.P;
+
+"Pressure of Outer Side - Outlet Boundary"
+	Outer.PressureDrop.Plocal(1) = OutletOuter.P;
+
+end
+
+switch FlowDirection
+
+	case "cocurrent":
+
+"Total Pressure Drop Outer Stream"
+	Outer.PressureDrop.Pdrop  = Outer.PressureDrop.Pd_fric(Npoints)+Outer.PressureDrop.Pdnozzle_in+Outer.PressureDrop.Pdnozzle_out;
+
+"Outer Pipe Pressure Drop for friction"
+	Outer.PressureDrop.Pd_fric(2:Npoints) = (2*Outer.PressureDrop.fi*Lincr(2:Npoints)*Outer.Properties.Average.rho*Outer.HeatTransfer.Vmean^2)/(Outer.PressureDrop.Dh*Outer.HeatTransfer.Phi);
+
+"Outer Pipe Pressure Drop for friction"
+	Outer.PressureDrop.Pd_fric(1) = 0*'kPa';
+
+for i in [1:N]
+   
+"Outer Pipe Local Pressure"# FIXME: NOZZLE PRESSURE DROP MUST BE ADDED
+	Outer.PressureDrop.Plocal(i+1) =	Outer.PressureDrop.Plocal(1) - Outer.PressureDrop.Pd_fric(i+1);
+
+end
+
+	case "counter":
+
+"Total Pressure Drop Outer Stream"
+	Outer.PressureDrop.Pdrop  = Outer.PressureDrop.Pd_fric(1)+Outer.PressureDrop.Pdnozzle_in+Outer.PressureDrop.Pdnozzle_out;
+
+
+for i in [1:N]
+
+"Outer Pipe Pressure Drop for friction"			
+	Outer.PressureDrop.Pd_fric(i) = (2*Outer.PressureDrop.fi(i)*Lincr(1+N-i)*Outer.Properties.Average.rho(i)*Outer.HeatTransfer.Vmean(i)^2)/(Outer.PressureDrop.Dh*Outer.HeatTransfer.Phi(i));
+
+end
+
+"Outer Pipe Pressure Drop for friction"
+	Outer.PressureDrop.Pd_fric(Npoints) = 0*'kPa';
+
+for i in [1:N]
+   
+"Outer Pipe Local Pressure"# FIXME: NOZZLE PRESSURE DROP MUST BE ADDED
+	Outer.PressureDrop.Plocal(i) =	Outer.PressureDrop.Plocal(Npoints) - Outer.PressureDrop.Pd_fric(i+1);
+
+end
+
+end
+
+"Total Pressure Drop Inner Stream"
+	Inner.PressureDrop.Pdrop  = Inner.PressureDrop.Pd_fric(Npoints)+Inner.PressureDrop.Pdnozzle_in+Inner.PressureDrop.Pdnozzle_out;
+	
+"Inner Pipe Pressure Drop for friction"
+	Inner.PressureDrop.Pd_fric(2:Npoints) = (2*Inner.PressureDrop.fi*Lincr(2:Npoints)*Inner.Properties.Average.rho*Inner.HeatTransfer.Vmean^2)/(DiInner*Inner.HeatTransfer.Phi);
+
+"Inner Pipe Pressure Drop for friction"
+	Inner.PressureDrop.Pd_fric(1) = 0*'kPa';
+
+for i in [1:N]
+
+"Inner Pipe Local Pressure"# FIXME: NOZZLE PRESSURE DROP MUST BE ADDED
+	Inner.PressureDrop.Plocal(i+1) =	Inner.PressureDrop.Plocal(1) - Inner.PressureDrop.Pd_fric(i+1);
+
+end
+
+
+"Velocity Inner Side Inlet Nozzle"
+	Inner.PressureDrop.Vnozzle_in	= Inner.Properties.Inlet.Fw/(Inner.Properties.Inlet.rho*(0.25*Pi*Dinozzle_Inner^2));
+
+"Velocity Inner Side Outlet Nozzle"
+	Inner.PressureDrop.Vnozzle_out	= Inner.Properties.Outlet.Fw/(Inner.Properties.Outlet.rho*(0.25*Pi*Donozzle_Inner^2));
+
+"Velocity Outer Side Inlet Nozzle"
+	Outer.PressureDrop.Vnozzle_in	= Outer.Properties.Inlet.Fw/(Outer.Properties.Inlet.rho*(0.25*Pi*Dinozzle_Outer^2));
+
+"Velocity Outer Side Outlet Nozzle"
+	Outer.PressureDrop.Vnozzle_out	= Outer.Properties.Outlet.Fw/(Outer.Properties.Outlet.rho*(0.25*Pi*Donozzle_Outer^2));
+
+"Pressure Drop Inner Side Inlet Nozzle"
+	Inner.PressureDrop.Pdnozzle_in	= 0.5*InnerKinlet*Inner.Properties.Inlet.rho*Inner.PressureDrop.Vnozzle_in^2;
+
+"Pressure Drop Inner Side Outlet Nozzle"
+	Inner.PressureDrop.Pdnozzle_out	= 0.5*InnerKoutlet*Inner.Properties.Outlet.rho*Inner.PressureDrop.Vnozzle_out^2;
+
+"Pressure Drop Outer Side Inlet Nozzle"
+	Outer.PressureDrop.Pdnozzle_in	= 0.5*OuterKinlet*Outer.Properties.Inlet.rho*Outer.PressureDrop.Vnozzle_in^2;
+
+"Pressure Drop Outer Side Outlet Nozzle"
+	Outer.PressureDrop.Pdnozzle_out	= 0.5*OuterKoutlet*Outer.Properties.Outlet.rho*Outer.PressureDrop.Vnozzle_out^2;
+
+"Inner Side Inlet Nozzle rho-V^2"
+	Inner.PressureDrop.RVsquare_in = Inner.Properties.Inlet.rho*(Inner.PressureDrop.Vnozzle_in)^2;
+
+"Inner Side Outlet Nozzle rho-V^2"
+	Inner.PressureDrop.RVsquare_out = Inner.Properties.Outlet.rho*(Inner.PressureDrop.Vnozzle_out)^2;
+
+"Outer Side Inlet Nozzle rho-V^2"
+	Outer.PressureDrop.RVsquare_in = Outer.Properties.Inlet.rho*(Outer.PressureDrop.Vnozzle_in)^2;
+
+"Outer Side Outlet Nozzle rho-V^2"
+	Outer.PressureDrop.RVsquare_out = Outer.Properties.Outlet.rho*(Outer.PressureDrop.Vnozzle_out)^2;
+
+end

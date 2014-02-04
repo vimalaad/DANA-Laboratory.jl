@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg2084"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   width="86.93808"
+   height="41.139137"
+   sodipodi:docbase="/home/paula/BibliotecaSVN/eml"
+   sodipodi:docname="Info_Stream.svg"
+   inkscape:export-filename="/home/ubuntu/repositorio/alsoc/biblioteca/trunk/eml/icon/Info_Stream.png"
+   inkscape:export-xdpi="140.78986"
+   inkscape:export-ydpi="140.78986"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   sodipodi:modified="true"
+   version="1.0">
+  <metadata
+     id="metadata2089">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs2087">
+    <linearGradient
+       id="linearGradient6760">
+      <stop
+         id="stop12971"
+         offset="0"
+         style="stop-color:#3447ff;stop-opacity:1;" />
+      <stop
+         style="stop-color:white;stop-opacity:0.94117647;"
+         offset="0.51282054"
+         id="stop22168" />
+      <stop
+         id="stop6764"
+         offset="1"
+         style="stop-color:#341dff;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient3246"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-2.3895395e-3,0.1258574,-0.4214708,-7.1354538e-4,523.70701,555.19622)"
+       x1="340.91721"
+       y1="316.51749"
+       x2="349.89819"
+       y2="579.95593" />
+  </defs>
+  <sodipodi:namedview
+     inkscape:window-height="930"
+     inkscape:window-width="1278"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     guidetolerance="10.0"
+     gridtolerance="10.0"
+     objecttolerance="10.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     showgrid="true"
+     inkscape:zoom="6.1432628"
+     inkscape:cx="72.80869"
+     inkscape:cy="42.078158"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:current-layer="g6591"
+     showguides="true"
+     inkscape:guide-bbox="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3216"
+       visible="true"
+       enabled="true" />
+  </sodipodi:namedview>
+  <g
+     id="g6591"
+     transform="translate(-287.53542,-576.35638)">
+    <path
+       style="fill:url(#linearGradient3246);fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.34317097;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 362.51652,577.49903 L 362.51652,617.53421 L 297.78144,617.53421 L 297.51568,577.03163 L 362.51652,577.49903 z"
+       id="rect2097"
+       sodipodi:nodetypes="ccccc" />
+    <text
+       xml:space="preserve"
+       style="font-size:14.24546909px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="383.40237"
+       y="469.8244"
+       id="text3218"
+       transform="scale(0.7767478,1.2874192)"><tspan
+         sodipodi:role="line"
+         id="tspan3220"
+         x="383.40237"
+         y="469.8244">Info Stream</tspan></text>
+  </g>
+</svg>

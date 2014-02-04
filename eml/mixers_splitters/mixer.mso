@@ -1,0 +1,59 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*
+*-------------------------------------------------------------------
+* Author: Maurício Carvalho Maciel
+* $Id$
+*--------------------------------------------------------------------*#
+
+using "streams";
+
+Model mixer
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/mixer"; 
+	Brief 		= "Model of a mixer";
+	Info 		=
+"== Assumptions ==
+* static
+* adiabatic
+
+== Specify ==
+* the inlet streams";
+	
+	PARAMETERS
+outer NComp as Integer (Brief = "Number of chemical components", Lower = 1); 
+	  Ninlet as Integer (Brief = "Number of Inlet Streams", Lower = 1, Default = 2);
+	
+	VARIABLES
+in  Inlet(Ninlet) as stream (Brief = "Inlet streams", PosX=0, PosY=0.5, Symbol="_{inMix}");
+out Outlet  			as streamPH (Brief = "Outlet stream", PosX=1, PosY=0.5059, Symbol="_{out}");
+	
+	EQUATIONS
+	
+	"Flow"
+	Outlet.F = sum(Inlet.F);
+
+	 for i in [1:NComp]
+       
+		"Composition"
+        Outlet.F*Outlet.z(i) = sum(Inlet.F*Inlet.z(i));
+    end
+
+	"Energy Balance"
+	Outlet.F*Outlet.h = sum(Inlet.F*Inlet.h);
+
+	"Pressure"
+	Outlet.P = min(Inlet.P);
+end

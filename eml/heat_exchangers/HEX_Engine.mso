@@ -1,0 +1,405 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*--------------------------------------------------------------------
+* Author: Gerson Balbueno Bicca 
+* $Id$
+*--------------------------------------------------------------------*#
+
+using "streams";
+
+Model Properties_Average
+	
+ATTRIBUTES
+	Pallete = false;
+	Brief = "Average physical properties of the streams.";
+	Info =
+	"to be documented.";
+	
+VARIABLES
+Mw		as molweight    	(Brief="Average Mol Weight",Default=75, Lower=1, Upper=1e8);
+T			as temperature  	(Brief="Average  Temperature",Lower=50);
+P			as pressure			(Brief="Average  Pressure",Default=1, Lower=1e-10, Upper=2e4, DisplayUnit='kPa');
+rho		as dens_mass		(Brief="Stream Density" ,Default=1000, Lower=1e-3, Upper=5e5, Symbol = "\rho");
+Mu		as viscosity		(Brief="Stream Viscosity",Lower=0.0001, Symbol = "\mu");
+Cp		as cp_mol			(Brief="Stream Molar Heat Capacity", Upper=1e10);
+K			as conductivity 	(Brief="Stream Thermal Conductivity", Default=1.0, Lower=1e-5, Upper=500);
+
+end
+
+Model Properties_In_Out
+	
+ATTRIBUTES
+	Pallete = false;
+	Brief = "Inlet and outlet physical properties of the streams.";
+	Info =
+	"to be documented.";
+	
+VARIABLES
+Fw		as flow_mass		(Brief="Stream Mass Flow");
+rho		as dens_mass		(Brief="Stream Density" ,Default=1000, Lower=1e-3, Upper=5e5, Symbol = "\rho");
+end
+
+Model Properties_Wall
+	
+ATTRIBUTES
+	Pallete = false;
+	Brief = "Physical properties of the streams at wall temperature.";
+	Info =
+	"to be documented.";
+	
+VARIABLES
+
+Mu		as viscosity		(Brief="Stream Viscosity",Default=1, Lower=1e-5, Upper=1e5, Symbol = "\mu");
+Twall   	as temperature	(Brief="Wall Temperature",Lower=50);
+
+end
+
+Model Physical_Properties
+	
+ATTRIBUTES
+	Pallete = false;
+	Brief = "to be documented";
+	Info =
+	"to be documented";
+	
+VARIABLES
+
+Inlet  		as Properties_In_Out 	(Brief="Properties at Inlet Stream", Symbol = "_{in}");
+Average 	as Properties_Average	(Brief="Properties at Average Temperature", Symbol = "_{avg}");
+Outlet 		as Properties_In_Out	(Brief="Properties at Outlet Stream", Symbol = "_{out}");
+Wall    		as Properties_Wall		(Brief="Properties at Wall Temperature", Symbol = "_{wall}");
+
+end
+
+Model Physical_Properties_Heatex
+	
+ATTRIBUTES
+	Pallete = false;
+	Brief = "to be documented";
+	Info =
+	"to be documented";
+	
+VARIABLES
+
+Mw		as molweight    		(Brief="Average Mol Weight",Default=75, Lower=1, Upper=1e8);
+Cp		as cp_mol				(Brief="Average Molar Heat Capacity", Upper=1e10);
+Inlet  	as Properties_In_Out 	(Brief="Properties at Inlet Stream", Symbol = "_{in}");
+Outlet 	as Properties_In_Out	(Brief="Properties at Outlet Stream", Symbol = "_{out}");
+
+end
+
+Model Tube_Pdrop
+	
+ATTRIBUTES
+	Pallete = false;
+	Brief = "Pressure drop and velocities in the tube side section of a shell and tube heat exchanger.";
+	
+VARIABLES
+TubeFriction	as press_delta	(Brief="Tube Pressure Drop due to friction", Symbol = "\Delta P_{tube}", Default=0.01, Lower=1E-10,DisplayUnit='kPa');
+InletNozzle  	as press_delta	(Brief="Inlet Nozzle Pressure Drop", Symbol = "\Delta P_{Nozzle\_In}", Default=0.01, Lower=0,DisplayUnit='kPa');
+OutletNozzle  	as press_delta	(Brief="Outlet Nozzle Pressure Drop", Symbol = "\Delta P_{Nozzle\_Out}", Default=0.01, Lower=0,DisplayUnit='kPa');
+Total	  			as press_delta	(Brief="Total Pressure Drop", Symbol = "\Delta P_{total}", Default=0.01, Lower=1E-10,DisplayUnit='kPa');
+Vnozzle_in  		as velocity	  	(Brief="Inlet Nozzle Velocity", Symbol = "V_{Nozzle\_In}", Default=1, Upper=1e5, Lower=0);
+Vnozzle_out  	as velocity	  	(Brief="Outlet Nozzle Velocity", Symbol = "V_{Nozzle\_Out}", Default=1, Upper=1E5, Lower=0);
+FricFactor		as fricfactor		(Brief="Friction Factor", Symbol = "f_i", Default=0.05, Lower=1e-10, Upper=2000);
+
+EQUATIONS
+"Total Pressure Drop"
+	Total = TubeFriction + InletNozzle + OutletNozzle;
+
+end
+
+Model Tube_Heat_Transfer
+	
+ATTRIBUTES
+	Pallete = false;
+	Brief = "to be documented";
+	Info =
+	"to be documented";
+	
+VARIABLES
+Re 	  	as positive		  		(Brief="Tube Side Reynolds Number",Default=1000,Lower=1);
+Nu 	  	as positive		  		(Brief="Nusselt Number",Default=0.5,Lower=1e-8);
+htube 	as heat_trans_coeff (Brief="Tube Side Film Coefficient",Default=1,Lower=1e-12, Upper=1e6);
+fi      	as fricfactor			(Brief="Friction Factor", Default=0.05, Lower=1e-10, Upper=2000);
+PR 	  	as positive		  		(Brief="Tube Side Prandtl Number",Default=0.5,Lower=1e-8);
+Phi   		as positive		  		(Brief="Phi Correction",Default=1,Lower=1e-3);
+Vtube 	as velocity		  		(Brief="Tube Side Velocity",Lower=1e-8);
+
+end
+
+Model Shell_Pdrop
+	
+ATTRIBUTES
+	Pallete = false;
+	Brief = "Pressure drop and velocities in the shell side section of a shell and tube heat exchanger.";
+	
+VARIABLES
+Ideal 			    	as press_delta		(Brief="Ideal Pressure Drop", Symbol = "\Delta P_{ideal}", Default=0.01, Lower=0,DisplayUnit='kPa');
+CrossFlow  			as press_delta		(Brief="Cross Flow Pressure Drop", Symbol = "\Delta P_{CrossFlow}", Default=0.01, Lower=0,DisplayUnit='kPa');
+EndZones  			as press_delta		(Brief="End Zones Pressure Drop", Symbol = "\Delta P_{EndZones}", Default=0.01, Lower=0,DisplayUnit='kPa');
+Window  				as press_delta		(Brief="Window Pressure Drop", Symbol = "\Delta P_{Window}", Default=0.01, Lower=1e-10,DisplayUnit='kPa');
+InletNozzle  		as press_delta		(Brief="Inlet Nozzle Pressure Drop", Symbol = "\Delta P_{Nozzle\_In}", Default=0.01, Lower=0,DisplayUnit='kPa');
+OutletNozzle  		as press_delta		(Brief="Outlet Nozzle Pressure Drop", Symbol = "\Delta P_{Nozzle\_Out}", Default=0.01, Lower=0,DisplayUnit='kPa');
+Total 					as press_delta		(Brief="Total Pressure Drop", Symbol = "\Delta P_{Total}", Default=0.01, Lower=0,DisplayUnit='kPa');
+FricFactor    		as fricfactor			(Brief="Friction Factor",  Symbol = "f_i", Default=0.05, Lower=1e-10, Upper=2000);
+Vnozzle_in  			as velocity			(Brief="Inlet Nozzle Velocity", Symbol = "V_{Nozzle\_In}", Default=1, Upper=1e5, Lower=0);
+Vnozzle_out  		as velocity			(Brief="Outlet Nozzle Velocity", Symbol = "V_{Nozzle\_Out}", Default=1, Upper=1e5, Lower=0);
+RVsquare_out    	as positive 			(Brief = "Outlet Nozzle rho-V^2", Default=1, Upper=1e6, Unit = 'kg/s^2/m');
+RVsquare_in     	as positive 			(Brief = "Inlet Nozzle rho-V^2", Default=1, Upper=1e6, Unit = 'kg/s^2/m');
+
+EQUATIONS
+"Shell Side Total Pressure Drop"
+	Total = CrossFlow+ EndZones + InletNozzle + OutletNozzle + Window;
+
+end
+
+Model Shell_Heat_Transfer
+	
+ATTRIBUTES
+	Pallete = false;
+	Brief = "to be documented";
+	Info =
+	"to be documented";
+	
+VARIABLES
+Re 		as positive				(Brief="Shell Side Reynolds Number",Default=100,Lower=1);
+PR 		as positive				(Brief="Shell Side Prandtl Number",Default=0.7,Lower=1e-6);
+hshell  	as heat_trans_coeff	(Brief="Shell Side Film Coefficient",Default=1,Lower=1e-12, Upper=1e6);
+Phi    	as positive				(Brief="Phi Correction",Default=1,Lower=1e-3);
+end
+
+Model Baffles_Main
+	
+ATTRIBUTES
+	Pallete = false;
+	Brief = "Main variables in the Baffle section of a shell and tube heat exchanger.";
+
+PARAMETERS
+
+BaffleCut     			as Integer 	(Brief="Baffle Cut",Default=25,Lower=25);
+NumberOfBaffles     as Real	  	(Brief="Number of Baffles", Symbol = "N_{baffles}", Lower=1);
+
+VARIABLES
+
+Inlet_Spacing			as length		(Brief="Inlet Baffle Spacing",Lower=1e-8, Symbol = "L_{si}", DisplayUnit ='mm' );
+Central_Spacing 		as length		(Brief="Central Baffle Spacing",Lower=1e-8, Symbol = "L_s", DisplayUnit ='mm' );
+Outlet_Spacing 		as length		(Brief="Outlet Baffle Spacing",Lower=1e-8, Symbol = "L_{so}", DisplayUnit ='mm' );
+
+end
+
+Model Clearances_Main
+	
+ATTRIBUTES
+	Pallete = false;
+	Brief = "Main parameters for diametral clearances in a shell and tube heat exchanger.";
+
+PARAMETERS
+
+SealStrip				as Integer	(Brief="Number of Sealing Strips pairs",Lower=1);
+Hinozzle_Shell  	as length		(Brief="Height Under Shell Inlet Nozzle",Lower=1E-6);
+Honozzle_Shell  	as length		(Brief="Height Under Shell Outlet Nozzle",Lower=1E-6);
+BundleToShell		as length		(Brief="Bundle-to-Shell Clearance", Symbol = "L_{cf}", Lower=1E-8);
+BaffleToShell    	as length  	(Brief="Baffle-to-Shell Clearance", Symbol = "L_{cd}", Lower=1E-8);
+TubeToBaffle		as length  	(Brief="Tube-to-Baffle Clearance", Symbol = "L_{td}", Lower=1E-8);
+
+end
+
+Model NTU_Basic
+
+ATTRIBUTES
+	Pallete = false;
+	Brief = "Number of Units Transference Method.";
+	Info =
+	"to be documented";
+
+VARIABLES
+
+Ch   as positive	(Brief="Hot Stream Heat Capacity",Lower=1e-3,Default=1e3,Unit='W/K');
+Cc   as positive	(Brief="Cold Stream Heat Capacity",Lower=1e-3,Default=1e3,Unit='W/K');
+Cr    	as positive 	(Brief="Heat Capacity Ratio",Default=0.5,Lower=1e-6);
+Cmin  as positive 	(Brief="Minimum Heat Capacity",Lower=1e-10,Default=1e3,Unit='W/K');
+Cmax as positive 	(Brief="Maximum Heat Capacity",Lower=1e-10,Default=1e3,Unit='W/K');
+NTU	as positive	(Brief="Number of Units Transference",Default=0.05,Lower=1e-10);
+Eft	as positive  (Brief="Effectiveness",Default=0.5,Lower=1e-8,Upper=1, Symbol ="\varepsilon");
+Eft1	as positive  (Brief="Effectiveness Correction",Lower=1e-8,Default=0.5, Symbol ="\hat {\varepsilon}");
+
+end
+
+Model LMTD_Basic
+
+ATTRIBUTES
+	Pallete = false;
+	Brief = "Log Mean Temperature Difference Method.";
+	Info =
+	"to be documented";
+	
+VARIABLES
+
+DT0     	as temp_delta	(Brief="Temperature Difference at Inlet",Lower=1e-6, Symbol ="\Delta T_0");
+DTL		as temp_delta	(Brief="Temperature Difference at Outlet",Lower=1e-6, Symbol ="\Delta T_L");
+LMTD		as temp_delta	(Brief="Logarithmic Mean Temperature Difference",Lower=1e-6);
+Fc			as positive		(Brief="LMTD Correction Factor",Lower=0.1);
+
+EQUATIONS
+
+if abs(DT0 - DTL) > 0.05*max(abs([DT0,DTL])) 
+	
+	then
+"Log Mean Temperature Difference"
+	LMTD= (DT0-DTL)/ln(DT0/DTL);
+
+	else
+	
+if DT0*DTL equal 0
+	
+	then
+"Log Mean Temperature Difference"
+	LMTD = 0.5*(DT0+DTL);
+	
+	else
+"Log Mean Temperature Difference"
+	LMTD = 0.5*(DT0+DTL)*(1-(DT0-DTL)^2/(DT0*DTL)*(1+(DT0-DTL)^2/(DT0*DTL)/2)/12);
+	
+end
+	
+end
+
+end
+
+Model Details_Main
+	
+ATTRIBUTES
+	Pallete = false;
+	Brief = "to be documented";
+	Info =
+	"to be documented";
+	
+VARIABLES
+A 		as area					(Brief="Exchange Surface Area");
+Q	   	as power				(Brief="Heat Transfer", Default=7000, Lower=1e-6, Upper=1e10);
+Uc 	as heat_trans_coeff (Brief="Overall Heat Transfer Coefficient Clean",Default=1,Lower=1e-6,Upper=1e10);
+Ud 	as heat_trans_coeff (Brief="Overall Heat Transfer Coefficient Dirty",Default=1,Lower=1e-6,Upper=1e10);
+
+end
+
+Model Tube_Side_Main
+
+ATTRIBUTES
+	Pallete = false;
+	Brief = "Main variables in the Tube Side section of a shell and tube heat exchanger.";
+
+PARAMETERS
+
+NumberOfTubes		as Integer			(Brief="Total Number of Tubes in Shell",Default=100,Lower=1);
+Tubepasses   			as Integer			(Brief="Number of Tube Passes", Lower=1);
+TubeLength		  		as length				(Brief="Effective Tube Length",Lower=0.1);
+TubePitch		  		as length				(Brief="Tube Pitch",Lower=1E-8);
+Kwall		  				as conductivity 	(Brief="Tube Wall Material Thermal Conductivity");
+TubeOD  	  				as length				(Brief="Tube Outside Diameter",Lower=1E-6);
+TubeID		  			as length				(Brief="Tube Inside Diameter",Lower=1E-6);
+Fouling					as positive			(Brief="Tubeside Fouling Resistance",Unit='m^2*K/kW', Symbol = "Rf_{tube}", Default=1E-6 , Lower=0);
+InletNozzleID  		as length				(Brief="Inlet Nozzle Inside Diameter", Lower=1E-6);
+OutletNozzleID  		as length				(Brief="Outlet Nozzle Inside Diameter", Lower=1E-6);
+
+VARIABLES
+
+PressureDrop 	as Tube_Pdrop 				(Brief="Tube Side Pressure Drop", Symbol = " ");
+HeatTransfer 	as Tube_Heat_Transfer 	(Brief="Tube Side Heat Transfer", Symbol = " ");
+Properties   		as Physical_Properties   	(Brief="Tube Side Properties", Symbol = " ");
+
+end
+
+Model Shell_Side_Main
+	
+ATTRIBUTES
+	Pallete = false;
+	Brief = "Main variables in the Shell Side section of a shell and tube heat exchanger.";
+
+PARAMETERS
+
+ShellID				as length		(Brief="Inside Shell Diameter",Lower=1E-6);
+Fouling				as positive	(Brief="Shellside Fouling Resistance",Unit='m^2*K/kW', Symbol = "Rf_{shell}", Default=1E-6 , Lower=0);
+InletNozzleID  	as length		(Brief="Inlet Nozzle Inside Diameter", Lower=1E-6);
+OutletNozzleID  	as length		(Brief="Outlet Nozzle Inside Diameter", Lower=1E-6);
+
+VARIABLES
+
+PressureDrop 	as Shell_Pdrop				 	(Brief="Shell Side Pressure Drop", Symbol = " ");
+HeatTransfer 	as Shell_Heat_Transfer  	(Brief= "Shell Side Heat Transfer", Symbol = " ");
+Properties   		as Physical_Properties   	(Brief="ShellSide Properties", Symbol = " ");
+
+end
+
+Model DoublePipe_HeatTransfer
+	
+ATTRIBUTES
+	Pallete = false;
+	Brief = "to be documented";
+	Info =
+	"to be documented";
+	
+PARAMETERS
+As	 		as area						(Brief="Cross Sectional Area for Flow",Default=0.05,Lower=1e-8);
+Dh  		as length					(Brief="Hydraulic Diameter of Pipe for Heat Transfer",Lower=1e-8);
+
+VARIABLES
+Re 	  	as positive		  		(Brief="Reynolds Number",Default=100,Lower=1);
+hcoeff 	as heat_trans_coeff (Brief="Film Coefficient",Default=1,Lower=1e-12, Upper=1e6);
+fi      	as fricfactor			(Brief="Friction Factor", Default=0.05, Lower=1e-10, Upper=2000);
+Nu 	  	as positive		  		(Brief="Nusselt Number",Default=0.5,Lower=1e-8);
+PR 	  	as positive		  		(Brief="Prandtl Number",Default=0.5,Lower=1e-8);
+Phi   		as positive		  		(Brief="Phi Correction",Default=1,Lower=1e-3);
+Vmean 	as velocity		  		(Brief="Tube Velocity",Lower=1e-8);
+
+end
+
+Model DoublePipe_PressureDrop
+	
+ATTRIBUTES
+	Pallete = false;
+	Brief = "to be documented";
+	Info =
+	"to be documented";
+	
+PARAMETERS
+
+Dh  	as length		(Brief="Hydraulic Diameter of Pipe for Pressure Drop",Lower=1e-6);
+
+VARIABLES
+
+Pdrop	as press_delta	(Brief="Total Pressure Drop",Default=0.01, Lower=0,DisplayUnit='kPa', Symbol ="\Delta P");
+Pd_fric	as press_delta	(Brief="Pressure Drop for friction",Default=0.01, Lower=0,DisplayUnit='kPa', Symbol ="\Delta P_{fric}");
+Pd_ret	as press_delta	(Brief="Pressure Drop due to return",Default=0.01, Lower=0,DisplayUnit='kPa', Symbol ="\Delta P_{return}");
+fi      as fricfactor	(Brief="Friction Factor", Default=0.05, Lower=1e-10, Upper=2000);
+Re 	as positive		(Brief="Reynolds Number",Default=100,Lower=1);
+
+end	
+
+Model Main_DoublePipe
+	
+ATTRIBUTES
+	Pallete = false;
+	Brief = "to be documented";
+	Info =
+	"to be documented";
+	
+VARIABLES
+
+HeatTransfer 	as DoublePipe_HeatTransfer 	(Brief="Double Pipe Heat Transfer",Symbol=" ");
+PressureDrop 	as DoublePipe_PressureDrop 	(Brief="Double Pipe Pressure Drop", Symbol=" ");
+Properties   	as Physical_Properties   		(Brief="Double Pipe Properties",Symbol=" " );
+
+end
+

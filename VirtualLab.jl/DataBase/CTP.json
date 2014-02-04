@@ -1,0 +1,6450 @@
+{
+  "463-49-0": {
+    "Name": "Propadiene",
+    "Acentric_Factor": 0.1041,
+    "Critical_Temperature": 394,
+    "Formula": "C3H4",
+    "Molar_Weight": 40.064,
+    "ID": 294,
+    "CAS_Number": "463-49-0",
+    "Critical_Volume": 0.165,
+    "Critical_Pressure": 5.25,
+    "Critical_Compressibility": 0.264
+  },
+  "541-73-1": {
+    "Name": "m-Dichlorobenzene",
+    "Acentric_Factor": 0.2790,
+    "Critical_Temperature": 683.95,
+    "Formula": "C6H4Cl2",
+    "Molar_Weight": 147.002,
+    "ID": 85,
+    "CAS_Number": "541-73-1",
+    "Critical_Volume": 0.351,
+    "Critical_Pressure": 4.07,
+    "Critical_Compressibility": 0.251
+  },
+  "1455-21-6": {
+    "Name": "Nonyl mercaptan",
+    "Acentric_Factor": 0.5260,
+    "Critical_Temperature": 681,
+    "Formula": "C9H20S",
+    "Molar_Weight": 160.320,
+    "ID": 261,
+    "CAS_Number": "1455-21-6",
+    "Critical_Volume": 0.571,
+    "Critical_Pressure": 2.31,
+    "Critical_Compressibility": 0.233
+  },
+  "107-92-6": {
+    "Name": "Butyric acid",
+    "Acentric_Factor": 0.6805,
+    "Critical_Temperature": 615.7,
+    "Formula": "C4H8O2",
+    "Molar_Weight": 88.105,
+    "ID": 45,
+    "CAS_Number": "107-92-6",
+    "Critical_Volume": 0.293,
+    "Critical_Pressure": 4.06,
+    "Critical_Compressibility": 0.232
+  },
+  "75-12-7": {
+    "Name": "Formamide",
+    "Acentric_Factor": 0.4124,
+    "Critical_Temperature": 771,
+    "Formula": "CH3NO",
+    "Molar_Weight": 45.041,
+    "ID": 154,
+    "CAS_Number": "75-12-7",
+    "Critical_Volume": 0.163,
+    "Critical_Pressure": 7.8,
+    "Critical_Compressibility": 0.198
+  },
+  "106-97-8": {
+    "IG_Entropy_of_Formation_25C": "4.29792",
+    "Critical_Temperature": 425.12,
+    "UNIQUAC_q": "2.776",
+    "UNIQUAC_r": "3.151",
+    "COSMODBName": "N-BUTANE",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "-2164.2",
+    "Critical_Volume": 0.255,
+    "CAS_Number": "106-97-8",
+    "ID": 31,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "4"
+        },
+        {
+          "-name": "H",
+          "#text": "10"
+        }
+      ]
+    },
+    "Z_Rackett": 2.75E-01,
+    "Critical_Compressibility": 0.274,
+    "Acentric_Factor": 0.2002,
+    "HvapTmin": 135,
+    "CS_Liquid_Molar_Volume": 101.4,
+    "HVapB": 0.8337,
+    "HVapA": 36238000,
+    "HVapD": 0.39613,
+    "PR_Volume_Translation_Coefficient": -0.0675,
+    "CS_Solubility_Parameter": 6.73,
+    "isPf": 0,
+    "Dipole_Moment": 0.00E+00,
+    "DIPPR_Vapor_Pressure_TMAX": 425,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "SRK_Volume_Translation_Coefficient": 0.0975,
+    "Ideal_Gas_Heat_Capacity_Const_C": 2.17E-04,
+    "DIPPR_Vapor_Pressure_Constant_D": 9.45E-06,
+    "Ideal_Gas_Heat_Capacity_Const_B": 2.09E-01,
+    "DIPPR_Vapor_Pressure_Constant_C": -7.046,
+    "Ideal_Gas_Heat_Capacity_Const_E": 1.16E-10,
+    "Normal_Boiling_Point": 272.65,
+    "DIPPR_Vapor_Pressure_Constant_B": -4363.2,
+    "Ideal_Gas_Heat_Capacity_Const_D": -3.37E-07,
+    "DIPPR_Vapor_Pressure_Constant_A": 66.343,
+    "Critical_Pressure": 3.796,
+    "UNIFAC": {
+      "group": [
+        {
+          "-name": "CH3",
+          "#text": "2"
+        },
+        {
+          "-name": "CH2",
+          "#text": "2"
+        }
+      ]
+    },
+    "Formula": "C4H10",
+    "Molar_Weight": 58.122,
+    "IG_Gibbs_Energy_of_Formation_25C": -287.32,
+    "HvapC": -0.82274,
+    "Ideal_Gas_Heat_Capacity_Const_A": 2.41E+01,
+    "DIPPR_Vapor_Pressure_TMIN": 134,
+    "Name": "Butane",
+    "CS_Acentric_Factor": 0.1953,
+    "Liquid_Viscosity_Const_B": 534.82,
+    "Liquid_Viscosity_Const_A": -72.471,
+    "Liquid_Viscosity_Const_D": -4.66E-27,
+    "Liquid_Viscosity_Const_C": -0.57469,
+    "HvapTMAX": 425,
+    "Liquid_Viscosity_Const_E": 10
+  },
+  "109-52-4": {
+    "Name": "Pentanoic acid",
+    "Acentric_Factor": 0.7052,
+    "Critical_Temperature": 639.16,
+    "Formula": "C5H10O2",
+    "Molar_Weight": 102.132,
+    "ID": 280,
+    "CAS_Number": "109-52-4",
+    "Critical_Volume": 0.35,
+    "Critical_Pressure": 3.63,
+    "Critical_Compressibility": 0.239
+  },
+  "872-05-9": {
+    "Name": "1-Decene",
+    "Acentric_Factor": 0.4805,
+    "Critical_Temperature": 616.6,
+    "Formula": "C10H20",
+    "Molar_Weight": 140.266,
+    "ID": 77,
+    "CAS_Number": "872-05-9",
+    "Critical_Volume": 0.584,
+    "Critical_Pressure": 2.223,
+    "Critical_Compressibility": 0.253
+  },
+  "123-86-4": {
+    "Name": "Butyl acetate",
+    "Acentric_Factor": 0.4394,
+    "Critical_Temperature": 575.4,
+    "Formula": "C6H12O2",
+    "Molar_Weight": 116.158,
+    "ID": 39,
+    "CAS_Number": "123-86-4",
+    "Critical_Volume": 0.389,
+    "Critical_Pressure": 3.09,
+    "Critical_Compressibility": 0.251
+  },
+  "74-93-1": {
+    "Name": "Methyl mercaptan",
+    "Acentric_Factor": 0.1582,
+    "Critical_Temperature": 469.95,
+    "Formula": "CH4S",
+    "Molar_Weight": 48.107,
+    "ID": 231,
+    "CAS_Number": "74-93-1",
+    "Critical_Volume": 0.145,
+    "Critical_Pressure": 7.23,
+    "Critical_Compressibility": 0.268
+  },
+  "7732-18-5": {
+    "IG_Entropy_of_Formation_25C": "2.61728",
+    "Critical_Temperature": 647.096,
+    "UNIQUAC_q": "1.4",
+    "UNIQUAC_r": "0.92",
+    "COSMODBName": "WATER",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "-1.3422E+04",
+    "Critical_Volume": 0.0559472,
+    "CAS_Number": "7732-18-5",
+    "ID": 342,
+    "elements": {
+      "element": [
+        {
+          "-name": "O",
+          "#text": "1"
+        },
+        {
+          "-name": "H",
+          "#text": "2"
+        }
+      ]
+    },
+    "Z_Rackett": 2.37E-01,
+    "Critical_Compressibility": 0.229,
+    "Acentric_Factor": 0.3449,
+    "HvapTmin": 273,
+    "CS_Liquid_Molar_Volume": 0,
+    "HVapB": 0.3199,
+    "HVapA": 52053000,
+    "HVapD": 0.25795,
+    "CS_Solubility_Parameter": 0,
+    "isPf": 0,
+    "Dipole_Moment": 6.17E-30,
+    "DIPPR_Vapor_Pressure_TMAX": 647.13,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "Ideal_Gas_Heat_Capacity_Const_C": 2.24E-05,
+    "DIPPR_Vapor_Pressure_Constant_D": 4.17E-06,
+    "Ideal_Gas_Heat_Capacity_Const_B": -5.94E-03,
+    "DIPPR_Vapor_Pressure_Constant_C": -7.3037,
+    "Ideal_Gas_Heat_Capacity_Const_E": 1.10E-12,
+    "Normal_Boiling_Point": 373.15,
+    "DIPPR_Vapor_Pressure_Constant_B": -7258.2,
+    "Ideal_Gas_Heat_Capacity_Const_D": -9.96E-09,
+    "DIPPR_Vapor_Pressure_Constant_A": 73.649,
+    "Critical_Pressure": 22.064,
+    "UNIFAC": {
+      "group": {
+        "-name": "H2O",
+        "#text": "1"
+      }
+    },
+    "Formula": "H2O",
+    "Molar_Weight": 18.015,
+    "IG_Gibbs_Energy_of_Formation_25C": -12689,
+    "HvapC": -0.212,
+    "Ideal_Gas_Heat_Capacity_Const_A": 3.38E+01,
+    "DIPPR_Vapor_Pressure_TMIN": 273.16,
+    "Name": "Water",
+    "CS_Acentric_Factor": 0,
+    "Liquid_Viscosity_Const_B": 3703.6,
+    "Liquid_Viscosity_Const_A": -52.843,
+    "Liquid_Viscosity_Const_D": -5.88E-29,
+    "Liquid_Viscosity_Const_C": 5.866,
+    "HvapTMAX": 647,
+    "Liquid_Viscosity_Const_E": 10
+  },
+  "3452-09-3": {
+    "Name": "1-Nonyne",
+    "Acentric_Factor": 0.4710,
+    "Critical_Temperature": 598.05,
+    "Formula": "C9H16",
+    "Molar_Weight": 124.223,
+    "ID": 262,
+    "CAS_Number": "3452-09-3",
+    "Critical_Volume": 0.497,
+    "Critical_Pressure": 2.61,
+    "Critical_Compressibility": 0.261
+  },
+  "55-21-0": {
+    "Name": "Benzamide",
+    "Acentric_Factor": 0.5585,
+    "Critical_Temperature": 824,
+    "Formula": "C7H7NO",
+    "Molar_Weight": 121.137,
+    "ID": 15,
+    "CAS_Number": "55-21-0",
+    "Critical_Volume": 0.346,
+    "Critical_Pressure": 5.05,
+    "Critical_Compressibility": 0.255
+  },
+  "590-18-1": {
+    "Name": "cis-2-Butene",
+    "Acentric_Factor": 0.2019,
+    "Critical_Temperature": 435.5,
+    "Formula": "C4H8",
+    "Molar_Weight": 56.106,
+    "ID": 37,
+    "CAS_Number": "590-18-1",
+    "Critical_Volume": 0.234,
+    "Critical_Pressure": 4.21,
+    "Critical_Compressibility": 0.272
+  },
+  "75-10-5": {
+    "Name": "Difluoromethane",
+    "Acentric_Factor": 0.2771,
+    "Critical_Temperature": 351.255,
+    "Formula": "CH2F2",
+    "Molar_Weight": 52.023,
+    "ID": 99,
+    "CAS_Number": "75-10-5",
+    "Critical_Volume": 0.123,
+    "Critical_Pressure": 5.784,
+    "Critical_Compressibility": 0.244
+  },
+  "334-48-5": {
+    "Name": "Decanoic acid",
+    "Acentric_Factor": 0.8126,
+    "Critical_Temperature": 722.1,
+    "Formula": "C10H20O2",
+    "Molar_Weight": 172.265,
+    "ID": 75,
+    "CAS_Number": "334-48-5",
+    "Critical_Volume": 0.639,
+    "Critical_Pressure": 2.28,
+    "Critical_Compressibility": 0.243
+  },
+  "108-88-3": {
+    "IG_Entropy_of_Formation_25C": "4.45158",
+    "Critical_Temperature": 591.75,
+    "UNIQUAC_q": "2.968",
+    "UNIQUAC_r": "3.9228",
+    "COSMODBName": "TOLUENE",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "5.44E+02",
+    "Critical_Volume": 0.316,
+    "CAS_Number": "108-88-3",
+    "ID": 325,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "7"
+        },
+        {
+          "-name": "H",
+          "#text": "8"
+        }
+      ]
+    },
+    "Z_Rackett": 0.2644,
+    "Critical_Compressibility": 0.264,
+    "Acentric_Factor": 0.2640,
+    "HvapTmin": 236.68,
+    "CS_Liquid_Molar_Volume": 106.8,
+    "HVapB": 0.375000339,
+    "HVapA": 49147131.83,
+    "HVapD": 0,
+    "CS_Solubility_Parameter": 8.92,
+    "isPf": 0,
+    "Dipole_Moment": 0,
+    "DIPPR_Vapor_Pressure_TMAX": 410,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "Ideal_Gas_Heat_Capacity_Const_C": -0.000276538,
+    "DIPPR_Vapor_Pressure_Constant_D": 6.89E-06,
+    "Ideal_Gas_Heat_Capacity_Const_B": 0.51246432,
+    "DIPPR_Vapor_Pressure_Constant_C": -9.169627,
+    "Ideal_Gas_Heat_Capacity_Const_E": 0,
+    "Normal_Boiling_Point": 383.8,
+    "DIPPR_Vapor_Pressure_Constant_B": -6589.532181,
+    "Ideal_Gas_Heat_Capacity_Const_D": 4.91E-08,
+    "DIPPR_Vapor_Pressure_Constant_A": 82.40906573,
+    "Critical_Pressure": 4.108,
+    "UNIFAC": {
+      "group": [
+        {
+          "-name": "ACH",
+          "#text": "5"
+        },
+        {
+          "-name": "ACCH3",
+          "#text": "1"
+        }
+      ]
+    },
+    "Formula": "C7H8",
+    "Molar_Weight": 92.138,
+    "IG_Gibbs_Energy_of_Formation_25C": 544.5,
+    "HvapC": 0,
+    "Ideal_Gas_Heat_Capacity_Const_A": -24.3546156,
+    "DIPPR_Vapor_Pressure_TMIN": 280,
+    "Name": "Toluene",
+    "CS_Acentric_Factor": 0.2591,
+    "Liquid_Viscosity_Const_B": 1265.989381,
+    "Liquid_Viscosity_Const_A": -24.53112502,
+    "Liquid_Viscosity_Const_D": 0,
+    "Liquid_Viscosity_Const_C": 2.28631802,
+    "HvapTMAX": 591.7,
+    "Liquid_Viscosity_Const_E": 0
+  },
+  "624-64-6": {
+    "Name": "trans-2-Butene",
+    "Acentric_Factor": 0.2176,
+    "Critical_Temperature": 428.6,
+    "Formula": "C4H8",
+    "Molar_Weight": 56.106,
+    "ID": 38,
+    "CAS_Number": "624-64-6",
+    "Critical_Volume": 0.238,
+    "Critical_Pressure": 4.1,
+    "Critical_Compressibility": 0.274
+  },
+  "928-49-4": {
+    "Name": "3-Hexyne",
+    "Acentric_Factor": 0.2183,
+    "Critical_Temperature": 544,
+    "Formula": "C6H10",
+    "Molar_Weight": 82.144,
+    "ID": 178,
+    "CAS_Number": "928-49-4",
+    "Critical_Volume": 0.331,
+    "Critical_Pressure": 3.53,
+    "Critical_Compressibility": 0.258
+  },
+  "108-24-7": {
+    "Name": "Acetic anhydride",
+    "Acentric_Factor": 0.4535,
+    "Critical_Temperature": 606,
+    "Formula": "C4H6O3",
+    "Molar_Weight": 102.089,
+    "ID": 4,
+    "CAS_Number": "108-24-7",
+    "Critical_Volume": 0.29,
+    "Critical_Pressure": 4,
+    "Critical_Compressibility": 0.23
+  },
+  "106-42-3": {
+    "IG_Entropy_of_Formation_25C": "4.88392",
+    "Critical_Temperature": 616.2,
+    "UNIQUAC_q": "3.54",
+    "UNIQUAC_r": "4.66",
+    "COSMODBName": "P-XYLENE",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "169.83",
+    "Critical_Volume": 0.378,
+    "CAS_Number": "106-42-3",
+    "ID": 345,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "8"
+        },
+        {
+          "-name": "H",
+          "#text": "10"
+        }
+      ]
+    },
+    "Z_Rackett": 0.2592,
+    "Critical_Compressibility": 0.259,
+    "Acentric_Factor": 0.3218,
+    "HvapTmin": 246.48,
+    "CS_Liquid_Molar_Volume": 124,
+    "HVapB": 0.37499954,
+    "HVapA": 54432321.17,
+    "HVapD": 0,
+    "CS_Solubility_Parameter": 8.77,
+    "isPf": 0,
+    "Dipole_Moment": 0,
+    "DIPPR_Vapor_Pressure_TMAX": 440,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "Ideal_Gas_Heat_Capacity_Const_C": -0.000337372,
+    "DIPPR_Vapor_Pressure_Constant_D": 6.89E-06,
+    "Ideal_Gas_Heat_Capacity_Const_B": 0.60415524,
+    "DIPPR_Vapor_Pressure_Constant_C": -9.040302303,
+    "Ideal_Gas_Heat_Capacity_Const_E": 0,
+    "Normal_Boiling_Point": 411.5,
+    "DIPPR_Vapor_Pressure_Constant_B": -6780.341119,
+    "Ideal_Gas_Heat_Capacity_Const_D": 6.82E-08,
+    "DIPPR_Vapor_Pressure_Constant_A": 81.45866652,
+    "Critical_Pressure": 3.511,
+    "UNIFAC": {
+      "group": [
+        {
+          "-name": "ACH",
+          "#text": "4"
+        },
+        {
+          "-name": "ACCH3",
+          "#text": "2"
+        }
+      ]
+    },
+    "Formula": "C8H10",
+    "Molar_Weight": 106.165,
+    "IG_Gibbs_Energy_of_Formation_25C": 1143.49,
+    "HvapC": 0,
+    "Ideal_Gas_Heat_Capacity_Const_A": -25.0914924,
+    "DIPPR_Vapor_Pressure_TMIN": 300,
+    "Name": "p-Xylene",
+    "CS_Acentric_Factor": 0.2969,
+    "Liquid_Viscosity_Const_B": 1266.477442,
+    "Liquid_Viscosity_Const_A": -24.49199069,
+    "Liquid_Viscosity_Const_D": 0,
+    "Liquid_Viscosity_Const_C": 2.287949597,
+    "HvapTMAX": 616.2,
+    "Liquid_Viscosity_Const_E": 0
+  },
+  "7727-37-9": {
+    "IG_Entropy_of_Formation_25C": "0",
+    "Critical_Temperature": 126.2,
+    "UNIQUAC_q": "1.088",
+    "UNIQUAC_r": "1.0415",
+    "COSMODBName": "NITROGEN",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "0.00E+00",
+    "Critical_Volume": 0.08921,
+    "CAS_Number": "7727-37-9",
+    "ID": 249,
+    "elements": {
+      "element": {
+        "-name": "N",
+        "#text": "2"
+      }
+    },
+    "Z_Rackett": 2.90E-01,
+    "Critical_Compressibility": 0.289,
+    "Acentric_Factor": 0.0377,
+    "HvapTmin": 63,
+    "CS_Liquid_Molar_Volume": 0,
+    "HVapB": 0.40406,
+    "HVapA": 7490500,
+    "HVapD": 0.27343,
+    "PR_Volume_Translation_Coefficient": -0.1927,
+    "CS_Solubility_Parameter": 0,
+    "isPf": 0,
+    "Dipole_Moment": 0.00E+00,
+    "DIPPR_Vapor_Pressure_TMAX": 126,
+    "DIPPR_Vapor_Pressure_Constant_E": 1,
+    "SRK_Volume_Translation_Coefficient": -0.0079,
+    "Ideal_Gas_Heat_Capacity_Const_C": 1.74E-05,
+    "DIPPR_Vapor_Pressure_Constant_D": 0.044127,
+    "Ideal_Gas_Heat_Capacity_Const_B": -7.01E-03,
+    "DIPPR_Vapor_Pressure_Constant_C": -8.3144,
+    "Ideal_Gas_Heat_Capacity_Const_E": 9.34E-13,
+    "Normal_Boiling_Point": 77.344,
+    "DIPPR_Vapor_Pressure_Constant_B": -1084.1,
+    "Ideal_Gas_Heat_Capacity_Const_D": -8.48E-09,
+    "DIPPR_Vapor_Pressure_Constant_A": 58.282,
+    "Critical_Pressure": 3.4,
+    "UNIFAC": {
+      "group": {
+        "-name": "N2",
+        "#text": "1"
+      }
+    },
+    "Formula": "N2",
+    "Molar_Weight": 28.013,
+    "IG_Gibbs_Energy_of_Formation_25C": 0.00E+00,
+    "HvapC": -0.317,
+    "Ideal_Gas_Heat_Capacity_Const_A": 2.98E+01,
+    "DIPPR_Vapor_Pressure_TMIN": 63,
+    "Name": "Nitrogen",
+    "CS_Acentric_Factor": 0,
+    "Liquid_Viscosity_Const_B": -181.61,
+    "Liquid_Viscosity_Const_A": 16.004,
+    "Liquid_Viscosity_Const_D": 0,
+    "Liquid_Viscosity_Const_C": -5.1551,
+    "HvapTMAX": 126,
+    "Liquid_Viscosity_Const_E": 0
+  },
+  "107-10-8": {
+    "Name": "Propyl amine",
+    "Acentric_Factor": 0.2798,
+    "Critical_Temperature": 496.95,
+    "Formula": "C3H9N",
+    "Molar_Weight": 59.110,
+    "ID": 303,
+    "CAS_Number": "107-10-8",
+    "Critical_Volume": 0.26,
+    "Critical_Pressure": 4.74,
+    "Critical_Compressibility": 0.298
+  },
+  "75-00-3": {
+    "Name": "Chloroethane",
+    "Acentric_Factor": 0.1902,
+    "Critical_Temperature": 460.35,
+    "Formula": "C2H5Cl",
+    "Molar_Weight": 64.514,
+    "ID": 54,
+    "CAS_Number": "75-00-3",
+    "Critical_Volume": 0.2,
+    "Critical_Pressure": 5.27,
+    "Critical_Compressibility": 0.275
+  },
+  "142-62-1": {
+    "Name": "Hexanoic acid",
+    "Acentric_Factor": 0.7299,
+    "Critical_Temperature": 660.2,
+    "Formula": "C6H12O2",
+    "Molar_Weight": 116.158,
+    "ID": 172,
+    "CAS_Number": "142-62-1",
+    "Critical_Volume": 0.408,
+    "Critical_Pressure": 3.308,
+    "Critical_Compressibility": 0.246
+  },
+  "71-23-8": {
+    "Name": "1-Propanol",
+    "Acentric_Factor": 0.6209,
+    "Critical_Temperature": 536.8,
+    "Formula": "C3H8O",
+    "Molar_Weight": 60.095,
+    "ID": 296,
+    "CAS_Number": "71-23-8",
+    "Critical_Volume": 0.219,
+    "Critical_Pressure": 5.169,
+    "Critical_Compressibility": 0.254
+  },
+  "544-76-3": {
+    "Name": "Hexadecane",
+    "Acentric_Factor": 0.7174,
+    "Critical_Temperature": 723,
+    "Formula": "C16H34",
+    "Molar_Weight": 226.441,
+    "ID": 169,
+    "CAS_Number": "544-76-3",
+    "Critical_Volume": 1.04,
+    "Critical_Pressure": 1.4,
+    "Critical_Compressibility": 0.243
+  },
+  "993-00-0": {
+    "Name": "Methylchlorosilane",
+    "Acentric_Factor": 0.2252,
+    "Critical_Temperature": 442,
+    "Formula": "CH5ClSi",
+    "Molar_Weight": 80.589,
+    "ID": 212,
+    "CAS_Number": "993-00-0",
+    "Critical_Volume": 0.246,
+    "Critical_Pressure": 4.17,
+    "Critical_Compressibility": 0.279
+  },
+  "75-04-7": {
+    "Name": "Ethyl amine",
+    "Acentric_Factor": 0.2848,
+    "Critical_Temperature": 456.15,
+    "Formula": "C2H7N",
+    "Molar_Weight": 45.084,
+    "ID": 128,
+    "CAS_Number": "75-04-7",
+    "Critical_Volume": 0.207,
+    "Critical_Pressure": 5.62,
+    "Critical_Compressibility": 0.307
+  },
+  "3004-93-1": {
+    "Name": "2-Methyloctanoic acid",
+    "Acentric_Factor": 0.7913,
+    "Critical_Temperature": 694,
+    "Formula": "C9H18O2",
+    "Molar_Weight": 158.238,
+    "ID": 233,
+    "CAS_Number": "3004-93-1",
+    "Critical_Volume": 0.572,
+    "Critical_Pressure": 2.54,
+    "Critical_Compressibility": 0.252
+  },
+  "109-67-1": {
+    "Name": "1-Pentene",
+    "Acentric_Factor": 0.2372,
+    "Critical_Temperature": 464.8,
+    "Formula": "C5H10",
+    "Molar_Weight": 70.133,
+    "ID": 285,
+    "CAS_Number": "109-67-1",
+    "Critical_Volume": 0.293,
+    "Critical_Pressure": 3.56,
+    "Critical_Compressibility": 0.27
+  },
+  "80-62-6": {
+    "Name": "Methyl methacrylate",
+    "Acentric_Factor": 0.2802,
+    "Critical_Temperature": 566,
+    "Formula": "C5H8O2",
+    "Molar_Weight": 100.116,
+    "ID": 232,
+    "CAS_Number": "80-62-6",
+    "Critical_Volume": 0.323,
+    "Critical_Pressure": 3.68,
+    "Critical_Compressibility": 0.253
+  },
+  "111-14-8": {
+    "Name": "Heptanoic acid",
+    "Acentric_Factor": 0.7564,
+    "Critical_Temperature": 677.3,
+    "Formula": "C7H14O2",
+    "Molar_Weight": 130.185,
+    "ID": 161,
+    "CAS_Number": "111-14-8",
+    "Critical_Volume": 0.466,
+    "Critical_Pressure": 3.043,
+    "Critical_Compressibility": 0.252
+  },
+  "565-69-5": {
+    "Name": "Ethylisopropyl ketone",
+    "Acentric_Factor": 0.3891,
+    "Critical_Temperature": 567,
+    "Formula": "C6H12O",
+    "Molar_Weight": 100.159,
+    "ID": 144,
+    "CAS_Number": "565-69-5",
+    "Critical_Volume": 0.369,
+    "Critical_Pressure": 3.32,
+    "Critical_Compressibility": 0.26
+  },
+  "111-31-9": {
+    "Name": "Hexyl mercaptan",
+    "Acentric_Factor": 0.3681,
+    "Critical_Temperature": 623,
+    "Formula": "C6H14S",
+    "Molar_Weight": 118.240,
+    "ID": 179,
+    "CAS_Number": "111-31-9",
+    "Critical_Volume": 0.412,
+    "Critical_Pressure": 3.08,
+    "Critical_Compressibility": 0.245
+  },
+  "534-15-6": {
+    "Name": "1,1-Dimethoxyethane",
+    "Acentric_Factor": 0.3277,
+    "Critical_Temperature": 507.8,
+    "Formula": "C4H10O2",
+    "Molar_Weight": 90.121,
+    "ID": 103,
+    "CAS_Number": "534-15-6",
+    "Critical_Volume": 0.297,
+    "Critical_Pressure": 3.773,
+    "Critical_Compressibility": 0.265
+  },
+  "78-92-2": {
+    "Name": "2-Butanol",
+    "Acentric_Factor": 0.5692,
+    "Critical_Temperature": 535.9,
+    "Formula": "C4H10O",
+    "Molar_Weight": 74.122,
+    "ID": 35,
+    "CAS_Number": "78-92-2",
+    "Critical_Volume": 0.27,
+    "Critical_Pressure": 4.188,
+    "Critical_Compressibility": 0.254
+  },
+  "543-49-7": {
+    "Name": "2-Heptanol",
+    "Acentric_Factor": 0.5628,
+    "Critical_Temperature": 608.3,
+    "Formula": "C7H16O",
+    "Molar_Weight": 116.201,
+    "ID": 163,
+    "CAS_Number": "543-49-7",
+    "Critical_Volume": 0.447,
+    "Critical_Pressure": 3.001,
+    "Critical_Compressibility": 0.265
+  },
+  "115-11-7": {
+    "Name": "2-Methyl propene",
+    "Acentric_Factor": 0.1948,
+    "Critical_Temperature": 417.9,
+    "Formula": "C4H8",
+    "Molar_Weight": 56.106,
+    "ID": 238,
+    "CAS_Number": "115-11-7",
+    "Critical_Volume": 0.239,
+    "Critical_Pressure": 4,
+    "Critical_Compressibility": 0.275
+  },
+  "75-19-4": {
+    "Name": "Cyclopropane",
+    "Acentric_Factor": 0.1278,
+    "Critical_Temperature": 398,
+    "Formula": "C3H6",
+    "Molar_Weight": 42.080,
+    "ID": 71,
+    "CAS_Number": "75-19-4",
+    "Critical_Volume": 0.162,
+    "Critical_Pressure": 5.54,
+    "Critical_Compressibility": 0.271
+  },
+  "93-58-3": {
+    "Name": "Methyl benzoate",
+    "Acentric_Factor": 0.4205,
+    "Critical_Temperature": 693,
+    "Formula": "C8H8O2",
+    "Molar_Weight": 136.148,
+    "ID": 200,
+    "CAS_Number": "93-58-3",
+    "Critical_Volume": 0.436,
+    "Critical_Pressure": 3.59,
+    "Critical_Compressibility": 0.272
+  },
+  "1120-21-4": {
+    "Name": "Undecane",
+    "Acentric_Factor": 0.5303,
+    "Critical_Temperature": 639,
+    "Formula": "C11H24",
+    "Molar_Weight": 156.308,
+    "ID": 336,
+    "CAS_Number": "1120-21-4",
+    "Critical_Volume": 0.685,
+    "Critical_Pressure": 1.95,
+    "Critical_Compressibility": 0.252
+  },
+  "106-98-9": {
+    "Name": "1-Butene",
+    "Acentric_Factor": 0.1845,
+    "Critical_Temperature": 419.5,
+    "Formula": "C4H8",
+    "Molar_Weight": 56.106,
+    "ID": 36,
+    "CAS_Number": "106-98-9",
+    "Critical_Volume": 0.241,
+    "Critical_Pressure": 4.02,
+    "Critical_Compressibility": 0.278
+  },
+  "74-95-3": {
+    "Name": "Dibromomethane",
+    "Acentric_Factor": 0.2095,
+    "Critical_Temperature": 611,
+    "Formula": "CH2Br2",
+    "Molar_Weight": 173.835,
+    "ID": 83,
+    "CAS_Number": "74-95-3",
+    "Critical_Volume": 0.223,
+    "Critical_Pressure": 7.17,
+    "Critical_Compressibility": 0.315
+  },
+  "75-29-6": {
+    "Name": "2-Chloropropane",
+    "Acentric_Factor": 0.1986,
+    "Critical_Temperature": 489,
+    "Formula": "C3H7Cl",
+    "Molar_Weight": 78.541,
+    "ID": 58,
+    "CAS_Number": "75-29-6",
+    "Critical_Volume": 0.247,
+    "Critical_Pressure": 4.54,
+    "Critical_Compressibility": 0.276
+  },
+  "78-93-3": {
+    "IG_Entropy_of_Formation_25C": "4.70689",
+    "Critical_Temperature": 535.5,
+    "UNIQUAC_q": "2.88",
+    "UNIQUAC_r": "3.25",
+    "COSMODBName": "METHYL-ETHYL-KETONE",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "-3.31E+03",
+    "Critical_Volume": 0.267,
+    "CAS_Number": "78-93-3",
+    "ID": 222,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "4"
+        },
+        {
+          "-name": "O",
+          "#text": "1"
+        },
+        {
+          "-name": "H",
+          "#text": "8"
+        }
+      ]
+    },
+    "Z_Rackett": 0,
+    "Critical_Compressibility": 0.249,
+    "Acentric_Factor": 0.3234,
+    "HvapTmin": 214.24,
+    "CS_Liquid_Molar_Volume": 0,
+    "HVapB": 0.37499931,
+    "HVapA": 46740664.14,
+    "HVapD": 0,
+    "CS_Solubility_Parameter": 0,
+    "isPf": 0,
+    "Dipole_Moment": 0,
+    "DIPPR_Vapor_Pressure_TMAX": 376,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "Ideal_Gas_Heat_Capacity_Const_C": -0.000189997,
+    "DIPPR_Vapor_Pressure_Constant_D": 6.89E-06,
+    "Ideal_Gas_Heat_Capacity_Const_B": 0.355919868,
+    "DIPPR_Vapor_Pressure_Constant_C": -8.249077843,
+    "Ideal_Gas_Heat_Capacity_Const_E": 0,
+    "Normal_Boiling_Point": 352.8,
+    "DIPPR_Vapor_Pressure_Constant_B": -6076.881849,
+    "Ideal_Gas_Heat_Capacity_Const_D": 3.92E-08,
+    "DIPPR_Vapor_Pressure_Constant_A": 76.3797304,
+    "Critical_Pressure": 4.15,
+    "UNIFAC": {
+      "group": [
+        {
+          "-name": "CH3",
+          "#text": "1"
+        },
+        {
+          "-name": "CH2",
+          "#text": "1"
+        },
+        {
+          "-name": "CH3CO",
+          "#text": "1"
+        }
+      ]
+    },
+    "Formula": "C4H8O",
+    "Molar_Weight": 72.106,
+    "IG_Gibbs_Energy_of_Formation_25C": -2038.65,
+    "HvapC": 0,
+    "Ideal_Gas_Heat_Capacity_Const_A": 10.9442952,
+    "DIPPR_Vapor_Pressure_TMIN": 257,
+    "Name": "Methylethyl ketone",
+    "CS_Acentric_Factor": 0,
+    "Liquid_Viscosity_Const_B": 751.513234,
+    "Liquid_Viscosity_Const_A": -16.04202756,
+    "Liquid_Viscosity_Const_D": 0,
+    "Liquid_Viscosity_Const_C": 1.081012604,
+    "HvapTMAX": 535.6,
+    "Liquid_Viscosity_Const_E": 0
+  },
+  "115-10-6": {
+    "Name": "Dimethyl ether",
+    "Acentric_Factor": 0.2002,
+    "Critical_Temperature": 400.1,
+    "Formula": "C2H6O",
+    "Molar_Weight": 46.068,
+    "ID": 112,
+    "CAS_Number": "115-10-6",
+    "Critical_Volume": 0.17,
+    "Critical_Pressure": 5.37,
+    "Critical_Compressibility": 0.2744
+  },
+  "60-29-7": {
+    "Name": "Diethyl ether",
+    "Acentric_Factor": 0.2811,
+    "Critical_Temperature": 466.7,
+    "Formula": "C4H10O",
+    "Molar_Weight": 74.122,
+    "ID": 95,
+    "CAS_Number": "60-29-7",
+    "Critical_Volume": 0.28,
+    "Critical_Pressure": 3.64,
+    "Critical_Compressibility": 0.263
+  },
+  "7440-37-1": {
+    "Name": "Argon",
+    "Acentric_Factor": 0.0000,
+    "Critical_Temperature": 150.86,
+    "Formula": "Ar",
+    "Molar_Weight": 39.948,
+    "ID": 14,
+    "CAS_Number": "7440-37-1",
+    "Critical_Volume": 0.07459,
+    "Critical_Pressure": 4.898,
+    "Critical_Compressibility": 0.291
+  },
+  "112-95-8": {
+    "Name": "Eicosane",
+    "Acentric_Factor": 0.9069,
+    "Critical_Temperature": 768,
+    "Formula": "C20H42",
+    "Molar_Weight": 282.547,
+    "ID": 124,
+    "CAS_Number": "112-95-8",
+    "Critical_Volume": 1.34,
+    "Critical_Pressure": 1.16,
+    "Critical_Compressibility": 0.243
+  },
+  "626-93-7": {
+    "Name": "2-Hexanol",
+    "Acentric_Factor": 0.5574,
+    "Critical_Temperature": 585.3,
+    "Formula": "C6H14O",
+    "Molar_Weight": 102.175,
+    "ID": 174,
+    "CAS_Number": "626-93-7",
+    "Critical_Volume": 0.385,
+    "Critical_Pressure": 3.311,
+    "Critical_Compressibility": 0.262
+  },
+  "88-09-5": {
+    "Name": "2-Ethyl butanoic acid",
+    "Acentric_Factor": 0.6326,
+    "Critical_Temperature": 655,
+    "Formula": "C6H12O2",
+    "Molar_Weight": 116.158,
+    "ID": 131,
+    "CAS_Number": "88-09-5",
+    "Critical_Volume": 0.389,
+    "Critical_Pressure": 3.41,
+    "Critical_Compressibility": 0.244
+  },
+  "56-23-5": {
+    "Name": "Carbon tetrachloride",
+    "Acentric_Factor": 0.1926,
+    "Critical_Temperature": 556.35,
+    "Formula": "CCl4",
+    "Molar_Weight": 153.823,
+    "ID": 50,
+    "CAS_Number": "56-23-5",
+    "Critical_Volume": 0.276,
+    "Critical_Pressure": 4.56,
+    "Critical_Compressibility": 0.272
+  },
+  "107-13-1": {
+    "Name": "Acrylonitrile",
+    "Acentric_Factor": 0.3498,
+    "Critical_Temperature": 535,
+    "Formula": "C3H3N",
+    "Molar_Weight": 53.063,
+    "ID": 10,
+    "CAS_Number": "107-13-1",
+    "Critical_Volume": 0.212,
+    "Critical_Pressure": 4.48,
+    "Critical_Compressibility": 0.214
+  },
+  "693-02-7": {
+    "Name": "1-Hexyne",
+    "Acentric_Factor": 0.3327,
+    "Critical_Temperature": 516.2,
+    "Formula": "C6H10",
+    "Molar_Weight": 82.144,
+    "ID": 180,
+    "CAS_Number": "693-02-7",
+    "Critical_Volume": 0.322,
+    "Critical_Pressure": 3.62,
+    "Critical_Compressibility": 0.272
+  },
+  "1640-89-7": {
+    "Name": "Ethylcyclopentane",
+    "Acentric_Factor": 0.2701,
+    "Critical_Temperature": 569.5,
+    "Formula": "C7H14",
+    "Molar_Weight": 98.186,
+    "ID": 134,
+    "CAS_Number": "1640-89-7",
+    "Critical_Volume": 0.375,
+    "Critical_Pressure": 3.4,
+    "Critical_Compressibility": 0.269
+  },
+  "108-10-1": {
+    "Name": "Methylisobutyl ketone",
+    "Acentric_Factor": 0.3557,
+    "Critical_Temperature": 574.6,
+    "Formula": "C6H12O",
+    "Molar_Weight": 100.159,
+    "ID": 226,
+    "CAS_Number": "108-10-1",
+    "Critical_Volume": 0.369,
+    "Critical_Pressure": 3.27,
+    "Critical_Compressibility": 0.253
+  },
+  "111-66-0": {
+    "Name": "1-Octene",
+    "Acentric_Factor": 0.3921,
+    "Critical_Temperature": 566.9,
+    "Formula": "C8H16",
+    "Molar_Weight": 112.213,
+    "ID": 271,
+    "CAS_Number": "111-66-0",
+    "Critical_Volume": 0.464,
+    "Critical_Pressure": 2.663,
+    "Critical_Compressibility": 0.262
+  },
+  "287-23-0": {
+    "Name": "Cyclobutane",
+    "Acentric_Factor": 0.1847,
+    "Critical_Temperature": 459.93,
+    "Formula": "C4H8",
+    "Molar_Weight": 56.106,
+    "ID": 64,
+    "CAS_Number": "287-23-0",
+    "Critical_Volume": 0.21,
+    "Critical_Pressure": 4.98,
+    "Critical_Compressibility": 0.273
+  },
+  "5756-43-4": {
+    "Name": "Ethylhexyl ether",
+    "Acentric_Factor": 0.4944,
+    "Critical_Temperature": 583,
+    "Formula": "C8H18O",
+    "Molar_Weight": 130.228,
+    "ID": 142,
+    "CAS_Number": "5756-43-4",
+    "Critical_Volume": 0.487,
+    "Critical_Pressure": 2.46,
+    "Critical_Compressibility": 0.247
+  },
+  "7446-09-5": {
+    "Name": "Sulfur dioxide",
+    "Acentric_Factor": 0.2454,
+    "Critical_Temperature": 430.75,
+    "Formula": "O2S",
+    "Molar_Weight": 64.064,
+    "ID": 314,
+    "CAS_Number": "O2S",
+    "Critical_Volume": 0.122,
+    "Critical_Pressure": 7.884,
+    "Critical_Compressibility": 0.269
+  },
+  "123-72-8": {
+    "Name": "Butyraldehyde",
+    "Acentric_Factor": 0.2774,
+    "Critical_Temperature": 537.2,
+    "Formula": "C4H8O",
+    "Molar_Weight": 72.106,
+    "ID": 44,
+    "CAS_Number": "123-72-8",
+    "Critical_Volume": 0.258,
+    "Critical_Pressure": 4.32,
+    "Critical_Compressibility": 0.25
+  },
+  "108-20-3": {
+    "Name": "Di-isopropyl ether",
+    "Acentric_Factor": 0.3387,
+    "Critical_Temperature": 500.05,
+    "Formula": "C6H14O",
+    "Molar_Weight": 102.175,
+    "ID": 101,
+    "CAS_Number": "108-20-3",
+    "Critical_Volume": 0.386,
+    "Critical_Pressure": 2.88,
+    "Critical_Compressibility": 0.267
+  },
+  "119-61-9": {
+    "Name": "Benzophenone",
+    "Acentric_Factor": 0.5019,
+    "Critical_Temperature": 830,
+    "Formula": "C13H10O",
+    "Molar_Weight": 182.218,
+    "ID": 20,
+    "CAS_Number": "119-61-9",
+    "Critical_Volume": 0.5677,
+    "Critical_Pressure": 3.352,
+    "Critical_Compressibility": 0.276
+  },
+  "526-73-8": {
+    "Name": "1,2,3-Trimethylbenzene",
+    "Acentric_Factor": 0.3666,
+    "Critical_Temperature": 664.5,
+    "Formula": "C9H12",
+    "Molar_Weight": 120.192,
+    "ID": 330,
+    "CAS_Number": "526-73-8",
+    "Critical_Volume": 0.414,
+    "Critical_Pressure": 3.454,
+    "Critical_Compressibility": 0.259
+  },
+  "10024-97-2": {
+    "Name": "Nitrous oxide",
+    "Acentric_Factor": 0.1409,
+    "Critical_Temperature": 309.57,
+    "Formula": "N2O",
+    "Molar_Weight": 44.013,
+    "ID": 252,
+    "CAS_Number": "10024-97-2",
+    "Critical_Volume": 0.0974,
+    "Critical_Pressure": 7.245,
+    "Critical_Compressibility": 0.274
+  },
+  "116-53-0": {
+    "Name": "2-Methylbutanoic acid",
+    "Acentric_Factor": 0.5894,
+    "Critical_Temperature": 643,
+    "Formula": "C5H10O2",
+    "Molar_Weight": 102.132,
+    "ID": 203,
+    "CAS_Number": "116-53-0",
+    "Critical_Volume": 0.347,
+    "Critical_Pressure": 3.89,
+    "Critical_Compressibility": 0.252
+  },
+  "74-99-7": {
+    "Name": "Methyl acetylene",
+    "Acentric_Factor": 0.2115,
+    "Critical_Temperature": 402.4,
+    "Formula": "C3H4",
+    "Molar_Weight": 40.064,
+    "ID": 197,
+    "CAS_Number": "74-99-7",
+    "Critical_Volume": 0.164,
+    "Critical_Pressure": 5.63,
+    "Critical_Compressibility": 0.276
+  },
+  "85-01-8": {
+    "Name": "Phenanthrene",
+    "Acentric_Factor": 0.4707,
+    "Critical_Temperature": 869,
+    "Formula": "C14H10",
+    "Molar_Weight": 178.229,
+    "ID": 290,
+    "CAS_Number": "85-01-8",
+    "Critical_Volume": 0.554,
+    "Critical_Pressure": 2.9,
+    "Critical_Compressibility": 0.222
+  },
+  "98-83-9": {
+    "Name": "alpha-Methyl styrene",
+    "Acentric_Factor": 0.3230,
+    "Critical_Temperature": 654,
+    "Formula": "C9H10",
+    "Molar_Weight": 118.176,
+    "ID": 243,
+    "CAS_Number": "98-83-9",
+    "Critical_Volume": 0.399,
+    "Critical_Pressure": 3.36,
+    "Critical_Compressibility": 0.247
+  },
+  "91-20-3": {
+    "Name": "Naphthalene",
+    "Acentric_Factor": 0.3020,
+    "Critical_Temperature": 748.4,
+    "Formula": "C10H8",
+    "Molar_Weight": 128.171,
+    "ID": 246,
+    "CAS_Number": "91-20-3",
+    "Critical_Volume": 0.407,
+    "Critical_Pressure": 4.05,
+    "Critical_Compressibility": 0.265
+  },
+  "563-80-4": {
+    "Name": "Methylisopropyl ketone",
+    "Acentric_Factor": 0.3208,
+    "Critical_Temperature": 553.4,
+    "Formula": "C5H10O",
+    "Molar_Weight": 86.132,
+    "ID": 229,
+    "CAS_Number": "563-80-4",
+    "Critical_Volume": 0.31,
+    "Critical_Pressure": 3.8,
+    "Critical_Compressibility": 0.256
+  },
+  "629-62-9": {
+    "Name": "Pentadecane",
+    "Acentric_Factor": 0.6863,
+    "Critical_Temperature": 708,
+    "Formula": "C15H32",
+    "Molar_Weight": 212.415,
+    "ID": 277,
+    "CAS_Number": "629-62-9",
+    "Critical_Volume": 0.969,
+    "Critical_Pressure": 1.48,
+    "Critical_Compressibility": 0.244
+  },
+  "7440-01-9": {
+    "Name": "Neon",
+    "Acentric_Factor": -0.0396,
+    "Critical_Temperature": 44.4,
+    "Formula": "Ne",
+    "Molar_Weight": 20.180,
+    "ID": 247,
+    "CAS_Number": "7440-01-9",
+    "Critical_Volume": 0.0417,
+    "Critical_Pressure": 2.653,
+    "Critical_Compressibility": 0.3
+  },
+  "106-46-7": {
+    "Name": "p-Dichlorobenzene",
+    "Acentric_Factor": 0.2846,
+    "Critical_Temperature": 684.75,
+    "Formula": "C6H4Cl2",
+    "Molar_Weight": 147.002,
+    "ID": 87,
+    "CAS_Number": "106-46-7",
+    "Critical_Volume": 0.351,
+    "Critical_Pressure": 4.07,
+    "Critical_Compressibility": 0.251
+  },
+  "1678-91-7": {
+    "Name": "Ethylcyclohexane",
+    "Acentric_Factor": 0.2455,
+    "Critical_Temperature": 609.15,
+    "Formula": "C8H16",
+    "Molar_Weight": 112.213,
+    "ID": 133,
+    "CAS_Number": "1678-91-7",
+    "Critical_Volume": 0.43,
+    "Critical_Pressure": 3.04,
+    "Critical_Compressibility": 0.258
+  },
+  "131-11-3": {
+    "Name": "Dimethyl phthalate",
+    "Acentric_Factor": 0.6568,
+    "Critical_Temperature": 766,
+    "Formula": "C10H10O4",
+    "Molar_Weight": 194.184,
+    "ID": 115,
+    "CAS_Number": "131-11-3",
+    "Critical_Volume": 0.53,
+    "Critical_Pressure": 2.78,
+    "Critical_Compressibility": 0.231
+  },
+  "78-78-4": {
+    "IG_Entropy_of_Formation_25C": "4.76708",
+    "Critical_Temperature": 460.4,
+    "UNIQUAC_q": "3.31",
+    "UNIQUAC_r": "3.82",
+    "COSMODBName": "2-METHYL-BUTANE",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "-2130.3",
+    "Critical_Volume": 0.306,
+    "CAS_Number": "78-78-4",
+    "ID": 202,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "5"
+        },
+        {
+          "-name": "H",
+          "#text": "12"
+        }
+      ]
+    },
+    "Z_Rackett": 2.68E-01,
+    "Critical_Compressibility": 0.27,
+    "Acentric_Factor": 0.2279,
+    "HvapTmin": 113,
+    "CS_Liquid_Molar_Volume": 116.1,
+    "HVapB": 0.39173,
+    "HVapA": 37593000,
+    "HVapD": 0,
+    "PR_Volume_Translation_Coefficient": -0.0608,
+    "CS_Solubility_Parameter": 7.02,
+    "isPf": 0,
+    "Dipole_Moment": 4.34E-31,
+    "DIPPR_Vapor_Pressure_TMAX": 460,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "SRK_Volume_Translation_Coefficient": 0.1022,
+    "Ideal_Gas_Heat_Capacity_Const_C": 2.53E-04,
+    "DIPPR_Vapor_Pressure_Constant_D": 8.73E-06,
+    "Ideal_Gas_Heat_Capacity_Const_B": 2.49E-01,
+    "DIPPR_Vapor_Pressure_Constant_C": -7.7169,
+    "Ideal_Gas_Heat_Capacity_Const_E": 1.29E-10,
+    "Normal_Boiling_Point": 300.994,
+    "DIPPR_Vapor_Pressure_Constant_B": -4976,
+    "Ideal_Gas_Heat_Capacity_Const_D": -3.84E-07,
+    "DIPPR_Vapor_Pressure_Constant_A": 71.308,
+    "Critical_Pressure": 3.38,
+    "UNIFAC": {
+      "group": [
+        {
+          "-name": "CH3",
+          "#text": "3"
+        },
+        {
+          "-name": "CH2",
+          "#text": "1"
+        },
+        {
+          "-name": "CH",
+          "#text": "1"
+        }
+      ]
+    },
+    "Formula": "C5H12",
+    "Molar_Weight": 72.149,
+    "IG_Gibbs_Energy_of_Formation_25C": -194.73,
+    "HvapC": 0,
+    "Ideal_Gas_Heat_Capacity_Const_A": 3.37E+01,
+    "DIPPR_Vapor_Pressure_TMIN": 113,
+    "Name": "2-Methylbutane",
+    "CS_Acentric_Factor": 0.2104,
+    "Liquid_Viscosity_Const_B": 889.11,
+    "Liquid_Viscosity_Const_A": -12.596,
+    "Liquid_Viscosity_Const_D": 0.00E+00,
+    "Liquid_Viscosity_Const_C": 0.20469,
+    "HvapTMAX": 460,
+    "Liquid_Viscosity_Const_E": 0
+  },
+  "74-90-8": {
+    "Name": "Hydrogen cyanide",
+    "Acentric_Factor": 0.4099,
+    "Critical_Temperature": 456.65,
+    "Formula": "CHN",
+    "Molar_Weight": 27.025,
+    "ID": 186,
+    "CAS_Number": "74-90-8",
+    "Critical_Volume": 0.139,
+    "Critical_Pressure": 5.39,
+    "Critical_Compressibility": 0.197
+  },
+  "7782-41-4": {
+    "Name": "Fluorine",
+    "Acentric_Factor": 0.0530,
+    "Critical_Temperature": 144.12,
+    "Formula": "F2",
+    "Molar_Weight": 37.997,
+    "ID": 149,
+    "CAS_Number": "7782-41-4",
+    "Critical_Volume": 0.066547,
+    "Critical_Pressure": 5.172,
+    "Critical_Compressibility": 0.287
+  },
+  "764-35-2": {
+    "Name": "2-Hexyne",
+    "Acentric_Factor": 0.2214,
+    "Critical_Temperature": 549,
+    "Formula": "C6H10",
+    "Molar_Weight": 82.144,
+    "ID": 181,
+    "CAS_Number": "764-35-2",
+    "Critical_Volume": 0.331,
+    "Critical_Pressure": 3.53,
+    "Critical_Compressibility": 0.256
+  },
+  "598-25-4": {
+    "Name": "3-Methyl-1,2-butadiene",
+    "Acentric_Factor": 0.1874,
+    "Critical_Temperature": 490,
+    "Formula": "C5H8",
+    "Molar_Weight": 68.117,
+    "ID": 201,
+    "CAS_Number": "598-25-4",
+    "Critical_Volume": 0.291,
+    "Critical_Pressure": 3.83,
+    "Critical_Compressibility": 0.274
+  },
+  "112-42-5": {
+    "Name": "1-Undecanol",
+    "Acentric_Factor": 0.6236,
+    "Critical_Temperature": 703.9,
+    "Formula": "C11H24O",
+    "Molar_Weight": 172.308,
+    "ID": 337,
+    "CAS_Number": "112-42-5",
+    "Critical_Volume": 0.715,
+    "Critical_Pressure": 2.119,
+    "Critical_Compressibility": 0.259
+  },
+  "589-38-8": {
+    "Name": "3-Hexanone",
+    "Acentric_Factor": 0.3801,
+    "Critical_Temperature": 582.82,
+    "Formula": "C6H12O",
+    "Molar_Weight": 100.159,
+    "ID": 176,
+    "CAS_Number": "589-38-8",
+    "Critical_Volume": 0.378,
+    "Critical_Pressure": 3.32,
+    "Critical_Compressibility": 0.259
+  },
+  "100-66-3": {
+    "Name": "Anisole",
+    "Acentric_Factor": 0.3502,
+    "Critical_Temperature": 645.6,
+    "Formula": "C7H8O",
+    "Molar_Weight": 108.138,
+    "ID": 13,
+    "CAS_Number": "100-66-3",
+    "Critical_Volume": 0.337,
+    "Critical_Pressure": 4.25,
+    "Critical_Compressibility": 0.267
+  },
+  "594-82-1": {
+    "Name": "2,2,3,3-Tetramethylbutane",
+    "Acentric_Factor": 0.2450,
+    "Critical_Temperature": 568,
+    "Formula": "C8H18",
+    "Molar_Weight": 114.229,
+    "ID": 323,
+    "CAS_Number": "594-82-1",
+    "Critical_Volume": 0.461,
+    "Critical_Pressure": 2.87,
+    "Critical_Compressibility": 0.28
+  },
+  "67-68-5": {
+    "Name": "Dimethyl sulfoxide",
+    "Acentric_Factor": 0.2806,
+    "Critical_Temperature": 729,
+    "Formula": "C2H6OS",
+    "Molar_Weight": 78.133,
+    "ID": 118,
+    "CAS_Number": "67-68-5",
+    "Critical_Volume": 0.227,
+    "Critical_Pressure": 5.65,
+    "Critical_Compressibility": 0.212
+  },
+  "992-94-9": {
+    "Name": "Methylsilane",
+    "Acentric_Factor": 0.1314,
+    "Critical_Temperature": 352.5,
+    "Formula": "CH6Si",
+    "Molar_Weight": 46.144,
+    "ID": 242,
+    "CAS_Number": "992-94-9",
+    "Critical_Volume": 0.205,
+    "Critical_Pressure": 4.7,
+    "Critical_Compressibility": 0.329
+  },
+  "57-55-6": {
+    "IG_Entropy_of_Formation_25C": "4.88163",
+    "Critical_Temperature": 626,
+    "isHYP": "0",
+    "COSMODBName": "PROPANEDIOL-1,2",
+    "isPf": 0,
+    "Dipole_Moment": 0,
+    "IG_Enthalpy_of_Formation_25C": "-5.54E+03",
+    "Critical_Volume": 0.239,
+    "DIPPR_Vapor_Pressure_TMAX": 483,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "Ideal_Gas_Heat_Capacity_Const_C": -0.000298142,
+    "Ideal_Gas_Heat_Capacity_Const_B": 0.42119208,
+    "DIPPR_Vapor_Pressure_Constant_D": 6.89E-06,
+    "Normal_Boiling_Point": 460.5,
+    "Ideal_Gas_Heat_Capacity_Const_E": 0,
+    "DIPPR_Vapor_Pressure_Constant_C": -7.540709198,
+    "Ideal_Gas_Heat_Capacity_Const_D": 8.95E-08,
+    "DIPPR_Vapor_Pressure_Constant_B": -8140.661782,
+    "ID": 309,
+    "CAS_Number": "57-55-6",
+    "DIPPR_Vapor_Pressure_Constant_A": 74.18416099,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "3"
+        },
+        {
+          "-name": "O",
+          "#text": "2"
+        },
+        {
+          "-name": "H",
+          "#text": "8"
+        }
+      ]
+    },
+    "Critical_Pressure": 6.1,
+    "Critical_Compressibility": 0.28,
+    "Z_Rackett": 0,
+    "Acentric_Factor": 1.1065,
+    "UNIFAC": {
+      "group": [
+        {
+          "-name": "CH3",
+          "#text": "1"
+        },
+        {
+          "-name": "CH2",
+          "#text": "1"
+        },
+        {
+          "-name": "CH",
+          "#text": "1"
+        },
+        {
+          "-name": "OH",
+          "#text": "2"
+        }
+      ]
+    },
+    "Formula": "C3H8O2",
+    "Molar_Weight": 76.094,
+    "IG_Gibbs_Energy_of_Formation_25C": -3995.01,
+    "HvapC": 0,
+    "Ideal_Gas_Heat_Capacity_Const_A": 0.6322068,
+    "HvapTmin": 250,
+    "CS_Liquid_Molar_Volume": 0,
+    "DIPPR_Vapor_Pressure_TMIN": 357,
+    "Name": "1,2-Propylene glycol",
+    "HVapB": 0.375000913,
+    "HVapA": 89373685.45,
+    "CS_Acentric_Factor": 0,
+    "Liquid_Viscosity_Const_B": 1708.498864,
+    "HVapD": 0,
+    "Liquid_Viscosity_Const_A": -16.81985807,
+    "Liquid_Viscosity_Const_D": 0,
+    "Liquid_Viscosity_Const_C": 0.97950716,
+    "CS_Solubility_Parameter": 0,
+    "Liquid_Viscosity_Const_E": 0,
+    "HvapTMAX": 625
+  },
+  "6876-23-9": {
+    "Name": "trans-1,2-Dimethylcyclohexane",
+    "Acentric_Factor": 0.2379,
+    "Critical_Temperature": 596.15,
+    "Formula": "C8H16",
+    "Molar_Weight": 112.213,
+    "ID": 110,
+    "CAS_Number": "6876-23-9",
+    "Critical_Volume": 0.46,
+    "Critical_Pressure": 2.938,
+    "Critical_Compressibility": 0.273
+  },
+  "103-65-1": {
+    "Name": "Propylbenzene",
+    "Acentric_Factor": 0.3444,
+    "Critical_Temperature": 638.35,
+    "Formula": "C9H12",
+    "Molar_Weight": 120.192,
+    "ID": 304,
+    "CAS_Number": "103-65-1",
+    "Critical_Volume": 0.44,
+    "Critical_Pressure": 3.2,
+    "Critical_Compressibility": 0.265
+  },
+  "563-46-2": {
+    "Name": "2-Methyl-1-butene",
+    "Acentric_Factor": 0.2341,
+    "Critical_Temperature": 465,
+    "Formula": "C5H10",
+    "Molar_Weight": 70.133,
+    "ID": 205,
+    "CAS_Number": "563-46-2",
+    "Critical_Volume": 0.292,
+    "Critical_Pressure": 3.447,
+    "Critical_Compressibility": 0.26
+  },
+  "1634-04-4": {
+    "Name": "Methyl tert-butyl ether",
+    "Acentric_Factor": 0.2466,
+    "Critical_Temperature": 497.1,
+    "Formula": "C5H12O",
+    "Molar_Weight": 88.148,
+    "ID": 244,
+    "CAS_Number": "1634-04-4",
+    "Critical_Volume": 0.314,
+    "Critical_Pressure": 3.287,
+    "Critical_Compressibility": 0.25
+  },
+  "100-53-8": {
+    "Name": "Benzyl mercaptan",
+    "Acentric_Factor": 0.3126,
+    "Critical_Temperature": 718,
+    "Formula": "C7H8S",
+    "Molar_Weight": 124.203,
+    "ID": 23,
+    "CAS_Number": "100-53-8",
+    "Critical_Volume": 0.367,
+    "Critical_Pressure": 4.06,
+    "Critical_Compressibility": 0.25
+  },
+  "111-42-2": {
+    "Name": "Diethanol amine",
+    "Acentric_Factor": 0.9529,
+    "Critical_Temperature": 736.6,
+    "Formula": "C4H11NO2",
+    "Molar_Weight": 105.136,
+    "ID": 93,
+    "CAS_Number": "111-42-2",
+    "Critical_Volume": 0.349,
+    "Critical_Pressure": 4.27,
+    "Critical_Compressibility": 0.243
+  },
+  "123-51-3": {
+    "IG_Entropy_of_Formation_25C": "5.37673",
+    "Critical_Temperature": 577.2,
+    "isHYP": "0",
+    "COSMODBName": "3-METHYL-1-BUTANOL",
+    "isPf": 0,
+    "Dipole_Moment": 0,
+    "IG_Enthalpy_of_Formation_25C": "-3.43E+03",
+    "Critical_Volume": 0.329,
+    "DIPPR_Vapor_Pressure_TMAX": 426,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "Ideal_Gas_Heat_Capacity_Const_C": -0.000348467,
+    "Ideal_Gas_Heat_Capacity_Const_B": 0.56814876,
+    "DIPPR_Vapor_Pressure_Constant_D": 6.89E-06,
+    "Normal_Boiling_Point": 404.4,
+    "Ideal_Gas_Heat_Capacity_Const_E": 0,
+    "DIPPR_Vapor_Pressure_Constant_C": -8.192555648,
+    "Ideal_Gas_Heat_Capacity_Const_D": 8.65E-08,
+    "DIPPR_Vapor_Pressure_Constant_B": -7022.095467,
+    "ID": 204,
+    "CAS_Number": "123-51-3",
+    "DIPPR_Vapor_Pressure_Constant_A": 77.17529417,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "5"
+        },
+        {
+          "-name": "O",
+          "#text": "1"
+        },
+        {
+          "-name": "H",
+          "#text": "12"
+        }
+      ]
+    },
+    "Critical_Pressure": 3.93,
+    "Critical_Compressibility": 0.269,
+    "Z_Rackett": 0,
+    "Acentric_Factor": 0.5939,
+    "UNIFAC": {
+      "group": [
+        {
+          "-name": "CH3",
+          "#text": "2"
+        },
+        {
+          "-name": "CH2",
+          "#text": "2"
+        },
+        {
+          "-name": "CH",
+          "#text": "1"
+        },
+        {
+          "-name": "OH",
+          "#text": "1"
+        }
+      ]
+    },
+    "Formula": "C5H12O",
+    "Molar_Weight": 88.148,
+    "IG_Gibbs_Energy_of_Formation_25C": -1644.94,
+    "HvapC": 0,
+    "Ideal_Gas_Heat_Capacity_Const_A": -9.5417172,
+    "HvapTmin": 231.8,
+    "CS_Liquid_Molar_Volume": 0,
+    "DIPPR_Vapor_Pressure_TMIN": 298,
+    "Name": "3-Methyl-1-butanol",
+    "HVapB": 0.375002196,
+    "HVapA": 69125214.26,
+    "CS_Acentric_Factor": 0,
+    "Liquid_Viscosity_Const_B": 1448.880777,
+    "HVapD": 0,
+    "Liquid_Viscosity_Const_A": -17.01905057,
+    "Liquid_Viscosity_Const_D": 0,
+    "Liquid_Viscosity_Const_C": 1.016513369,
+    "CS_Solubility_Parameter": 0,
+    "Liquid_Viscosity_Const_E": 0,
+    "HvapTMAX": 579.5
+  },
+  "74-82-8": {
+    "IG_Entropy_of_Formation_25C": "2.58324",
+    "Critical_Temperature": 190.564,
+    "UNIQUAC_q": "1.152",
+    "UNIQUAC_r": "1.1239",
+    "COSMODBName": "METHANE",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "-4645.1",
+    "Critical_Volume": 0.0986,
+    "CAS_Number": "74-82-8",
+    "ID": 193,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "1"
+        },
+        {
+          "-name": "H",
+          "#text": "4"
+        }
+      ]
+    },
+    "Z_Rackett": 2.89E-01,
+    "Critical_Compressibility": 0.286,
+    "Acentric_Factor": 0.0115,
+    "HvapTmin": 90,
+    "CS_Liquid_Molar_Volume": 52,
+    "HVapB": 0.26087,
+    "HVapA": 10194000,
+    "HVapD": 0.22154,
+    "PR_Volume_Translation_Coefficient": -0.1595,
+    "CS_Solubility_Parameter": 5.68,
+    "isPf": 0,
+    "Dipole_Moment": 0,
+    "DIPPR_Vapor_Pressure_TMAX": 190.56,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "SRK_Volume_Translation_Coefficient": 0.0234,
+    "Ideal_Gas_Heat_Capacity_Const_C": 2.21E-04,
+    "DIPPR_Vapor_Pressure_Constant_D": 3.10E-05,
+    "Ideal_Gas_Heat_Capacity_Const_B": -5.11E-02,
+    "DIPPR_Vapor_Pressure_Constant_C": -3.44,
+    "Ideal_Gas_Heat_Capacity_Const_E": 4.89E-11,
+    "Normal_Boiling_Point": 111.66,
+    "DIPPR_Vapor_Pressure_Constant_B": -1324.4,
+    "Ideal_Gas_Heat_Capacity_Const_D": -1.82E-07,
+    "DIPPR_Vapor_Pressure_Constant_A": 39.205,
+    "Critical_Pressure": 4.599,
+    "UNIFAC": {
+      "group": {
+        "-name": "CH4",
+        "#text": "1"
+      }
+    },
+    "Formula": "CH4",
+    "Molar_Weight": 16.042,
+    "IG_Gibbs_Energy_of_Formation_25C": -3147.21,
+    "HvapC": -0.14694,
+    "Ideal_Gas_Heat_Capacity_Const_A": 3.62E+01,
+    "DIPPR_Vapor_Pressure_TMIN": 90.64,
+    "Name": "Methane",
+    "CS_Acentric_Factor": 0,
+    "Liquid_Viscosity_Const_B": 178.15,
+    "Liquid_Viscosity_Const_A": -61.572,
+    "Liquid_Viscosity_Const_D": -9.06E-24,
+    "Liquid_Viscosity_Const_C": -0.95239,
+    "HvapTMAX": 190,
+    "Liquid_Viscosity_Const_E": 10
+  },
+  "7664-39-3": {
+    "Name": "Hydrogen fluoride",
+    "Acentric_Factor": 0.3823,
+    "Critical_Temperature": 461.15,
+    "Formula": "HF",
+    "Molar_Weight": 20.006,
+    "ID": 187,
+    "CAS_Number": "7664-39-3",
+    "Critical_Volume": 0.069,
+    "Critical_Pressure": 6.48,
+    "Critical_Compressibility": 0.117
+  },
+  "108-90-7": {
+    "Name": "Chlorobenzene",
+    "Acentric_Factor": 0.2499,
+    "Critical_Temperature": 632.35,
+    "Formula": "C6H5Cl",
+    "Molar_Weight": 112.557,
+    "ID": 53,
+    "CAS_Number": "108-90-7",
+    "Critical_Volume": 0.308,
+    "Critical_Pressure": 4.519,
+    "Critical_Compressibility": 0.265
+  },
+  "624-83-9": {
+    "Name": "Methyl Isocyanate",
+    "Acentric_Factor": 0.3007,
+    "Critical_Temperature": 488,
+    "Formula": "C2H3NO",
+    "Molar_Weight": 57.051,
+    "ID": 227,
+    "CAS_Number": "624-83-9",
+    "Critical_Volume": 0.202,
+    "Critical_Pressure": 5.48,
+    "Critical_Compressibility": 0.273
+  },
+  "100-51-6": {
+    "Name": "Benzyl alcohol",
+    "Acentric_Factor": 0.3631,
+    "Critical_Temperature": 720.15,
+    "Formula": "C7H8O",
+    "Molar_Weight": 108.138,
+    "ID": 21,
+    "CAS_Number": "100-51-6",
+    "Critical_Volume": 0.382,
+    "Critical_Pressure": 4.374,
+    "Critical_Compressibility": 0.279
+  },
+  "79-24-3": {
+    "Name": "Nitroethane",
+    "Acentric_Factor": 0.3803,
+    "Critical_Temperature": 593,
+    "Formula": "C2H5NO2",
+    "Molar_Weight": 75.067,
+    "ID": 248,
+    "CAS_Number": "79-24-3",
+    "Critical_Volume": 0.236,
+    "Critical_Pressure": 5.16,
+    "Critical_Compressibility": 0.247
+  },
+  "84-15-1": {
+    "Name": "o-Terphenyl",
+    "Acentric_Factor": 0.5513,
+    "Critical_Temperature": 857,
+    "Formula": "C18H14",
+    "Molar_Weight": 230.304,
+    "ID": 318,
+    "CAS_Number": "84-15-1",
+    "Critical_Volume": 0.731,
+    "Critical_Pressure": 2.99,
+    "Critical_Compressibility": 0.307
+  },
+  "75-21-8": {
+    "Name": "Ethylene oxide",
+    "Acentric_Factor": 0.1974,
+    "Critical_Temperature": 469.15,
+    "Formula": "C2H4O",
+    "Molar_Weight": 44.053,
+    "ID": 139,
+    "CAS_Number": "75-21-8",
+    "Critical_Volume": 0.140296,
+    "Critical_Pressure": 7.19,
+    "Critical_Compressibility": 0.25876
+  },
+  "106-93-4": {
+    "Name": "1,2-Dibromoethane",
+    "Acentric_Factor": 0.2067,
+    "Critical_Temperature": 650.15,
+    "Formula": "C2H4Br2",
+    "Molar_Weight": 187.861,
+    "ID": 82,
+    "CAS_Number": "106-93-4",
+    "Critical_Volume": 0.2616,
+    "Critical_Pressure": 5.477,
+    "Critical_Compressibility": 0.265
+  },
+  "67-56-1": {
+    "IG_Entropy_of_Formation_25C": "3.32",
+    "Critical_Temperature": 512.5,
+    "UNIQUAC_q": "1.43",
+    "UNIQUAC_r": "1.43",
+    "COSMODBName": "METHANOL",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "-6.27E+03",
+    "Critical_Volume": 0.117,
+    "CAS_Number": "67-56-1",
+    "ID": 194,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "1"
+        },
+        {
+          "-name": "O",
+          "#text": "1"
+        },
+        {
+          "-name": "H",
+          "#text": "4"
+        }
+      ]
+    },
+    "Z_Rackett": 0.2334,
+    "Critical_Compressibility": 0.222,
+    "Acentric_Factor": 0.5658,
+    "HvapTmin": 205.04,
+    "CS_Liquid_Molar_Volume": 0,
+    "HVapB": 0.374999142,
+    "HVapA": 52810129.22,
+    "HVapD": 0,
+    "CS_Solubility_Parameter": 0,
+    "isPf": 0,
+    "Dipole_Moment": 0,
+    "DIPPR_Vapor_Pressure_TMAX": 364,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "Ideal_Gas_Heat_Capacity_Const_C": 2.59E-05,
+    "DIPPR_Vapor_Pressure_Constant_D": 6.89E-06,
+    "Ideal_Gas_Heat_Capacity_Const_B": 0.070924392,
+    "DIPPR_Vapor_Pressure_Constant_C": -8.384841112,
+    "Ideal_Gas_Heat_Capacity_Const_E": 0,
+    "Normal_Boiling_Point": 337.8,
+    "DIPPR_Vapor_Pressure_Constant_B": -6703.475707,
+    "Ideal_Gas_Heat_Capacity_Const_D": -2.85E-08,
+    "DIPPR_Vapor_Pressure_Constant_A": 79.4834234,
+    "Critical_Pressure": 8.084,
+    "UNIFAC": {
+      "group": [
+        {
+          "-name": "CH3",
+          "#text": "1"
+        },
+        {
+          "-name": "OH",
+          "#text": "1"
+        }
+      ]
+    },
+    "Formula": "CH4O",
+    "Molar_Weight": 32.042,
+    "IG_Gibbs_Energy_of_Formation_25C": -5065.99,
+    "HvapC": 0,
+    "Ideal_Gas_Heat_Capacity_Const_A": 21.1517136,
+    "DIPPR_Vapor_Pressure_TMIN": 257,
+    "Name": "Methanol",
+    "CS_Acentric_Factor": 0,
+    "Liquid_Viscosity_Const_B": 3126.504917,
+    "Liquid_Viscosity_Const_A": -27.20590722,
+    "Liquid_Viscosity_Const_D": 0,
+    "Liquid_Viscosity_Const_C": 1.079640505,
+    "HvapTMAX": 512.6,
+    "Liquid_Viscosity_Const_E": 0
+  },
+  "96-33-3": {
+    "Name": "Methyl acrylate",
+    "Acentric_Factor": 0.3423,
+    "Critical_Temperature": 536,
+    "Formula": "C4H6O2",
+    "Molar_Weight": 86.089,
+    "ID": 198,
+    "CAS_Number": "96-33-3",
+    "Critical_Volume": 0.27,
+    "Critical_Pressure": 4.25,
+    "Critical_Compressibility": 0.258
+  },
+  "108-18-9": {
+    "Name": "Di-isopropyl amine",
+    "Acentric_Factor": 0.3883,
+    "Critical_Temperature": 523.1,
+    "Formula": "C6H15N",
+    "Molar_Weight": 101.190,
+    "ID": 100,
+    "CAS_Number": "108-18-9",
+    "Critical_Volume": 0.418,
+    "Critical_Pressure": 3.2,
+    "Critical_Compressibility": 0.308
+  },
+  "118-96-7": {
+    "Name": "2,4,6-Trinitrotoluene",
+    "Acentric_Factor": 0.8972,
+    "Critical_Temperature": 828,
+    "Formula": "C7H5N3O6",
+    "Molar_Weight": 227.131,
+    "ID": 335,
+    "CAS_Number": "118-96-7",
+    "Critical_Volume": 0.572,
+    "Critical_Pressure": 3.04,
+    "Critical_Compressibility": 0.253
+  },
+  "67-66-3": {
+    "Name": "Chloroform",
+    "Acentric_Factor": 0.2219,
+    "Critical_Temperature": 536.4,
+    "Formula": "CHCl3",
+    "Molar_Weight": 119.378,
+    "ID": 55,
+    "CAS_Number": "67-66-3",
+    "Critical_Volume": 0.239,
+    "Critical_Pressure": 5.472,
+    "Critical_Compressibility": 0.293
+  },
+  "141-82-2": {
+    "Name": "Malonic acid",
+    "Acentric_Factor": 0.9418,
+    "Critical_Temperature": 805,
+    "Formula": "C3H4O4",
+    "Molar_Weight": 104.061,
+    "ID": 191,
+    "CAS_Number": "141-82-2",
+    "Critical_Volume": 0.258,
+    "Critical_Pressure": 5.64,
+    "Critical_Compressibility": 0.217
+  },
+  "75-28-5": {
+    "IG_Entropy_of_Formation_25C": "4.09808",
+    "Critical_Temperature": 407.8,
+    "UNIQUAC_q": "2.772",
+    "UNIQUAC_r": "3.1502",
+    "COSMODBName": "ISOBUTANE",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "-2322.5",
+    "Critical_Volume": 0.259,
+    "CAS_Number": "75-28-5",
+    "ID": 236,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "4"
+        },
+        {
+          "-name": "H",
+          "#text": "10"
+        }
+      ]
+    },
+    "Z_Rackett": 2.73E-01,
+    "Critical_Compressibility": 0.278,
+    "Acentric_Factor": 0.1835,
+    "HvapTmin": 113,
+    "CS_Liquid_Molar_Volume": 105.5,
+    "HVapB": 0.39006,
+    "HVapA": 31880000,
+    "HVapD": 0,
+    "PR_Volume_Translation_Coefficient": -0.0844,
+    "CS_Solubility_Parameter": 6.73,
+    "isPf": 0,
+    "Dipole_Moment": 4.40E-31,
+    "DIPPR_Vapor_Pressure_TMAX": 408,
+    "DIPPR_Vapor_Pressure_Constant_E": 1,
+    "SRK_Volume_Translation_Coefficient": 0.0830,
+    "Ideal_Gas_Heat_Capacity_Const_C": 1.28E-04,
+    "DIPPR_Vapor_Pressure_Constant_D": 0.022725,
+    "Ideal_Gas_Heat_Capacity_Const_B": 2.33E-01,
+    "DIPPR_Vapor_Pressure_Constant_C": -15.012,
+    "Ideal_Gas_Heat_Capacity_Const_E": 8.55E-11,
+    "Normal_Boiling_Point": 261.43,
+    "DIPPR_Vapor_Pressure_Constant_B": -5039.9,
+    "Ideal_Gas_Heat_Capacity_Const_D": -2.44E-07,
+    "DIPPR_Vapor_Pressure_Constant_A": 108.43,
+    "Critical_Pressure": 3.64,
+    "UNIFAC": {
+      "group": [
+        {
+          "-name": "CH3",
+          "#text": "3"
+        },
+        {
+          "-name": "CH",
+          "#text": "1"
+        }
+      ]
+    },
+    "Formula": "C4H10",
+    "Molar_Weight": 58.122,
+    "IG_Gibbs_Energy_of_Formation_25C": -368.87,
+    "HvapC": 0,
+    "Ideal_Gas_Heat_Capacity_Const_A": 2.42E+01,
+    "DIPPR_Vapor_Pressure_TMIN": 113,
+    "Name": "2-Methylpropane",
+    "CS_Acentric_Factor": 0.1825,
+    "Liquid_Viscosity_Const_B": 797.09,
+    "Liquid_Viscosity_Const_A": -13.912,
+    "Liquid_Viscosity_Const_D": 0.00E+00,
+    "Liquid_Viscosity_Const_C": 0.45308,
+    "HvapTMAX": 408,
+    "Liquid_Viscosity_Const_E": 0
+  },
+  "111-27-3": {
+    "IG_Entropy_of_Formation_25C": "6.10343",
+    "Critical_Temperature": 611.3,
+    "isHYP": "0",
+    "COSMODBName": "1-HEXANOL",
+    "isPf": 0,
+    "Dipole_Moment": 0,
+    "IG_Enthalpy_of_Formation_25C": "-3.10E+03",
+    "Critical_Volume": 0.382,
+    "DIPPR_Vapor_Pressure_TMAX": 430,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "Ideal_Gas_Heat_Capacity_Const_C": -0.000300989,
+    "Ideal_Gas_Heat_Capacity_Const_B": 0.58908276,
+    "DIPPR_Vapor_Pressure_Constant_D": 6.89E-06,
+    "Normal_Boiling_Point": 430.2,
+    "Ideal_Gas_Heat_Capacity_Const_E": 0,
+    "DIPPR_Vapor_Pressure_Constant_C": -8.006098483,
+    "Ideal_Gas_Heat_Capacity_Const_D": 5.43E-08,
+    "DIPPR_Vapor_Pressure_Constant_B": -7458.883212,
+    "ID": 173,
+    "CAS_Number": "111-27-3",
+    "DIPPR_Vapor_Pressure_Constant_A": 76.40501014,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "6"
+        },
+        {
+          "-name": "O",
+          "#text": "1"
+        },
+        {
+          "-name": "H",
+          "#text": "14"
+        }
+      ]
+    },
+    "Critical_Pressure": 3.446,
+    "Critical_Compressibility": 0.259,
+    "Z_Rackett": 0,
+    "Acentric_Factor": 0.5586,
+    "UNIFAC": {
+      "group": [
+        {
+          "-name": "CH3",
+          "#text": "1"
+        },
+        {
+          "-name": "CH2",
+          "#text": "5"
+        },
+        {
+          "-name": "OH",
+          "#text": "1"
+        }
+      ]
+    },
+    "Formula": "C6H14O",
+    "Molar_Weight": 102.175,
+    "IG_Gibbs_Energy_of_Formation_25C": -1315.37,
+    "HvapC": 0,
+    "Ideal_Gas_Heat_Capacity_Const_A": 4.8106332,
+    "HvapTmin": 244,
+    "CS_Liquid_Molar_Volume": 0,
+    "DIPPR_Vapor_Pressure_TMIN": 308,
+    "Name": "1-Hexanol",
+    "HVapB": 0.375000302,
+    "HVapA": 76787913.84,
+    "CS_Acentric_Factor": 0,
+    "Liquid_Viscosity_Const_B": 1476.251086,
+    "HVapD": 0,
+    "Liquid_Viscosity_Const_A": -17.37769686,
+    "Liquid_Viscosity_Const_D": 0,
+    "Liquid_Viscosity_Const_C": 1.077866807,
+    "CS_Solubility_Parameter": 0,
+    "Liquid_Viscosity_Const_E": 0,
+    "HvapTMAX": 610
+  },
+  "1551-21-9": {
+    "Name": "Methylisopropyl sulfide",
+    "Acentric_Factor": 0.2461,
+    "Critical_Temperature": 553.1,
+    "Formula": "C4H10S",
+    "Molar_Weight": 90.187,
+    "ID": 230,
+    "CAS_Number": "1551-21-9",
+    "Critical_Volume": 0.328,
+    "Critical_Pressure": 4.021,
+    "Critical_Compressibility": 0.28718
+  },
+  "78-80-8": {
+    "Name": "2-Methyl-1-butene-3-yne",
+    "Acentric_Factor": 0.1370,
+    "Critical_Temperature": 492,
+    "Formula": "C5H6",
+    "Molar_Weight": 66.101,
+    "ID": 207,
+    "CAS_Number": "78-80-8",
+    "Critical_Volume": 0.248,
+    "Critical_Pressure": 4.38,
+    "Critical_Compressibility": 0.266
+  },
+  "111-13-7": {
+    "Name": "2-Octanone",
+    "Acentric_Factor": 0.4549,
+    "Critical_Temperature": 632.7,
+    "Formula": "C8H16O",
+    "Molar_Weight": 128.212,
+    "ID": 269,
+    "CAS_Number": "111-13-7",
+    "Critical_Volume": 0.497,
+    "Critical_Pressure": 2.64,
+    "Critical_Compressibility": 0.249
+  },
+  "10102-43-9": {
+    "Name": "Nitric oxide",
+    "Acentric_Factor": 0.5829,
+    "Critical_Temperature": 180.15,
+    "Formula": "NO",
+    "Molar_Weight": 30.006,
+    "ID": 253,
+    "CAS_Number": "10102-43-9",
+    "Critical_Volume": 0.058,
+    "Critical_Pressure": 6.48,
+    "Critical_Compressibility": 0.251
+  },
+  "353-36-6": {
+    "Name": "Fluoroethane",
+    "Acentric_Factor": 0.2200,
+    "Critical_Temperature": 375.31,
+    "Formula": "C2H5F",
+    "Molar_Weight": 48.060,
+    "ID": 151,
+    "CAS_Number": "353-36-6",
+    "Critical_Volume": 0.164,
+    "Critical_Pressure": 5.028,
+    "Critical_Compressibility": 0.264
+  },
+  "75-18-3": {
+    "Name": "Dimethyl sulfide",
+    "Acentric_Factor": 0.1943,
+    "Critical_Temperature": 503.04,
+    "Formula": "C2H6S",
+    "Molar_Weight": 62.134,
+    "ID": 117,
+    "CAS_Number": "75-18-3",
+    "Critical_Volume": 0.201,
+    "Critical_Pressure": 5.53,
+    "Critical_Compressibility": 0.266
+  },
+  "624-89-5": {
+    "Name": "Methylethyl sulfide",
+    "Acentric_Factor": 0.2091,
+    "Critical_Temperature": 533,
+    "Formula": "C3H8S",
+    "Molar_Weight": 76.161,
+    "ID": 223,
+    "CAS_Number": "624-89-5",
+    "Critical_Volume": 0.254,
+    "Critical_Pressure": 4.26,
+    "Critical_Compressibility": 0.244
+  },
+  "623-42-7": {
+    "Name": "Methyl butyrate",
+    "Acentric_Factor": 0.3775,
+    "Critical_Temperature": 554.5,
+    "Formula": "C5H10O2",
+    "Molar_Weight": 102.132,
+    "ID": 211,
+    "CAS_Number": "623-42-7",
+    "Critical_Volume": 0.34,
+    "Critical_Pressure": 3.473,
+    "Critical_Compressibility": 0.256
+  },
+  "74-96-4": {
+    "Name": "Bromoethane",
+    "Acentric_Factor": 0.2548,
+    "Critical_Temperature": 503.8,
+    "Formula": "C2H5Br",
+    "Molar_Weight": 108.965,
+    "ID": 27,
+    "CAS_Number": "74-96-4",
+    "Critical_Volume": 0.215,
+    "Critical_Pressure": 6.23,
+    "Critical_Compressibility": 0.32
+  },
+  "693-89-0": {
+    "Name": "1-Methylcyclopentene",
+    "Acentric_Factor": 0.2318,
+    "Critical_Temperature": 542,
+    "Formula": "C6H10",
+    "Molar_Weight": 82.144,
+    "ID": 218,
+    "CAS_Number": "693-89-0",
+    "Critical_Volume": 0.303,
+    "Critical_Pressure": 4.13,
+    "Critical_Compressibility": 0.278
+  },
+  "540-67-0": {
+    "Name": "Methylethyl ether",
+    "Acentric_Factor": 0.2314,
+    "Critical_Temperature": 437.8,
+    "Formula": "C3H8O",
+    "Molar_Weight": 60.095,
+    "ID": 221,
+    "CAS_Number": "540-67-0",
+    "Critical_Volume": 0.221,
+    "Critical_Pressure": 4.4,
+    "Critical_Compressibility": 0.267
+  },
+  "149-57-5": {
+    "Name": "2-Ethyl hexanoic acid",
+    "Acentric_Factor": 0.8067,
+    "Critical_Temperature": 674.6,
+    "Formula": "C8H16O2",
+    "Molar_Weight": 144.211,
+    "ID": 141,
+    "CAS_Number": "149-57-5",
+    "Critical_Volume": 0.528,
+    "Critical_Pressure": 2.778,
+    "Critical_Compressibility": 0.262
+  },
+  "95-63-6": {
+    "Name": "1,2,4-Trimethylbenzene",
+    "Acentric_Factor": 0.3787,
+    "Critical_Temperature": 649.1,
+    "Formula": "C9H12",
+    "Molar_Weight": 120.192,
+    "ID": 331,
+    "CAS_Number": "95-63-6",
+    "Critical_Volume": 0.43,
+    "Critical_Pressure": 3.232,
+    "Critical_Compressibility": 0.258
+  },
+  "95-48-7": {
+    "Name": "o-Cresol",
+    "Acentric_Factor": 0.4339,
+    "Critical_Temperature": 697.55,
+    "Formula": "C7H8O",
+    "Molar_Weight": 108.138,
+    "ID": 60,
+    "CAS_Number": "95-48-7",
+    "Critical_Volume": 0.282,
+    "Critical_Pressure": 5.01,
+    "Critical_Compressibility": 0.244
+  },
+  "108-94-1": {
+    "Name": "Cyclohexanone",
+    "Acentric_Factor": 0.2990,
+    "Critical_Temperature": 653,
+    "Formula": "C6H10O",
+    "Molar_Weight": 98.143,
+    "ID": 67,
+    "CAS_Number": "108-94-1",
+    "Critical_Volume": 0.311,
+    "Critical_Pressure": 4,
+    "Critical_Compressibility": 0.229
+  },
+  "1333-74-0": {
+    "IG_Entropy_of_Formation_25C": "0",
+    "Critical_Temperature": 33.19,
+    "UNIQUAC_q": "0",
+    "UNIQUAC_r": "0",
+    "COSMODBName": "HYDROGEN",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "0.00E+00",
+    "Critical_Volume": 0.064147,
+    "CAS_Number": "1333-74-0",
+    "ID": 183,
+    "elements": {
+      "element": {
+        "-name": "H",
+        "#text": "2"
+      }
+    },
+    "Z_Rackett": 0,
+    "Critical_Compressibility": 0.305,
+    "Acentric_Factor": -0.2160,
+    "HvapTmin": 13.95,
+    "CS_Liquid_Molar_Volume": 31,
+    "HVapB": 0.698,
+    "HVapA": 1012700,
+    "HVapD": 1.447,
+    "CS_Solubility_Parameter": 3.25,
+    "isPf": 0,
+    "Dipole_Moment": 0.00E+00,
+    "DIPPR_Vapor_Pressure_TMAX": 33.19,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "Ideal_Gas_Heat_Capacity_Const_C": 3.99E-05,
+    "DIPPR_Vapor_Pressure_Constant_D": 0.00032915,
+    "Ideal_Gas_Heat_Capacity_Const_B": -9.90E-03,
+    "DIPPR_Vapor_Pressure_Constant_C": 1.1125,
+    "Ideal_Gas_Heat_Capacity_Const_E": 9.18E-12,
+    "Normal_Boiling_Point": 20.39,
+    "DIPPR_Vapor_Pressure_Constant_B": -94.896,
+    "Ideal_Gas_Heat_Capacity_Const_D": -3.39E-08,
+    "DIPPR_Vapor_Pressure_Constant_A": 12.69,
+    "Critical_Pressure": 1.313,
+    "UNIFAC": {
+      "group": {
+        "-name": "H2",
+        "#text": "1"
+      }
+    },
+    "Formula": "H2",
+    "Molar_Weight": 2.016,
+    "IG_Gibbs_Energy_of_Formation_25C": 0.00E+00,
+    "HvapC": -1.817,
+    "Ideal_Gas_Heat_Capacity_Const_A": 2.97E+01,
+    "DIPPR_Vapor_Pressure_TMIN": 13.95,
+    "Name": "Hydrogen",
+    "CS_Acentric_Factor": 0,
+    "Liquid_Viscosity_Const_B": 24.7,
+    "Liquid_Viscosity_Const_A": -11.661,
+    "Liquid_Viscosity_Const_D": -4E-16,
+    "Liquid_Viscosity_Const_C": -0.261,
+    "HvapTMAX": 33.19,
+    "Liquid_Viscosity_Const_E": 10
+  },
+  "598-53-8": {
+    "Name": "Methylisopropyl ether",
+    "Acentric_Factor": 0.2656,
+    "Critical_Temperature": 464.48,
+    "Formula": "C4H10O",
+    "Molar_Weight": 74.122,
+    "ID": 228,
+    "CAS_Number": "598-53-8",
+    "Critical_Volume": 0.276,
+    "Critical_Pressure": 3.762,
+    "Critical_Compressibility": 0.269
+  },
+  "100-47-0": {
+    "Name": "Benzonitrile",
+    "Acentric_Factor": 0.3662,
+    "Critical_Temperature": 699.35,
+    "Formula": "C7H5N",
+    "Molar_Weight": 103.121,
+    "ID": 19,
+    "CAS_Number": "100-47-0",
+    "Critical_Volume": 0.3132,
+    "Critical_Pressure": 4.215,
+    "Critical_Compressibility": 0.227
+  },
+  "109-74-0": {
+    "Name": "Butyronitrile",
+    "Acentric_Factor": 0.3714,
+    "Critical_Temperature": 582.25,
+    "Formula": "C4H7N",
+    "Molar_Weight": 69.105,
+    "ID": 46,
+    "CAS_Number": "109-74-0",
+    "Critical_Volume": 0.278,
+    "Critical_Pressure": 3.79,
+    "Critical_Compressibility": 0.218
+  },
+  "108-95-2": {
+    "IG_Entropy_of_Formation_25C": "4.36587",
+    "Critical_Temperature": 694.25,
+    "UNIQUAC_q": "2.68",
+    "UNIQUAC_r": "3.5517",
+    "COSMODBName": "PHENOL",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "-1.02E+03",
+    "Critical_Volume": 0.229,
+    "CAS_Number": "108-95-2",
+    "ID": 291,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "6"
+        },
+        {
+          "-name": "O",
+          "#text": "1"
+        },
+        {
+          "-name": "H",
+          "#text": "6"
+        }
+      ]
+    },
+    "Z_Rackett": 0.278,
+    "Critical_Compressibility": 0.243,
+    "Acentric_Factor": 0.4435,
+    "HvapTmin": 277.68,
+    "CS_Liquid_Molar_Volume": 0,
+    "HVapB": 0.375001219,
+    "HVapA": 68050373.35,
+    "HVapD": 0,
+    "CS_Solubility_Parameter": 0,
+    "isPf": 0,
+    "Dipole_Moment": 0,
+    "DIPPR_Vapor_Pressure_TMAX": 481,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "Ideal_Gas_Heat_Capacity_Const_C": -0.000482738,
+    "DIPPR_Vapor_Pressure_Constant_D": 6.89E-06,
+    "Ideal_Gas_Heat_Capacity_Const_B": 0.59829372,
+    "DIPPR_Vapor_Pressure_Constant_C": -8.886812662,
+    "Ideal_Gas_Heat_Capacity_Const_E": 0,
+    "Normal_Boiling_Point": 455,
+    "DIPPR_Vapor_Pressure_Constant_B": -6997.380026,
+    "Ideal_Gas_Heat_Capacity_Const_D": 1.53E-07,
+    "DIPPR_Vapor_Pressure_Constant_A": 80.37085021,
+    "Critical_Pressure": 6.13,
+    "UNIFAC": {
+      "group": [
+        {
+          "-name": "ACH",
+          "#text": "5"
+        },
+        {
+          "-name": "ACOH",
+          "#text": "1"
+        }
+      ]
+    },
+    "Formula": "C6H6O",
+    "Molar_Weight": 94.111,
+    "IG_Gibbs_Energy_of_Formation_25C": -346.79,
+    "HvapC": 0,
+    "Ideal_Gas_Heat_Capacity_Const_A": 35.8431948,
+    "DIPPR_Vapor_Pressure_TMIN": 345,
+    "Name": "Phenol",
+    "CS_Acentric_Factor": 0,
+    "Liquid_Viscosity_Const_B": 1969.466167,
+    "Liquid_Viscosity_Const_A": -21.55738102,
+    "Liquid_Viscosity_Const_D": 0,
+    "Liquid_Viscosity_Const_C": 1.569668664,
+    "HvapTMAX": 694.2,
+    "Liquid_Viscosity_Const_E": 0
+  },
+  "689-97-4": {
+    "Name": "Vinyl acetylene",
+    "Acentric_Factor": 0.1069,
+    "Critical_Temperature": 454,
+    "Formula": "C4H4",
+    "Molar_Weight": 52.075,
+    "ID": 339,
+    "CAS_Number": "689-97-4",
+    "Critical_Volume": 0.205,
+    "Critical_Pressure": 4.86,
+    "Critical_Compressibility": 0.264
+  },
+  "79-20-9": {
+    "Name": "Methyl acetate",
+    "Acentric_Factor": 0.3313,
+    "Critical_Temperature": 506.55,
+    "Formula": "C3H6O2",
+    "Molar_Weight": 74.079,
+    "ID": 196,
+    "CAS_Number": "79-20-9",
+    "Critical_Volume": 0.228,
+    "Critical_Pressure": 4.75,
+    "Critical_Compressibility": 0.257
+  },
+  "95-47-6": {
+    "IG_Entropy_of_Formation_25C": "4.907",
+    "Critical_Temperature": 630.3,
+    "UNIQUAC_q": "3.54",
+    "UNIQUAC_r": "4.66",
+    "COSMODBName": "O-XYLENE",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "1.80E+02",
+    "Critical_Volume": 0.37,
+    "CAS_Number": "95-47-6",
+    "ID": 344,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "8"
+        },
+        {
+          "-name": "H",
+          "#text": "10"
+        }
+      ]
+    },
+    "Z_Rackett": 0.262,
+    "Critical_Compressibility": 0.264,
+    "Acentric_Factor": 0.3101,
+    "HvapTmin": 252.08,
+    "CS_Liquid_Molar_Volume": 121.2,
+    "HVapB": 0.375000345,
+    "HVapA": 55377482.99,
+    "HVapD": 0,
+    "CS_Solubility_Parameter": 8.99,
+    "isPf": 0,
+    "Dipole_Moment": 0,
+    "DIPPR_Vapor_Pressure_TMAX": 445,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "Ideal_Gas_Heat_Capacity_Const_C": -0.000344322,
+    "DIPPR_Vapor_Pressure_Constant_D": 6.89E-06,
+    "Ideal_Gas_Heat_Capacity_Const_B": 0.59620032,
+    "DIPPR_Vapor_Pressure_Constant_C": -9.059331361,
+    "Ideal_Gas_Heat_Capacity_Const_E": 0,
+    "Normal_Boiling_Point": 417.6,
+    "DIPPR_Vapor_Pressure_Constant_B": -6764.858844,
+    "Ideal_Gas_Heat_Capacity_Const_D": 7.53E-08,
+    "DIPPR_Vapor_Pressure_Constant_A": 81.45696408,
+    "Critical_Pressure": 3.732,
+    "UNIFAC": {
+      "group": [
+        {
+          "-name": "ACH",
+          "#text": "4"
+        },
+        {
+          "-name": "ACCH3",
+          "#text": "2"
+        }
+      ]
+    },
+    "Formula": "C8H10",
+    "Molar_Weight": 106.165,
+    "IG_Gibbs_Energy_of_Formation_25C": 1149.14,
+    "HvapC": 0,
+    "Ideal_Gas_Heat_Capacity_Const_A": -15.8512248,
+    "DIPPR_Vapor_Pressure_TMIN": 305,
+    "Name": "o-Xylene",
+    "CS_Acentric_Factor": 0.2904,
+    "Liquid_Viscosity_Const_B": 1267.019911,
+    "Liquid_Viscosity_Const_A": -24.42535869,
+    "Liquid_Viscosity_Const_D": 0,
+    "Liquid_Viscosity_Const_C": 2.291443466,
+    "HvapTMAX": 630.2,
+    "Liquid_Viscosity_Const_E": 0
+  },
+  "79-10-7": {
+    "Name": "Acrylic acid",
+    "Acentric_Factor": 0.5383,
+    "Critical_Temperature": 615,
+    "Formula": "C3H4O2",
+    "Molar_Weight": 72.063,
+    "ID": 9,
+    "CAS_Number": "79-10-7",
+    "Critical_Volume": 0.208,
+    "Critical_Pressure": 5.66,
+    "Critical_Compressibility": 0.23
+  },
+  "142-84-7": {
+    "Name": "Dipropyl amine",
+    "Acentric_Factor": 0.4497,
+    "Critical_Temperature": 550,
+    "Formula": "C6H15N",
+    "Molar_Weight": 101.190,
+    "ID": 122,
+    "CAS_Number": "142-84-7",
+    "Critical_Volume": 0.402,
+    "Critical_Pressure": 3.14,
+    "Critical_Compressibility": 0.276
+  },
+  "142-82-5": {
+    "IG_Entropy_of_Formation_25C": "5.93535",
+    "Critical_Temperature": 540.2,
+    "UNIQUAC_q": "4.396",
+    "UNIQUAC_r": "5.1742",
+    "COSMODBName": "N-HEPTANE",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "-1872.7",
+    "Critical_Volume": 0.428,
+    "CAS_Number": "142-82-5",
+    "ID": 160,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "7"
+        },
+        {
+          "-name": "H",
+          "#text": "16"
+        }
+      ]
+    },
+    "Z_Rackett": 2.60E-01,
+    "Critical_Compressibility": 0.261,
+    "Acentric_Factor": 0.3495,
+    "HvapTmin": 182,
+    "CS_Liquid_Molar_Volume": 147.5,
+    "HVapB": 0.38795,
+    "HVapA": 50014000,
+    "HVapD": 0,
+    "PR_Volume_Translation_Coefficient": 0.0033,
+    "CS_Solubility_Parameter": 7.43,
+    "isPf": 0,
+    "Dipole_Moment": 0.00E+00,
+    "DIPPR_Vapor_Pressure_TMAX": 540,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "SRK_Volume_Translation_Coefficient": 0.1554,
+    "Ideal_Gas_Heat_Capacity_Const_C": 2.59E-04,
+    "DIPPR_Vapor_Pressure_Constant_D": 7.21E-06,
+    "Ideal_Gas_Heat_Capacity_Const_B": 3.94E-01,
+    "DIPPR_Vapor_Pressure_Constant_C": -9.8802,
+    "Ideal_Gas_Heat_Capacity_Const_E": 1.66E-10,
+    "Normal_Boiling_Point": 371.58,
+    "DIPPR_Vapor_Pressure_Constant_B": -6996.4,
+    "Ideal_Gas_Heat_Capacity_Const_D": -4.74E-07,
+    "DIPPR_Vapor_Pressure_Constant_A": 87.829,
+    "Critical_Pressure": 2.74,
+    "UNIFAC": {
+      "group": [
+        {
+          "-name": "CH3",
+          "#text": "2"
+        },
+        {
+          "-name": "CH2",
+          "#text": "5"
+        }
+      ]
+    },
+    "Formula": "C7H16",
+    "Molar_Weight": 100.202,
+    "IG_Gibbs_Energy_of_Formation_25C": 81.48,
+    "HvapC": 0,
+    "Ideal_Gas_Heat_Capacity_Const_A": 3.76E+01,
+    "DIPPR_Vapor_Pressure_TMIN": 182,
+    "Name": "Heptane",
+    "CS_Acentric_Factor": 0.3403,
+    "Liquid_Viscosity_Const_B": 1533.1,
+    "Liquid_Viscosity_Const_A": -24.451,
+    "Liquid_Viscosity_Const_D": 0.00E+00,
+    "Liquid_Viscosity_Const_C": 2.0087,
+    "HvapTMAX": 540,
+    "Liquid_Viscosity_Const_E": 0
+  },
+  "75-31-0": {
+    "Name": "Isopropyl amine",
+    "Acentric_Factor": 0.2759,
+    "Critical_Temperature": 471.85,
+    "Formula": "C3H9N",
+    "Molar_Weight": 59.110,
+    "ID": 190,
+    "CAS_Number": "75-31-0",
+    "Critical_Volume": 0.221,
+    "Critical_Pressure": 4.54,
+    "Critical_Compressibility": 0.256
+  },
+  "593-45-3": {
+    "Name": "Octadecane",
+    "Acentric_Factor": 0.8114,
+    "Critical_Temperature": 747,
+    "Formula": "C18H38",
+    "Molar_Weight": 254.494,
+    "ID": 263,
+    "CAS_Number": "593-45-3",
+    "Critical_Volume": 1.19,
+    "Critical_Pressure": 1.27,
+    "Critical_Compressibility": 0.243
+  },
+  "108-93-0": {
+    "Name": "Cyclohexanol",
+    "Acentric_Factor": 0.3690,
+    "Critical_Temperature": 650.1,
+    "Formula": "C6H12O",
+    "Molar_Weight": 100.159,
+    "ID": 66,
+    "CAS_Number": "108-93-0",
+    "Critical_Volume": 0.322,
+    "Critical_Pressure": 4.26,
+    "Critical_Compressibility": 0.254
+  },
+  "460-19-5": {
+    "Name": "Cyanogen",
+    "Acentric_Factor": 0.2790,
+    "Critical_Temperature": 400.15,
+    "Formula": "C2N2",
+    "Molar_Weight": 52.035,
+    "ID": 63,
+    "CAS_Number": "460-19-5",
+    "Critical_Volume": 0.195,
+    "Critical_Pressure": 5.98,
+    "Critical_Compressibility": 0.351
+  },
+  "60-35-5": {
+    "Name": "Acetamide",
+    "Acentric_Factor": 0.4210,
+    "Critical_Temperature": 761,
+    "Formula": "C2H5NO",
+    "Molar_Weight": 59.067,
+    "ID": 2,
+    "CAS_Number": "60-35-5",
+    "Critical_Volume": 0.215,
+    "Critical_Pressure": 6.6,
+    "Critical_Compressibility": 0.224
+  },
+  "628-32-0": {
+    "Name": "Ethylpropyl ether",
+    "Acentric_Factor": 0.3473,
+    "Critical_Temperature": 500.23,
+    "Formula": "C5H12O",
+    "Molar_Weight": 88.148,
+    "ID": 147,
+    "CAS_Number": "628-32-0",
+    "Critical_Volume": 0.339,
+    "Critical_Pressure": 3.37,
+    "Critical_Compressibility": 0.275
+  },
+  "75-94-5": {
+    "Name": "Vinyl trichlorosilane",
+    "Acentric_Factor": 0.2815,
+    "Critical_Temperature": 543.15,
+    "Formula": "C2H3Cl3Si",
+    "Molar_Weight": 161.490,
+    "ID": 341,
+    "CAS_Number": "75-94-5",
+    "Critical_Volume": 0.408,
+    "Critical_Pressure": 3.06,
+    "Critical_Compressibility": 0.276
+  },
+  "13511-13-2": {
+    "Name": "Propenylcyclohexene",
+    "Acentric_Factor": 0.3420,
+    "Critical_Temperature": 636,
+    "Formula": "C3H14",
+    "Molar_Weight": 122.207,
+    "ID": 298,
+    "CAS_Number": "13511-13-2",
+    "Critical_Volume": 0.437,
+    "Critical_Pressure": 3.12,
+    "Critical_Compressibility": 0.258
+  },
+  "99-35-4": {
+    "Name": "1,3,5-Trinitrobenzene",
+    "Acentric_Factor": 0.8623,
+    "Critical_Temperature": 846,
+    "Formula": "C6H3N3O6",
+    "Molar_Weight": 213.105,
+    "ID": 334,
+    "CAS_Number": "99-35-4",
+    "Critical_Volume": 0.479,
+    "Critical_Pressure": 3.39,
+    "Critical_Compressibility": 0.231
+  },
+  "513-35-9": {
+    "Name": "2-Methyl-2-butene",
+    "Acentric_Factor": 0.2870,
+    "Critical_Temperature": 470,
+    "Formula": "C5H10",
+    "Molar_Weight": 70.133,
+    "ID": 206,
+    "CAS_Number": "513-35-9",
+    "Critical_Volume": 0.292,
+    "Critical_Pressure": 3.42,
+    "Critical_Compressibility": 0.256
+  },
+  "79-29-8": {
+    "Name": "2,3-Dimethylbutane",
+    "Acentric_Factor": 0.2493,
+    "Critical_Temperature": 500,
+    "Formula": "C6H14",
+    "Molar_Weight": 86.175,
+    "ID": 107,
+    "CAS_Number": "79-29-8",
+    "Critical_Volume": 0.361,
+    "Critical_Pressure": 3.15,
+    "Critical_Compressibility": 0.274
+  },
+  "110-15-6": {
+    "Name": "Succinic acid",
+    "Acentric_Factor": 0.9922,
+    "Critical_Temperature": 806,
+    "Formula": "C4H6O4",
+    "Molar_Weight": 118.088,
+    "ID": 313,
+    "CAS_Number": "110-15-6",
+    "Critical_Volume": 0.317,
+    "Critical_Pressure": 4.71,
+    "Critical_Compressibility": 0.223
+  },
+  "C7H5NO": {
+    "Name": "Phenyl isocyanate",
+    "Acentric_Factor": 0.4123,
+    "Critical_Temperature": 653,
+    "Formula": "C7H5NO",
+    "Molar_Weight": 119.121,
+    "ID": 292,
+    "CAS_Number": "103-71-9",
+    "Critical_Volume": 0.37,
+    "Critical_Pressure": 4.06,
+    "Critical_Compressibility": 0.277
+  },
+  "64-19-7": {
+    "Name": "Acetic acid",
+    "Acentric_Factor": 0.4665,
+    "Critical_Temperature": 591.95,
+    "Formula": "C2H4O2",
+    "Molar_Weight": 60.052,
+    "ID": 3,
+    "CAS_Number": "64-19-7",
+    "Critical_Volume": 0.177,
+    "Critical_Pressure": 5.786,
+    "Critical_Compressibility": 0.208
+  },
+  "2084-19-7": {
+    "Name": "2-Pentyl mercaptan",
+    "Acentric_Factor": 0.2685,
+    "Critical_Temperature": 584.3,
+    "Formula": "C5H12S",
+    "Molar_Weight": 104.214,
+    "ID": 286,
+    "CAS_Number": "2084-19-7",
+    "Critical_Volume": 0.385,
+    "Critical_Pressure": 3.536,
+    "Critical_Compressibility": 0.28
+  },
+  "79-41-4": {
+    "Name": "Methacrylic acid",
+    "Acentric_Factor": 0.3318,
+    "Critical_Temperature": 662,
+    "Formula": "C4H6O2",
+    "Molar_Weight": 86.089,
+    "ID": 192,
+    "CAS_Number": "79-41-4",
+    "Critical_Volume": 0.28,
+    "Critical_Pressure": 4.79,
+    "Critical_Compressibility": 0.244
+  },
+  "110-54-3": {
+    "IG_Entropy_of_Formation_25C": "5.39115",
+    "Critical_Temperature": 507.6,
+    "UNIQUAC_q": "3.856",
+    "UNIQUAC_r": "4.4998",
+    "COSMODBName": "N-HEXANE",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "-1937.2",
+    "Critical_Volume": 0.371,
+    "CAS_Number": "110-54-3",
+    "ID": 171,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "6"
+        },
+        {
+          "-name": "H",
+          "#text": "14"
+        }
+      ]
+    },
+    "Z_Rackett": 2.63E-01,
+    "Critical_Compressibility": 0.266,
+    "Acentric_Factor": 0.3013,
+    "HvapTmin": 178,
+    "CS_Liquid_Molar_Volume": 131.6,
+    "HVapB": 0.39002,
+    "HVapA": 44544000,
+    "HVapD": 0,
+    "PR_Volume_Translation_Coefficient": -0.0080,
+    "CS_Solubility_Parameter": 7.27,
+    "isPf": 0,
+    "Dipole_Moment": 0.00E+00,
+    "DIPPR_Vapor_Pressure_TMAX": 507,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "SRK_Volume_Translation_Coefficient": 0.1467,
+    "Ideal_Gas_Heat_Capacity_Const_C": 2.03E-04,
+    "DIPPR_Vapor_Pressure_Constant_D": 0.000012381,
+    "Ideal_Gas_Heat_Capacity_Const_B": 3.45E-01,
+    "DIPPR_Vapor_Pressure_Constant_C": -12.702,
+    "Ideal_Gas_Heat_Capacity_Const_E": 1.33E-10,
+    "Normal_Boiling_Point": 341.88,
+    "DIPPR_Vapor_Pressure_Constant_B": -6995.5,
+    "Ideal_Gas_Heat_Capacity_Const_D": -3.81E-07,
+    "DIPPR_Vapor_Pressure_Constant_A": 104.65,
+    "Critical_Pressure": 3.025,
+    "UNIFAC": {
+      "group": [
+        {
+          "-name": "CH3",
+          "#text": "2"
+        },
+        {
+          "-name": "CH2",
+          "#text": "4"
+        }
+      ]
+    },
+    "Formula": "C6H14",
+    "Molar_Weight": 86.175,
+    "IG_Gibbs_Energy_of_Formation_25C": -0.77,
+    "HvapC": 0,
+    "Ideal_Gas_Heat_Capacity_Const_A": 3.24E+01,
+    "DIPPR_Vapor_Pressure_TMIN": 177,
+    "Name": "Hexane",
+    "CS_Acentric_Factor": 0.2927,
+    "Liquid_Viscosity_Const_B": 1207.5,
+    "Liquid_Viscosity_Const_A": -20.715,
+    "Liquid_Viscosity_Const_D": 0.00E+00,
+    "Liquid_Viscosity_Const_C": 1.4993,
+    "HvapTMAX": 507,
+    "Liquid_Viscosity_Const_E": 0
+  },
+  "554-12-1": {
+    "Name": "Methyl propionate",
+    "Acentric_Factor": 0.3466,
+    "Critical_Temperature": 530.6,
+    "Formula": "C4H8O2",
+    "Molar_Weight": 88.105,
+    "ID": 239,
+    "CAS_Number": "554-12-1",
+    "Critical_Volume": 0.282,
+    "Critical_Pressure": 4.004,
+    "Critical_Compressibility": 0.256
+  },
+  "598-23-2": {
+    "Name": "3-Methyl-1-butyne",
+    "Acentric_Factor": 0.3081,
+    "Critical_Temperature": 463.2,
+    "Formula": "C5H8",
+    "Molar_Weight": 68.117,
+    "ID": 210,
+    "CAS_Number": "598-23-2",
+    "Critical_Volume": 0.275,
+    "Critical_Pressure": 4.2,
+    "Critical_Compressibility": 0.3
+  },
+  "557-17-5": {
+    "Name": "Methylpropyl ether",
+    "Acentric_Factor": 0.2770,
+    "Critical_Temperature": 476.25,
+    "Formula": "C4H10O",
+    "Molar_Weight": 74.122,
+    "ID": 240,
+    "CAS_Number": "557-17-5",
+    "Critical_Volume": 0.276,
+    "Critical_Pressure": 3.801,
+    "Critical_Compressibility": 0.265
+  },
+  "75-15-0": {
+    "Name": "Carbon disulfide",
+    "Acentric_Factor": 0.1107,
+    "Critical_Temperature": 552,
+    "Formula": "CS2",
+    "Molar_Weight": 76.141,
+    "ID": 48,
+    "CAS_Number": "75-15-0",
+    "Critical_Volume": 0.16,
+    "Critical_Pressure": 7.9,
+    "Critical_Compressibility": 0.275
+  },
+  "115-07-1": {
+    "Name": "Propylene",
+    "Acentric_Factor": 0.1376,
+    "Critical_Temperature": 364.85,
+    "Formula": "C3H6",
+    "Molar_Weight": 42.080,
+    "ID": 305,
+    "CAS_Number": "115-07-1",
+    "Critical_Volume": 0.185,
+    "Critical_Pressure": 4.6,
+    "Critical_Compressibility": 0.281
+  },
+  "629-78-7": {
+    "Name": "Heptadecane",
+    "Acentric_Factor": 0.7697,
+    "Critical_Temperature": 736,
+    "Formula": "C17H36",
+    "Molar_Weight": 240.468,
+    "ID": 158,
+    "CAS_Number": "629-78-7",
+    "Critical_Volume": 1.11,
+    "Critical_Pressure": 1.34,
+    "Critical_Compressibility": 0.244
+  },
+  "628-99-9": {
+    "Name": "2-Nonanol",
+    "Acentric_Factor": 0.5911,
+    "Critical_Temperature": 649.5,
+    "Formula": "C9H20O",
+    "Molar_Weight": 144.255,
+    "ID": 259,
+    "CAS_Number": "628-99-9",
+    "Critical_Volume": 0.577,
+    "Critical_Pressure": 2.541,
+    "Critical_Compressibility": 0.271
+  },
+  "75-52-5": {
+    "Name": "Nitromethane",
+    "Acentric_Factor": 0.3480,
+    "Critical_Temperature": 588.15,
+    "Formula": "CH3NO2",
+    "Molar_Weight": 61.040,
+    "ID": 251,
+    "CAS_Number": "75-52-5",
+    "Critical_Volume": 0.173,
+    "Critical_Pressure": 6.31,
+    "Critical_Compressibility": 0.223
+  },
+  "108-98-5": {
+    "Name": "Benzenethiol",
+    "Acentric_Factor": 0.2628,
+    "Critical_Temperature": 689,
+    "Formula": "C6H6S",
+    "Molar_Weight": 110.177,
+    "ID": 17,
+    "CAS_Number": "108-98-5",
+    "Critical_Volume": 0.315,
+    "Critical_Pressure": 4.74,
+    "Critical_Compressibility": 0.261
+  },
+  "74-86-2": {
+    "Name": "Acetylene",
+    "Acentric_Factor": 0.1912,
+    "Critical_Temperature": 308.3,
+    "Formula": "C2H2",
+    "Molar_Weight": 26.037,
+    "ID": 7,
+    "CAS_Number": "74-86-2",
+    "Critical_Volume": 0.112,
+    "Critical_Pressure": 6.138,
+    "Critical_Compressibility": 0.268
+  },
+  "78-99-9": {
+    "Name": "1,1-Dichloropropane",
+    "Acentric_Factor": 0.2529,
+    "Critical_Temperature": 560,
+    "Formula": "C3H6Cl2",
+    "Molar_Weight": 112.986,
+    "ID": 91,
+    "CAS_Number": "78-99-9",
+    "Critical_Volume": 0.291,
+    "Critical_Pressure": 4.24,
+    "Critical_Compressibility": 0.265
+  },
+  "107-31-3": {
+    "Name": "Methyl formate",
+    "Acentric_Factor": 0.2556,
+    "Critical_Temperature": 487.2,
+    "Formula": "C2H4O2",
+    "Molar_Weight": 60.052,
+    "ID": 224,
+    "CAS_Number": "107-31-3",
+    "Critical_Volume": 0.172,
+    "Critical_Pressure": 6,
+    "Critical_Compressibility": 0.255
+  },
+  "7440-59-7": {
+    "Name": "Helium-4",
+    "Acentric_Factor": -0.3900,
+    "Critical_Temperature": 5.2,
+    "Formula": "He",
+    "Molar_Weight": 4.003,
+    "ID": 157,
+    "CAS_Number": "7440-59-7",
+    "Critical_Volume": 0.0573,
+    "Critical_Pressure": 0.2275,
+    "Critical_Compressibility": 0.302
+  },
+  "110-82-7": {
+    "Name": "Cyclohexane",
+    "Acentric_Factor": 0.2081,
+    "Critical_Temperature": 553.8,
+    "Formula": "C6H12",
+    "Molar_Weight": 84.159,
+    "ID": 65,
+    "CAS_Number": "110-82-7",
+    "Critical_Volume": 0.308,
+    "Critical_Pressure": 4.08,
+    "Critical_Compressibility": 0.273
+  },
+  "111-87-5": {
+    "IG_Entropy_of_Formation_25C": "7.1907",
+    "Critical_Temperature": 652.3,
+    "isHYP": "0",
+    "COSMODBName": "1-OCTANOL",
+    "isPf": 0,
+    "Dipole_Moment": 0,
+    "IG_Enthalpy_of_Formation_25C": "-2.73E+03",
+    "Critical_Volume": 0.509,
+    "DIPPR_Vapor_Pressure_TMAX": 468,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "Ideal_Gas_Heat_Capacity_Const_C": -0.000379701,
+    "Ideal_Gas_Heat_Capacity_Const_B": 0.76074156,
+    "DIPPR_Vapor_Pressure_Constant_D": 6.89E-06,
+    "Normal_Boiling_Point": 468.4,
+    "Ideal_Gas_Heat_Capacity_Const_E": 0,
+    "DIPPR_Vapor_Pressure_Constant_C": -8.270105279,
+    "Ideal_Gas_Heat_Capacity_Const_D": 6.26E-08,
+    "DIPPR_Vapor_Pressure_Constant_B": -7031.927561,
+    "ID": 267,
+    "CAS_Number": "111-87-5",
+    "DIPPR_Vapor_Pressure_Constant_A": 76.22720544,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "8"
+        },
+        {
+          "-name": "O",
+          "#text": "1"
+        },
+        {
+          "-name": "H",
+          "#text": "18"
+        }
+      ]
+    },
+    "Critical_Pressure": 2.783,
+    "Critical_Compressibility": 0.261,
+    "Z_Rackett": 0,
+    "Acentric_Factor": 0.5697,
+    "UNIFAC": {
+      "group": [
+        {
+          "-name": "CH3",
+          "#text": "1"
+        },
+        {
+          "-name": "CH2",
+          "#text": "7"
+        },
+        {
+          "-name": "OH",
+          "#text": "1"
+        }
+      ]
+    },
+    "Formula": "C8H18O",
+    "Molar_Weight": 130.228,
+    "IG_Gibbs_Energy_of_Formation_25C": -886.88,
+    "HvapC": 0,
+    "Ideal_Gas_Heat_Capacity_Const_A": 6.1713432,
+    "HvapTmin": 261,
+    "CS_Liquid_Molar_Volume": 0,
+    "DIPPR_Vapor_Pressure_TMIN": 343,
+    "Name": "1-Octanol",
+    "HVapB": 0.375000773,
+    "HVapA": 81421751.05,
+    "CS_Acentric_Factor": 0,
+    "Liquid_Viscosity_Const_B": 1647.09913,
+    "HVapD": 0,
+    "Liquid_Viscosity_Const_A": -17.32909946,
+    "Liquid_Viscosity_Const_D": 0,
+    "Liquid_Viscosity_Const_C": 1.005872658,
+    "CS_Solubility_Parameter": 0,
+    "Liquid_Viscosity_Const_E": 0,
+    "HvapTMAX": 58
+  },
+  "107-03-9": {
+    "Name": "Propyl mercaptan",
+    "Acentric_Factor": 0.2318,
+    "Critical_Temperature": 536.6,
+    "Formula": "C3H8S",
+    "Molar_Weight": 76.161,
+    "ID": 308,
+    "CAS_Number": "107-03-9",
+    "Critical_Volume": 0.254,
+    "Critical_Pressure": 4.63,
+    "Critical_Compressibility": 0.264
+  },
+  "106-99-0": {
+    "Name": "1,3-Butadiene",
+    "Acentric_Factor": 0.1950,
+    "Critical_Temperature": 425,
+    "Formula": "C4H6",
+    "Molar_Weight": 54.090,
+    "ID": 30,
+    "CAS_Number": "106-99-0",
+    "Critical_Volume": 0.221,
+    "Critical_Pressure": 4.32,
+    "Critical_Compressibility": 0.27
+  },
+  "1639-09-4": {
+    "Name": "Heptyl mercaptan",
+    "Acentric_Factor": 0.4226,
+    "Critical_Temperature": 645,
+    "Formula": "C7H16S",
+    "Molar_Weight": 132.267,
+    "ID": 167,
+    "CAS_Number": "1639-09-4",
+    "Critical_Volume": 0.465,
+    "Critical_Pressure": 2.77,
+    "Critical_Compressibility": 0.24
+  },
+  "74-85-1": {
+    "Name": "Ethylene",
+    "Acentric_Factor": 0.0862,
+    "Critical_Temperature": 282.34,
+    "Formula": "C2H4",
+    "Molar_Weight": 28.053,
+    "ID": 135,
+    "CAS_Number": "74-85-1",
+    "Critical_Volume": 0.131,
+    "Critical_Pressure": 5.041,
+    "Critical_Compressibility": 0.281
+  },
+  "85-44-9": {
+    "Name": "Phthalic anhydride",
+    "Acentric_Factor": 0.7025,
+    "Critical_Temperature": 791,
+    "Formula": "C8H4O3",
+    "Molar_Weight": 148.116,
+    "ID": 293,
+    "CAS_Number": "85-44-9",
+    "Critical_Volume": 0.421,
+    "Critical_Pressure": 4.72,
+    "Critical_Compressibility": 0.302
+  },
+  "107-02-8": {
+    "Name": "Acrolein",
+    "Acentric_Factor": 0.3198,
+    "Critical_Temperature": 506,
+    "Formula": "C3H4O",
+    "Molar_Weight": 56.063,
+    "ID": 8,
+    "CAS_Number": "107-02-8",
+    "Critical_Volume": 0.197,
+    "Critical_Pressure": 5,
+    "Critical_Compressibility": 0.234
+  },
+  "96-22-0": {
+    "Name": "3-Pentanone",
+    "Acentric_Factor": 0.3448,
+    "Critical_Temperature": 560.95,
+    "Formula": "C5H10O",
+    "Molar_Weight": 86.132,
+    "ID": 284,
+    "CAS_Number": "96-22-0",
+    "Critical_Volume": 0.336,
+    "Critical_Pressure": 3.74,
+    "Critical_Compressibility": 0.269
+  },
+  "592-41-6": {
+    "Name": "1-Hexene",
+    "Acentric_Factor": 0.2888,
+    "Critical_Temperature": 504,
+    "Formula": "C6H12",
+    "Molar_Weight": 84.159,
+    "ID": 177,
+    "CAS_Number": "592-41-6",
+    "Critical_Volume": 0.348,
+    "Critical_Pressure": 3.21,
+    "Critical_Compressibility": 0.267
+  },
+  "557-91-5": {
+    "Name": "1,1-Dibromoethane",
+    "Acentric_Factor": 0.1250,
+    "Critical_Temperature": 628,
+    "Formula": "C2H4Br2",
+    "Molar_Weight": 187.861,
+    "ID": 81,
+    "CAS_Number": "557-91-5",
+    "Critical_Volume": 0.276,
+    "Critical_Pressure": 6.03,
+    "Critical_Compressibility": 0.319
+  },
+  "124-13-0": {
+    "Name": "Octanal",
+    "Acentric_Factor": 0.4636,
+    "Critical_Temperature": 638.9,
+    "Formula": "C8H16O",
+    "Molar_Weight": 128.212,
+    "ID": 264,
+    "CAS_Number": "124-13-0",
+    "Critical_Volume": 0.488,
+    "Critical_Pressure": 2.96,
+    "Critical_Compressibility": 0.272
+  },
+  "110-83-8": {
+    "Name": "Cyclohexene",
+    "Acentric_Factor": 0.2123,
+    "Critical_Temperature": 560.4,
+    "Formula": "C6H10",
+    "Molar_Weight": 82.144,
+    "ID": 68,
+    "CAS_Number": "110-83-8",
+    "Critical_Volume": 0.291,
+    "Critical_Pressure": 4.35,
+    "Critical_Compressibility": 0.272
+  },
+  "112-05-0": {
+    "Name": "Nonanoic acid",
+    "Acentric_Factor": 0.7724,
+    "Critical_Temperature": 710.7,
+    "Formula": "C9H18O2",
+    "Molar_Weight": 158.238,
+    "ID": 257,
+    "CAS_Number": "112-05-0",
+    "Critical_Volume": 0.584,
+    "Critical_Pressure": 2.514,
+    "Critical_Compressibility": 0.248
+  },
+  "93-89-0": {
+    "Name": "Ethyl benzoate",
+    "Acentric_Factor": 0.4771,
+    "Critical_Temperature": 698,
+    "Formula": "C9H10O2",
+    "Molar_Weight": 150.175,
+    "ID": 130,
+    "CAS_Number": "93-89-0",
+    "Critical_Volume": 0.489,
+    "Critical_Pressure": 3.18,
+    "Critical_Compressibility": 0.268
+  },
+  "151-56-4": {
+    "Name": "Ethyleneimine",
+    "Acentric_Factor": 0.2007,
+    "Critical_Temperature": 537,
+    "Formula": "C2H5N",
+    "Molar_Weight": 43.068,
+    "ID": 138,
+    "CAS_Number": "151-56-4",
+    "Critical_Volume": 0.173,
+    "Critical_Pressure": 6.85,
+    "Critical_Compressibility": 0.265
+  },
+  "6032-29-7": {
+    "Name": "2-Pentanol",
+    "Acentric_Factor": 0.5549,
+    "Critical_Temperature": 561,
+    "Formula": "C5H12O",
+    "Molar_Weight": 88.148,
+    "ID": 282,
+    "CAS_Number": "6032-29-7",
+    "Critical_Volume": 0.326,
+    "Critical_Pressure": 3.7,
+    "Critical_Compressibility": 0.259
+  },
+  "625-44-5": {
+    "Name": "Methylisobutyl ether",
+    "Acentric_Factor": 0.3078,
+    "Critical_Temperature": 497,
+    "Formula": "C5H12O",
+    "Molar_Weight": 88.148,
+    "ID": 225,
+    "CAS_Number": "625-44-5",
+    "Critical_Volume": 0.329,
+    "Critical_Pressure": 3.41,
+    "Critical_Compressibility": 0.272
+  },
+  "7782-44-7": {
+    "IG_Entropy_of_Formation_25C": "0",
+    "Critical_Temperature": 154.58,
+    "UNIQUAC_q": "0.94",
+    "UNIQUAC_r": "0.857",
+    "COSMODBName": "OXYGEN",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "0.00E+00",
+    "Critical_Volume": 0.0734,
+    "CAS_Number": "7782-44-7",
+    "ID": 275,
+    "elements": {
+      "element": {
+        "-name": "O",
+        "#text": "2"
+      }
+    },
+    "Z_Rackett": 2.90E-01,
+    "Critical_Compressibility": 0.288,
+    "Acentric_Factor": 0.0222,
+    "HvapTmin": 54,
+    "CS_Liquid_Molar_Volume": 0,
+    "HVapB": 0.4542,
+    "HVapA": 9008000,
+    "HVapD": 0.3183,
+    "CS_Solubility_Parameter": 0,
+    "isPf": 0,
+    "Dipole_Moment": 0.00E+00,
+    "DIPPR_Vapor_Pressure_TMAX": 154,
+    "DIPPR_Vapor_Pressure_Constant_E": 1,
+    "Ideal_Gas_Heat_Capacity_Const_C": 3.99E-05,
+    "DIPPR_Vapor_Pressure_Constant_D": 0.028405,
+    "Ideal_Gas_Heat_Capacity_Const_B": -9.90E-03,
+    "DIPPR_Vapor_Pressure_Constant_C": -6.4361,
+    "Ideal_Gas_Heat_Capacity_Const_E": 9.18E-12,
+    "Normal_Boiling_Point": 90.188,
+    "DIPPR_Vapor_Pressure_Constant_B": -1200.2,
+    "Ideal_Gas_Heat_Capacity_Const_D": -3.39E-08,
+    "DIPPR_Vapor_Pressure_Constant_A": 51.245,
+    "Critical_Pressure": 5.043,
+    "UNIFAC": {
+      "group": {
+        "-name": "O2",
+        "#text": "1"
+      }
+    },
+    "Formula": "O2",
+    "Molar_Weight": 31.999,
+    "IG_Gibbs_Energy_of_Formation_25C": 0.00E+00,
+    "HvapC": -0.4096,
+    "Ideal_Gas_Heat_Capacity_Const_A": 2.97E+01,
+    "DIPPR_Vapor_Pressure_TMIN": 54,
+    "Name": "Oxygen",
+    "CS_Acentric_Factor": 0,
+    "Liquid_Viscosity_Const_B": 94.04,
+    "Liquid_Viscosity_Const_A": -41.476,
+    "Liquid_Viscosity_Const_D": 0,
+    "Liquid_Viscosity_Const_C": -1.207,
+    "HvapTMAX": 154,
+    "Liquid_Viscosity_Const_E": 0
+  },
+  "105-37-3": {
+    "Name": "Ethyl propionate",
+    "Acentric_Factor": 0.3944,
+    "Critical_Temperature": 546,
+    "Formula": "C5H10O2",
+    "Molar_Weight": 102.132,
+    "ID": 146,
+    "CAS_Number": "105-37-3",
+    "Critical_Volume": 0.345,
+    "Critical_Pressure": 3.362,
+    "Critical_Compressibility": 0.256
+  },
+  "7782-39-0": {
+    "Name": "Deuterium",
+    "Acentric_Factor": -0.1449,
+    "Critical_Temperature": 38.35,
+    "Formula": "D2",
+    "Molar_Weight": 4.032,
+    "ID": 80,
+    "CAS_Number": "7782-39-0",
+    "Critical_Volume": 0.060263,
+    "Critical_Pressure": 1.6617,
+    "Critical_Compressibility": 0.314
+  },
+  "107-06-2": {
+    "Name": "1,2-Dichloroethane",
+    "Acentric_Factor": 0.2866,
+    "Critical_Temperature": 561.6,
+    "Formula": "C2H4Cl2",
+    "Molar_Weight": 98.959,
+    "ID": 89,
+    "CAS_Number": "107-06-2",
+    "Critical_Volume": 0.22,
+    "Critical_Pressure": 5.37,
+    "Critical_Compressibility": 0.253
+  },
+  "7443-52-9": {
+    "Name": "trans-2-Methylcyclohexanol",
+    "Acentric_Factor": 0.6790,
+    "Critical_Temperature": 617,
+    "Formula": "C7H14O",
+    "Molar_Weight": 114.185,
+    "ID": 216,
+    "CAS_Number": "7443-52-9",
+    "Critical_Volume": 0.374,
+    "Critical_Pressure": 3.79,
+    "Critical_Compressibility": 0.276
+  },
+  "74-83-9": {
+    "Name": "Bromomethane",
+    "Acentric_Factor": 0.1922,
+    "Critical_Temperature": 467,
+    "Formula": "CH3Br",
+    "Molar_Weight": 94.939,
+    "ID": 28,
+    "CAS_Number": "74-83-9",
+    "Critical_Volume": 0.156,
+    "Critical_Pressure": 8,
+    "Critical_Compressibility": 0.321
+  },
+  "1569-69-3": {
+    "Name": "Cyclohexyl mercaptan",
+    "Acentric_Factor": 0.2641,
+    "Critical_Temperature": 664,
+    "Formula": "C6H12S",
+    "Molar_Weight": 116.224,
+    "ID": 72,
+    "CAS_Number": "1569-69-3",
+    "Critical_Volume": 0.355,
+    "Critical_Pressure": 3.97,
+    "Critical_Compressibility": 0.255
+  },
+  "462-06-6": {
+    "Name": "Fluorobenzene",
+    "Acentric_Factor": 0.2472,
+    "Critical_Temperature": 560.09,
+    "Formula": "C6H5F",
+    "Molar_Weight": 96.102,
+    "ID": 150,
+    "CAS_Number": "462-06-6",
+    "Critical_Volume": 0.269,
+    "Critical_Pressure": 4.551,
+    "Critical_Compressibility": 0.263
+  },
+  "7726-95-6": {
+    "Name": "Bromine",
+    "Acentric_Factor": 0.1290,
+    "Critical_Temperature": 584.15,
+    "Formula": "Br2",
+    "Molar_Weight": 159.808,
+    "ID": 25,
+    "CAS_Number": "7726-95-6",
+    "Critical_Volume": 0.135,
+    "Critical_Pressure": 10.3,
+    "Critical_Compressibility": 0.286
+  },
+  "124-11-8": {
+    "Name": "1-Nonene",
+    "Acentric_Factor": 0.4367,
+    "Critical_Temperature": 593.1,
+    "Formula": "C9H18",
+    "Molar_Weight": 126.239,
+    "ID": 260,
+    "CAS_Number": "124-11-8",
+    "Critical_Volume": 0.524,
+    "Critical_Pressure": 2.428,
+    "Critical_Compressibility": 0.258
+  },
+  "79-16-3": {
+    "Name": "N-Methyl acetamide",
+    "Acentric_Factor": 0.4351,
+    "Critical_Temperature": 718,
+    "Formula": "C3H7NO",
+    "Molar_Weight": 73.094,
+    "ID": 195,
+    "CAS_Number": "79-16-3",
+    "Critical_Volume": 0.267,
+    "Critical_Pressure": 4.98,
+    "Critical_Compressibility": 0.223
+  },
+  "302-01-2": {
+    "Name": "Hydrazine",
+    "Acentric_Factor": 0.3143,
+    "Critical_Temperature": 653.15,
+    "Formula": "H4N2",
+    "Molar_Weight": 32.045,
+    "ID": 182,
+    "CAS_Number": "302-01-2",
+    "Critical_Volume": 0.158,
+    "Critical_Pressure": 14.7,
+    "Critical_Compressibility": 0.428
+  },
+  "143-10-2": {
+    "Name": "Decyl mercaptan",
+    "Acentric_Factor": 0.5874,
+    "Critical_Temperature": 696,
+    "Formula": "C10H22S",
+    "Molar_Weight": 174.347,
+    "ID": 78,
+    "CAS_Number": "143-10-2",
+    "Critical_Volume": 0.624,
+    "Critical_Pressure": 2.13,
+    "Critical_Compressibility": 0.23
+  },
+  "112-30-1": {
+    "IG_Entropy_of_Formation_25C": "8.27936",
+    "Critical_Temperature": 688,
+    "isHYP": "0",
+    "COSMODBName": "1-DECANOL",
+    "isPf": 0,
+    "Dipole_Moment": 0,
+    "IG_Enthalpy_of_Formation_25C": "-2.51E+03",
+    "Critical_Volume": 0.645,
+    "DIPPR_Vapor_Pressure_TMAX": 503,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "Ideal_Gas_Heat_Capacity_Const_C": -0.000392094,
+    "Ideal_Gas_Heat_Capacity_Const_B": 0.89471916,
+    "DIPPR_Vapor_Pressure_Constant_D": 6.89E-06,
+    "Normal_Boiling_Point": 503.4,
+    "Ideal_Gas_Heat_Capacity_Const_E": 0,
+    "DIPPR_Vapor_Pressure_Constant_C": -8.294053114,
+    "Ideal_Gas_Heat_Capacity_Const_D": 3.45E-08,
+    "DIPPR_Vapor_Pressure_Constant_B": -7045.430316,
+    "ID": 76,
+    "CAS_Number": "112-30-1",
+    "DIPPR_Vapor_Pressure_Constant_A": 75.81649436,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "10"
+        },
+        {
+          "-name": "O",
+          "#text": "1"
+        },
+        {
+          "-name": "H",
+          "#text": "22"
+        }
+      ]
+    },
+    "Critical_Pressure": 2.308,
+    "Critical_Compressibility": 0.26,
+    "Z_Rackett": 0,
+    "Acentric_Factor": 0.6070,
+    "UNIFAC": {
+      "group": [
+        {
+          "-name": "CH3",
+          "#text": "1"
+        },
+        {
+          "-name": "CH2",
+          "#text": "9"
+        },
+        {
+          "-name": "OH",
+          "#text": "1"
+        }
+      ]
+    },
+    "Formula": "C10H22O",
+    "Molar_Weight": 158.281,
+    "IG_Gibbs_Energy_of_Formation_25C": -624.13,
+    "HvapC": 0,
+    "Ideal_Gas_Heat_Capacity_Const_A": 14.570064,
+    "HvapTmin": 280,
+    "CS_Liquid_Molar_Volume": 0,
+    "DIPPR_Vapor_Pressure_TMIN": 376,
+    "Name": "1-Decanol",
+    "HVapB": 0.374999407,
+    "HVapA": 80887436.13,
+    "CS_Acentric_Factor": 0,
+    "Liquid_Viscosity_Const_B": 1828.44729,
+    "HVapD": 0,
+    "Liquid_Viscosity_Const_A": -17.5401189,
+    "Liquid_Viscosity_Const_D": 0,
+    "Liquid_Viscosity_Const_C": 0.97612279,
+    "CS_Solubility_Parameter": 0,
+    "Liquid_Viscosity_Const_E": 0,
+    "HvapTMAX": 700
+  },
+  "111-88-6": {
+    "Name": "Octyl mercaptan",
+    "Acentric_Factor": 0.4497,
+    "Critical_Temperature": 667.3,
+    "Formula": "C8H18S",
+    "Molar_Weight": 146.294,
+    "ID": 272,
+    "CAS_Number": "111-88-6",
+    "Critical_Volume": 0.518,
+    "Critical_Pressure": 2.52,
+    "Critical_Compressibility": 0.235
+  },
+  "7782-50-5": {
+    "Name": "Chlorine",
+    "Acentric_Factor": 0.0688,
+    "Critical_Temperature": 417.15,
+    "Formula": "Cl2",
+    "Molar_Weight": 70.906,
+    "ID": 52,
+    "CAS_Number": "7782-50-5",
+    "Critical_Volume": 0.124,
+    "Critical_Pressure": 7.71,
+    "Critical_Compressibility": 0.276
+  },
+  "7647-01-0": {
+    "Name": "Hydrogen chloride",
+    "Acentric_Factor": 0.1315,
+    "Critical_Temperature": 324.65,
+    "Formula": "HCl",
+    "Molar_Weight": 36.461,
+    "ID": 185,
+    "CAS_Number": "7647-01-0",
+    "Critical_Volume": 0.081,
+    "Critical_Pressure": 8.31,
+    "Critical_Compressibility": 0.249
+  },
+  "106-44-5": {
+    "Name": "p-Cresol",
+    "Acentric_Factor": 0.5072,
+    "Critical_Temperature": 704.65,
+    "Formula": "C7H8O",
+    "Molar_Weight": 108.138,
+    "ID": 61,
+    "CAS_Number": "106-44-5",
+    "Critical_Volume": 0.277,
+    "Critical_Pressure": 5.15,
+    "Critical_Compressibility": 0.244
+  },
+  "111-84-2": {
+    "IG_Entropy_of_Formation_25C": "7.0229",
+    "Critical_Temperature": 594.6,
+    "UNIQUAC_q": "5.476",
+    "UNIQUAC_r": "6.523",
+    "COSMODBName": "N-NONANE",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "-1783.4",
+    "Critical_Volume": 0.551,
+    "CAS_Number": "111-84-2",
+    "ID": 256,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "9"
+        },
+        {
+          "-name": "H",
+          "#text": "20"
+        }
+      ]
+    },
+    "Z_Rackett": 2.54E-01,
+    "Critical_Compressibility": 0.255,
+    "Acentric_Factor": 0.4435,
+    "HvapTmin": 220,
+    "CS_Liquid_Molar_Volume": 179.6,
+    "HVapB": 0.38522,
+    "HVapA": 60370000,
+    "HVapD": 0,
+    "PR_Volume_Translation_Coefficient": 0.0408,
+    "CS_Solubility_Parameter": 7.65,
+    "isPf": 0,
+    "Dipole_Moment": 0.00E+00,
+    "DIPPR_Vapor_Pressure_TMAX": 594,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "SRK_Volume_Translation_Coefficient": 0.1868,
+    "Ideal_Gas_Heat_Capacity_Const_C": 2.65E-04,
+    "DIPPR_Vapor_Pressure_Constant_D": 7.85E-06,
+    "Ideal_Gas_Heat_Capacity_Const_B": 5.71E-01,
+    "DIPPR_Vapor_Pressure_Constant_C": -12.882,
+    "Ideal_Gas_Heat_Capacity_Const_E": 2.39E-10,
+    "Normal_Boiling_Point": 423.97,
+    "DIPPR_Vapor_Pressure_Constant_B": -9030.4,
+    "Ideal_Gas_Heat_Capacity_Const_D": -6.30E-07,
+    "DIPPR_Vapor_Pressure_Constant_A": 109.35,
+    "Critical_Pressure": 2.29,
+    "UNIFAC": {
+      "group": [
+        {
+          "-name": "CH3",
+          "#text": "2"
+        },
+        {
+          "-name": "CH2",
+          "#text": "7"
+        }
+      ]
+    },
+    "Formula": "C9H20",
+    "Molar_Weight": 128.255,
+    "IG_Gibbs_Energy_of_Formation_25C": 194.77,
+    "HvapC": 0,
+    "Ideal_Gas_Heat_Capacity_Const_A": 3.30E+01,
+    "DIPPR_Vapor_Pressure_TMIN": 220,
+    "Name": "Nonane",
+    "CS_Acentric_Factor": 0.4439,
+    "Liquid_Viscosity_Const_B": 1658,
+    "Liquid_Viscosity_Const_A": -21.149,
+    "Liquid_Viscosity_Const_D": 0.00E+00,
+    "Liquid_Viscosity_Const_C": 1.454,
+    "HvapTMAX": 594,
+    "Liquid_Viscosity_Const_E": 0
+  },
+  "56-81-5": {
+    "IG_Entropy_of_Formation_25C": "5.66242",
+    "Critical_Temperature": "726",
+    "isHYP": "0",
+    "COSMODBName": "GLYCEROL",
+    "isPf": 0,
+    "Dipole_Moment": 0,
+    "IG_Enthalpy_of_Formation_25C": "-6.28E+03",
+    "Critical_Volume": "0.255",
+    "DIPPR_Vapor_Pressure_TMAX": 600,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "Ideal_Gas_Heat_Capacity_Const_C": -0.000315894,
+    "Ideal_Gas_Heat_Capacity_Const_B": 0.44421948,
+    "DIPPR_Vapor_Pressure_Constant_D": 6.89E-06,
+    "Normal_Boiling_Point": 563,
+    "Ideal_Gas_Heat_Capacity_Const_E": 0,
+    "DIPPR_Vapor_Pressure_Constant_C": -8.064734562,
+    "Ideal_Gas_Heat_Capacity_Const_D": 9.38E-08,
+    "DIPPR_Vapor_Pressure_Constant_B": -8202.723796,
+    "ID": "25",
+    "CAS_Number": "56-81-5",
+    "DIPPR_Vapor_Pressure_Constant_A": 75.26398175,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "3"
+        },
+        {
+          "-name": "O",
+          "#text": "3"
+        },
+        {
+          "-name": "H",
+          "#text": "8"
+        }
+      ]
+    },
+    "Critical_Pressure": "6.687450",
+    "Critical_Compressibility": 0.28,
+    "Z_Rackett": 0,
+    "Acentric_Factor": 0.51269,
+    "UNIFAC": {
+      "group": [
+        {
+          "-name": "CH2",
+          "#text": "2"
+        },
+        {
+          "-name": "CH",
+          "#text": "2"
+        },
+        {
+          "-name": "OH",
+          "#text": "3"
+        }
+      ]
+    },
+    "Formula": "C3H8O3",
+    "Molar_Weight": 92.095,
+    "IG_Gibbs_Energy_of_Formation_25C": -4854.60,
+    "HvapC": 0,
+    "Ideal_Gas_Heat_Capacity_Const_A": 8.4238416,
+    "HvapTmin": 290.4,
+    "CS_Liquid_Molar_Volume": 0,
+    "DIPPR_Vapor_Pressure_TMIN": 440,
+    "Name": "Glicerol",
+    "HVapB": 0.375001542,
+    "HVapA": 107032716.8,
+    "CS_Acentric_Factor": 0,
+    "Liquid_Viscosity_Const_B": 3697.090098,
+    "HVapD": 0,
+    "Liquid_Viscosity_Const_A": -22.8178805,
+    "Liquid_Viscosity_Const_D": 0,
+    "Liquid_Viscosity_Const_C": 1.137496425,
+    "CS_Solubility_Parameter": 0,
+    "Liquid_Viscosity_Const_E": 0,
+    "HvapTMAX": 726
+  },
+  "108-05-4": {
+    "Name": "Vinyl acetate",
+    "Acentric_Factor": 0.3513,
+    "Critical_Temperature": 519.13,
+    "Formula": "C4H6O2",
+    "Molar_Weight": 86.089,
+    "ID": 338,
+    "CAS_Number": "108-05-4",
+    "Critical_Volume": 0.27,
+    "Critical_Pressure": 3.958,
+    "Critical_Compressibility": 0.248
+  },
+  "66-25-1": {
+    "Name": "Hexanal",
+    "Acentric_Factor": 0.3872,
+    "Critical_Temperature": 591,
+    "Formula": "C6H12O",
+    "Molar_Weight": 100.159,
+    "ID": 170,
+    "CAS_Number": "66-25-1",
+    "Critical_Volume": 0.369,
+    "Critical_Pressure": 3.46,
+    "Critical_Compressibility": 0.26
+  },
+  "123-91-1": {
+    "Name": "1,4-Dioxane",
+    "Acentric_Factor": 0.2793,
+    "Critical_Temperature": 587,
+    "Formula": "C4H8O2",
+    "Molar_Weight": 88.105,
+    "ID": 120,
+    "CAS_Number": "123-91-1",
+    "Critical_Volume": 0.238,
+    "Critical_Pressure": 5.208,
+    "Critical_Compressibility": 0.254
+  },
+  "629-05-0": {
+    "Name": "1-Octyne",
+    "Acentric_Factor": 0.4233,
+    "Critical_Temperature": 574,
+    "Formula": "C8H14",
+    "Molar_Weight": 110.197,
+    "ID": 273,
+    "CAS_Number": "629-05-0",
+    "Critical_Volume": 0.442,
+    "Critical_Pressure": 2.88,
+    "Critical_Compressibility": 0.267
+  },
+  "112-31-2": {
+    "Name": "Decanal",
+    "Acentric_Factor": 0.5820,
+    "Critical_Temperature": 674.2,
+    "Formula": "C10H20O",
+    "Molar_Weight": 156.265,
+    "ID": 73,
+    "CAS_Number": "112-31-2",
+    "Critical_Volume": 0.58,
+    "Critical_Pressure": 2.6,
+    "Critical_Compressibility": 0.269
+  },
+  "107-00-6": {
+    "Name": "1-Butyne",
+    "Acentric_Factor": 0.2470,
+    "Critical_Temperature": 440,
+    "Formula": "C4H6",
+    "Molar_Weight": 54.090,
+    "ID": 43,
+    "CAS_Number": "107-00-6",
+    "Critical_Volume": 0.208,
+    "Critical_Pressure": 4.6,
+    "Critical_Compressibility": 0.262
+  },
+  "105-54-4": {
+    "Name": "Ethyl butyrate",
+    "Acentric_Factor": 0.4011,
+    "Critical_Temperature": 571,
+    "Formula": "C6H12O2",
+    "Molar_Weight": 116.158,
+    "ID": 132,
+    "CAS_Number": "105-54-4",
+    "Critical_Volume": 0.403,
+    "Critical_Pressure": 2.95,
+    "Critical_Compressibility": 0.25
+  },
+  "503-17-3": {
+    "Name": "Dimethyl acetylene",
+    "Acentric_Factor": 0.2385,
+    "Critical_Temperature": 473.2,
+    "Formula": "C4H6",
+    "Molar_Weight": 54.090,
+    "ID": 105,
+    "CAS_Number": "503-17-3",
+    "Critical_Volume": 0.221,
+    "Critical_Pressure": 4.87,
+    "Critical_Compressibility": 0.274
+  },
+  "123-96-6": {
+    "Name": "2-Octanol",
+    "Acentric_Factor": 0.5807,
+    "Critical_Temperature": 629.8,
+    "Formula": "C8H18O",
+    "Molar_Weight": 130.228,
+    "ID": 268,
+    "CAS_Number": "123-96-6",
+    "Critical_Volume": 0.512,
+    "Critical_Pressure": 2.749,
+    "Critical_Compressibility": 0.269
+  },
+  "75-65-0": {
+    "Name": "2-Methyl-2-propanol",
+    "Acentric_Factor": 0.6152,
+    "Critical_Temperature": 506.2,
+    "Formula": "C4H10O",
+    "Molar_Weight": 74.122,
+    "ID": 237,
+    "CAS_Number": "75-65-0",
+    "Critical_Volume": 0.275,
+    "Critical_Pressure": 3.972,
+    "Critical_Compressibility": 0.26
+  },
+  "96-37-7": {
+    "Name": "Methylcyclopentane",
+    "Acentric_Factor": 0.2288,
+    "Critical_Temperature": 532.7,
+    "Formula": "C6H12",
+    "Molar_Weight": 84.159,
+    "ID": 217,
+    "CAS_Number": "96-37-7",
+    "Critical_Volume": 0.319,
+    "Critical_Pressure": 3.79,
+    "Critical_Compressibility": 0.273
+  },
+  "142-29-0": {
+    "Name": "Cyclopentene",
+    "Acentric_Factor": 0.1961,
+    "Critical_Temperature": 507,
+    "Formula": "C5H8",
+    "Molar_Weight": 68.117,
+    "ID": 70,
+    "CAS_Number": "142-29-0",
+    "Critical_Volume": 0.245,
+    "Critical_Pressure": 4.8,
+    "Critical_Compressibility": 0.279
+  },
+  "109-79-5": {
+    "Name": "Butyl mercaptan",
+    "Acentric_Factor": 0.2714,
+    "Critical_Temperature": 570.1,
+    "Formula": "C4H10S",
+    "Molar_Weight": 90.187,
+    "ID": 41,
+    "CAS_Number": "109-79-5",
+    "Critical_Volume": 0.307,
+    "Critical_Pressure": 3.97,
+    "Critical_Compressibility": 0.257
+  },
+  "2207-01-4": {
+    "Name": "cis-1,2-Dimethylcyclohexane",
+    "Acentric_Factor": 0.2324,
+    "Critical_Temperature": 606.15,
+    "Formula": "C8H16",
+    "Molar_Weight": 112.213,
+    "ID": 109,
+    "CAS_Number": "2207-01-4",
+    "Critical_Volume": 0.46,
+    "Critical_Pressure": 2.938,
+    "Critical_Compressibility": 0.268
+  },
+  "110-02-1": {
+    "Name": "Thiophene",
+    "Acentric_Factor": 0.1970,
+    "Critical_Temperature": 579.35,
+    "Formula": "C4H4S",
+    "Molar_Weight": 84.140,
+    "ID": 324,
+    "CAS_Number": "110-02-1",
+    "Critical_Volume": 0.219,
+    "Critical_Pressure": 5.69,
+    "Critical_Compressibility": 0.259
+  },
+  "74-87-3": {
+    "Name": "Chloromethane",
+    "Acentric_Factor": 0.1531,
+    "Critical_Temperature": 416.25,
+    "Formula": "CH3Cl",
+    "Molar_Weight": 50.488,
+    "ID": 56,
+    "CAS_Number": "74-87-3",
+    "Critical_Volume": 0.143,
+    "Critical_Pressure": 6.68,
+    "Critical_Compressibility": 0.276
+  },
+  "7783-61-1": {
+    "Name": "Silicon tetrafluoride",
+    "Acentric_Factor": 0.3858,
+    "Critical_Temperature": 259,
+    "Formula": "F4Si",
+    "Molar_Weight": 104.079,
+    "ID": 311,
+    "CAS_Number": "7783-61-1",
+    "Critical_Volume": 0.202,
+    "Critical_Pressure": 3.72,
+    "Critical_Compressibility": 0.349
+  },
+  "108-39-4": {
+    "Name": "m-Cresol",
+    "Acentric_Factor": 0.4480,
+    "Critical_Temperature": 705.85,
+    "Formula": "C7H8O",
+    "Molar_Weight": 108.138,
+    "ID": 59,
+    "CAS_Number": "108-39-4",
+    "Critical_Volume": 0.312,
+    "Critical_Pressure": 4.56,
+    "Critical_Compressibility": 0.242
+  },
+  "100-21-0": {
+    "Name": "Terephthalic acid",
+    "Acentric_Factor": 1.0591,
+    "Critical_Temperature": 1113,
+    "Formula": "C8H6O4",
+    "Molar_Weight": 166.131,
+    "ID": 317,
+    "CAS_Number": "100-21-0",
+    "Critical_Volume": 0.424,
+    "Critical_Pressure": 3.95,
+    "Critical_Compressibility": 0.181
+  },
+  "109-89-7": {
+    "Name": "Diethyl amine",
+    "Acentric_Factor": 0.3039,
+    "Critical_Temperature": 496.6,
+    "Formula": "C4H11N",
+    "Molar_Weight": 73.137,
+    "ID": 94,
+    "CAS_Number": "109-89-7",
+    "Critical_Volume": 0.301,
+    "Critical_Pressure": 3.71,
+    "Critical_Compressibility": 0.27
+  },
+  "627-21-4": {
+    "Name": "2-Pentyne",
+    "Acentric_Factor": 0.1752,
+    "Critical_Temperature": 519,
+    "Formula": "C5H8",
+    "Molar_Weight": 68.117,
+    "ID": 289,
+    "CAS_Number": "627-21-4",
+    "Critical_Volume": 0.276,
+    "Critical_Pressure": 4.03,
+    "Critical_Compressibility": 0.258
+  },
+  "78-87-5": {
+    "Name": "1,2-Dichloropropane",
+    "Acentric_Factor": 0.2564,
+    "Critical_Temperature": 572,
+    "Formula": "C3H6Cl2",
+    "Molar_Weight": 112.986,
+    "ID": 92,
+    "CAS_Number": "78-87-5",
+    "Critical_Volume": 0.291,
+    "Critical_Pressure": 4.24,
+    "Critical_Compressibility": 0.259
+  },
+  "74-89-5": {
+    "Name": "Methyl amine",
+    "Acentric_Factor": 0.2814,
+    "Critical_Temperature": 430.05,
+    "Formula": "CH5N",
+    "Molar_Weight": 31.057,
+    "ID": 199,
+    "CAS_Number": "74-89-5",
+    "Critical_Volume": 0.154,
+    "Critical_Pressure": 7.46,
+    "Critical_Compressibility": 0.321
+  },
+  "107-87-9": {
+    "Name": "2-Pentanone",
+    "Acentric_Factor": 0.3433,
+    "Critical_Temperature": 561.08,
+    "Formula": "C5H10O",
+    "Molar_Weight": 86.132,
+    "ID": 283,
+    "CAS_Number": "107-87-9",
+    "Critical_Volume": 0.301,
+    "Critical_Pressure": 3.694,
+    "Critical_Compressibility": 0.238
+  },
+  "101-84-8": {
+    "Name": "Diphenyl ether",
+    "Acentric_Factor": 0.4389,
+    "Critical_Temperature": 766.8,
+    "Formula": "C12H10O",
+    "Molar_Weight": 170.207,
+    "ID": 121,
+    "CAS_Number": "101-84-8",
+    "Critical_Volume": 0.503,
+    "Critical_Pressure": 3.08,
+    "Critical_Compressibility": 0.243
+  },
+  "565-59-3": {
+    "Name": "2,3-Dimethylpentane",
+    "Acentric_Factor": 0.2964,
+    "Critical_Temperature": 537.3,
+    "Formula": "C7H16",
+    "Molar_Weight": 100.202,
+    "ID": 114,
+    "CAS_Number": "565-59-3",
+    "Critical_Volume": 0.393,
+    "Critical_Pressure": 2.91,
+    "Critical_Compressibility": 0.256
+  },
+  "106-35-4": {
+    "Name": "3-Heptanone",
+    "Acentric_Factor": 0.4076,
+    "Critical_Temperature": 606.6,
+    "Formula": "C7H14O",
+    "Molar_Weight": 114.185,
+    "ID": 164,
+    "CAS_Number": "106-35-4",
+    "Critical_Volume": 0.433,
+    "Critical_Pressure": 2.92,
+    "Critical_Compressibility": 0.251
+  },
+  "764-93-2": {
+    "Name": "1-Decyne",
+    "Acentric_Factor": 0.5178,
+    "Critical_Temperature": 619.85,
+    "Formula": "C10H18",
+    "Molar_Weight": 138.250,
+    "ID": 79,
+    "CAS_Number": "764-93-2",
+    "Critical_Volume": 0.552,
+    "Critical_Pressure": 2.37,
+    "Critical_Compressibility": 0.254
+  },
+  "628-28-4": {
+    "Name": "Methylbutyl ether",
+    "Acentric_Factor": 0.3130,
+    "Critical_Temperature": 512.74,
+    "Formula": "C5H12O",
+    "Molar_Weight": 88.148,
+    "ID": 208,
+    "CAS_Number": "628-28-4",
+    "Critical_Volume": 0.329,
+    "Critical_Pressure": 3.371,
+    "Critical_Compressibility": 0.26
+  },
+  "584-03-2": {
+    "Name": "1,2-Butanediol",
+    "Acentric_Factor": 0.6305,
+    "Critical_Temperature": 680,
+    "Formula": "C4H10O2",
+    "Molar_Weight": 90.121,
+    "ID": 32,
+    "CAS_Number": "584-03-2",
+    "Critical_Volume": 0.303,
+    "Critical_Pressure": 5.21,
+    "Critical_Compressibility": 0.279
+  },
+  "107-12-0": {
+    "Name": "Propionitrile",
+    "Acentric_Factor": 0.3243,
+    "Critical_Temperature": 564.4,
+    "Formula": "C3H5N",
+    "Molar_Weight": 55.079,
+    "ID": 301,
+    "CAS_Number": "107-12-0",
+    "Critical_Volume": 0.229,
+    "Critical_Pressure": 4.18,
+    "Critical_Compressibility": 0.204
+  },
+  "352-93-2": {
+    "Name": "Diethyl sulfide",
+    "Acentric_Factor": 0.2900,
+    "Critical_Temperature": 557.15,
+    "Formula": "C4H10S",
+    "Molar_Weight": 90.187,
+    "ID": 96,
+    "CAS_Number": "352-93-2",
+    "Critical_Volume": 0.318,
+    "Critical_Pressure": 3.96,
+    "Critical_Compressibility": 0.272
+  },
+  "624-92-0": {
+    "Name": "Dimethyl disulfide",
+    "Acentric_Factor": 0.2059,
+    "Critical_Temperature": 615,
+    "Formula": "C2H6S2",
+    "Molar_Weight": 94.199,
+    "ID": 111,
+    "CAS_Number": "624-92-0",
+    "Critical_Volume": 0.252,
+    "Critical_Pressure": 5.36,
+    "Critical_Compressibility": 0.264
+  },
+  "112-40-3": {
+    "Name": "Dodecane",
+    "Acentric_Factor": 0.5764,
+    "Critical_Temperature": 658,
+    "Formula": "C12H26",
+    "Molar_Weight": 170.335,
+    "ID": 123,
+    "CAS_Number": "112-40-3",
+    "Critical_Volume": 0.755,
+    "Critical_Pressure": 1.82,
+    "Critical_Compressibility": 0.251
+  },
+  "123-38-6": {
+    "Name": "Propionaldehyde",
+    "Acentric_Factor": 0.2559,
+    "Critical_Temperature": 504.4,
+    "Formula": "C3H6O",
+    "Molar_Weight": 58.079,
+    "ID": 299,
+    "CAS_Number": "123-38-6",
+    "Critical_Volume": 0.204,
+    "Critical_Pressure": 4.92,
+    "Critical_Compressibility": 0.239
+  },
+  "2551-62-4": {
+    "Name": "Sulfur hexafluoride",
+    "Acentric_Factor": 0.2151,
+    "Critical_Temperature":  318.69,
+    "Formula": "F6S",
+    "Molar_Weight": 146.055,
+    "ID": 315,
+    "CAS_Number": "2551-62-4",
+    "Critical_Volume": 0.19852,
+    "Critical_Pressure": 3.76,
+    "Critical_Compressibility": 0.282
+  },
+  "124-19-6": {
+    "Name": "Nonanal",
+    "Acentric_Factor": 0.5117,
+    "Critical_Temperature": 658,
+    "Formula": "C9H18O",
+    "Molar_Weight": 142.239,
+    "ID": 255,
+    "CAS_Number": "124-19-6",
+    "Critical_Volume": 0.527,
+    "Critical_Pressure": 2.73,
+    "Critical_Compressibility": 0.263
+  },
+  "95-50-1": {
+    "Name": "o-Dichlorobenzene",
+    "Acentric_Factor": 0.2192,
+    "Critical_Temperature": 705,
+    "Formula": "C6H4Cl2",
+    "Molar_Weight": 147.002,
+    "ID": 86,
+    "CAS_Number": "95-50-1",
+    "Critical_Volume": 0.351,
+    "Critical_Pressure": 4.07,
+    "Critical_Compressibility": 0.244
+  },
+  "67-64-1": {
+    "Name": "Acetone",
+    "Acentric_Factor": 0.3065,
+    "Critical_Temperature": 508.2,
+    "Formula": "C3H6O",
+    "Molar_Weight": 58.079,
+    "ID": 5,
+    "CAS_Number": "67-64-1",
+    "Critical_Volume": 0.209,
+    "Critical_Pressure": 4.701,
+    "Critical_Compressibility": 0.233
+  },
+  "107-88-0": {
+    "Name": "1,3-Butanediol",
+    "Acentric_Factor": 0.7043,
+    "Critical_Temperature": 676,
+    "Formula": "C4H10O2",
+    "Molar_Weight": 90.121,
+    "ID": 33,
+    "CAS_Number": "107-88-0",
+    "Critical_Volume": 0.305,
+    "Critical_Pressure": 4.02,
+    "Critical_Compressibility": 0.218
+  },
+  "560-21-4": {
+    "Name": "2,3,3-Trimethylpentane",
+    "Acentric_Factor": 0.2903,
+    "Critical_Temperature": 573.5,
+    "Formula": "C8H18",
+    "Molar_Weight": 114.229,
+    "ID": 333,
+    "CAS_Number": "560-21-4",
+    "Critical_Volume": 0.455,
+    "Critical_Pressure": 2.82,
+    "Critical_Compressibility": 0.269
+  },
+  "107-15-3": {
+    "Name": "Ethylenediamine",
+    "Acentric_Factor": 0.4724,
+    "Critical_Temperature": 593,
+    "Formula": "C2H8N2",
+    "Molar_Weight": 60.098,
+    "ID": 136,
+    "CAS_Number": "107-15-3",
+    "Critical_Volume": 0.264,
+    "Critical_Pressure": 6.29,
+    "Critical_Compressibility": 0.337
+  },
+  "124-18-5": {
+    "IG_Entropy_of_Formation_25C": "7.56792",
+    "Critical_Temperature": 617.7,
+    "UNIQUAC_q": "6.02",
+    "UNIQUAC_r": "7.2",
+    "COSMODBName": "N-DECANE",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "-1753.2",
+    "Critical_Volume": 0.617,
+    "CAS_Number": "124-18-5",
+    "ID": 74,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "10"
+        },
+        {
+          "-name": "H",
+          "#text": "22"
+        }
+      ]
+    },
+    "Z_Rackett": 2.51E-01,
+    "Critical_Compressibility": 0.254,
+    "Acentric_Factor": 0.4923,
+    "HvapTmin": 243,
+    "CS_Liquid_Molar_Volume": 196,
+    "HVapB": 0.39797,
+    "HVapA": 66126000,
+    "HVapD": 0,
+    "PR_Volume_Translation_Coefficient": -0.0655,
+    "CS_Solubility_Parameter": 7.72,
+    "isPf": 0,
+    "Dipole_Moment": 0.00E+00,
+    "DIPPR_Vapor_Pressure_TMAX": 617,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "SRK_Volume_Translation_Coefficient": 0.2080,
+    "Ideal_Gas_Heat_Capacity_Const_C": 2.36E-03,
+    "DIPPR_Vapor_Pressure_Constant_D": 7.13E-06,
+    "Ideal_Gas_Heat_Capacity_Const_B": -7.58E-02,
+    "DIPPR_Vapor_Pressure_Constant_C": -13.245,
+    "Ideal_Gas_Heat_Capacity_Const_E": 1.34E-09,
+    "Normal_Boiling_Point": 447.305,
+    "DIPPR_Vapor_Pressure_Constant_B": -9749.6,
+    "Ideal_Gas_Heat_Capacity_Const_D": -3.21E-06,
+    "DIPPR_Vapor_Pressure_Constant_A": 112.73,
+    "Critical_Pressure": 2.11,
+    "UNIFAC": {
+      "group": [
+        {
+          "-name": "CH3",
+          "#text": "2"
+        },
+        {
+          "-name": "CH2",
+          "#text": "8"
+        }
+      ]
+    },
+    "Formula": "C10H22",
+    "Molar_Weight": 142.282,
+    "IG_Gibbs_Energy_of_Formation_25C": 233.2,
+    "HvapC": 0,
+    "Ideal_Gas_Heat_Capacity_Const_A": 1.21E+02,
+    "DIPPR_Vapor_Pressure_TMIN": 243,
+    "Name": "Decane",
+    "CS_Acentric_Factor": 0.4869,
+    "Liquid_Viscosity_Const_B": 1576,
+    "Liquid_Viscosity_Const_A": -17.255,
+    "Liquid_Viscosity_Const_D": 0.00E+00,
+    "Liquid_Viscosity_Const_C": 0.86191,
+    "HvapTMAX": 617,
+    "Liquid_Viscosity_Const_E": 0
+  },
+  "629-59-4": {
+    "Name": "Tetradecane",
+    "Acentric_Factor": 0.6430,
+    "Critical_Temperature": 693,
+    "Formula": "C14H30",
+    "Molar_Weight": 198.388,
+    "ID": 319,
+    "CAS_Number": "629-59-4",
+    "Critical_Volume": 0.897,
+    "Critical_Pressure": 1.57,
+    "Critical_Compressibility": 0.244
+  },
+  "106-68-3": {
+    "Name": "3-Octanone",
+    "Acentric_Factor": 0.4406,
+    "Critical_Temperature": 627.7,
+    "Formula": "C8H16O",
+    "Molar_Weight": 128.212,
+    "ID": 270,
+    "CAS_Number": "106-68-3",
+    "Critical_Volume": 0.497,
+    "Critical_Pressure": 2.704,
+    "Critical_Compressibility": 0.257
+  },
+  "75-34-3": {
+    "Name": "1,1-Dichloroethane",
+    "Acentric_Factor": 0.2339,
+    "Critical_Temperature": 523,
+    "Formula": "C2H4Cl2",
+    "Molar_Weight": 98.959,
+    "ID": 88,
+    "CAS_Number": "75-34-3",
+    "Critical_Volume": 0.24,
+    "Critical_Pressure": 5.07,
+    "Critical_Compressibility": 0.28
+  },
+  "630-08-0": {
+    "Name": "Carbon monoxide",
+    "Acentric_Factor": 0.0482,
+    "Critical_Temperature": 132.92,
+    "Formula": "CO",
+    "Molar_Weight": 28.010,
+    "ID": 49,
+    "CAS_Number": "630-08-0",
+    "Critical_Volume": 0.0944,
+    "Critical_Pressure": 3.499,
+    "Critical_Compressibility": 0.299
+  },
+  "1111-74-6": {
+    "Name": "Dimethylsilane",
+    "Acentric_Factor": 0.1300,
+    "Critical_Temperature": 402,
+    "Formula": "C2H8Si",
+    "Molar_Weight": 60.170,
+    "ID": 116,
+    "CAS_Number": "1111-74-6",
+    "Critical_Volume": 0.258,
+    "Critical_Pressure": 3.56,
+    "Critical_Compressibility": 0.275
+  },
+  "593-53-3": {
+    "Name": "Fluoromethane",
+    "Acentric_Factor": 0.1980,
+    "Critical_Temperature": 317.42,
+    "Formula": "CH3F",
+    "Molar_Weight": 34.033,
+    "ID": 152,
+    "CAS_Number": "593-53-3",
+    "Critical_Volume": 0.113,
+    "Critical_Pressure": 5.875,
+    "Critical_Compressibility": 0.252
+  },
+  "110-66-7": {
+    "Name": "Pentyl mercaptan",
+    "Acentric_Factor": 0.3207,
+    "Critical_Temperature": 598,
+    "Formula": "C5H12S",
+    "Molar_Weight": 104.214,
+    "ID": 287,
+    "CAS_Number": "110-66-7",
+    "Critical_Volume": 0.359,
+    "Critical_Pressure": 3.47,
+    "Critical_Compressibility": 0.251
+  },
+  "590-19-2": {
+    "Name": "1,2-Butadiene",
+    "Acentric_Factor": 0.1659,
+    "Critical_Temperature": 452,
+    "Formula": "C4H6",
+    "Molar_Weight": 54.090,
+    "ID": 29,
+    "CAS_Number": "590-19-2",
+    "Critical_Volume": 0.22,
+    "Critical_Pressure": 4.36,
+    "Critical_Compressibility": 0.255
+  },
+  "75-01-4": {
+    "Name": "Vinyl chloride",
+    "Acentric_Factor": 0.1001,
+    "Critical_Temperature": 432,
+    "Formula": "C2H3Cl",
+    "Molar_Weight": 62.498,
+    "ID": 340,
+    "CAS_Number": "75-01-4",
+    "Critical_Volume": 0.179,
+    "Critical_Pressure": 5.67,
+    "Critical_Compressibility": 0.283
+  },
+  "7783-06-4": {
+    "IG_Entropy_of_Formation_25C": "2.85132",
+    "Critical_Temperature": 373.53,
+    "UNIQUAC_q": "1.241",
+    "UNIQUAC_r": "1.234",
+    "COSMODBName": "HYDROGEN-SULFIDE",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "-605.31",
+    "Critical_Volume": 0.0985,
+    "CAS_Number": "7783-06-4",
+    "ID": 188,
+    "elements": {
+      "element": [
+        {
+          "-name": "H",
+          "#text": "2"
+        },
+        {
+          "-name": "S",
+          "#text": "1"
+        }
+      ]
+    },
+    "Z_Rackett": 2.81E-01,
+    "Critical_Compressibility": 0.284,
+    "Acentric_Factor": 0.0942,
+    "HvapTmin": 187,
+    "CS_Liquid_Molar_Volume": 0,
+    "HVapB": 0.37358,
+    "HVapA": 25676000,
+    "HVapD": 0,
+    "PR_Volume_Translation_Coefficient": -0.1288,
+    "CS_Solubility_Parameter": 0,
+    "isPf": 0,
+    "Dipole_Moment": 3.23E-30,
+    "DIPPR_Vapor_Pressure_TMAX": 373.53,
+    "DIPPR_Vapor_Pressure_Constant_E": 1,
+    "SRK_Volume_Translation_Coefficient": 0.0466,
+    "Ideal_Gas_Heat_Capacity_Const_C": 5.38E-05,
+    "DIPPR_Vapor_Pressure_Constant_D": 0.018848,
+    "Ideal_Gas_Heat_Capacity_Const_B": -1.19E-02,
+    "DIPPR_Vapor_Pressure_Constant_C": -11.199,
+    "Ideal_Gas_Heat_Capacity_Const_E": 8.59E-12,
+    "Normal_Boiling_Point": 212.8,
+    "DIPPR_Vapor_Pressure_Constant_B": -3839.9,
+    "Ideal_Gas_Heat_Capacity_Const_D": -3.77E-08,
+    "DIPPR_Vapor_Pressure_Constant_A": 85.584,
+    "Critical_Pressure": 8.963,
+    "UNIFAC": {
+      "group": {
+        "-name": "H2S",
+        "#text": "1"
+      }
+    },
+    "Formula": "H2S",
+    "Molar_Weight": 34.081,
+    "IG_Gibbs_Energy_of_Formation_25C": -981.15,
+    "HvapC": 0,
+    "Ideal_Gas_Heat_Capacity_Const_A": 3.39E+01,
+    "DIPPR_Vapor_Pressure_TMIN": 187.58,
+    "Name": "Hydrogen sulfide",
+    "CS_Acentric_Factor": 0,
+    "Liquid_Viscosity_Const_B": 762.11,
+    "Liquid_Viscosity_Const_A": -10.905,
+    "Liquid_Viscosity_Const_D": 0.00E+00,
+    "Liquid_Viscosity_Const_C": -0.11863,
+    "HvapTMAX": 373,
+    "Liquid_Viscosity_Const_E": 0
+  },
+  "71-41-0": {
+    "IG_Entropy_of_Formation_25C": "5.582",
+    "Critical_Temperature": 588.1,
+    "isHYP": "0",
+    "COSMODBName": "1-PENTANOL",
+    "isPf": 0,
+    "Dipole_Moment": 0,
+    "IG_Enthalpy_of_Formation_25C": "-3.39E+03",
+    "Critical_Volume": 0.326,
+    "DIPPR_Vapor_Pressure_TMAX": 411,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "Ideal_Gas_Heat_Capacity_Const_C": -0.000263936,
+    "Ideal_Gas_Heat_Capacity_Const_B": 0.5045094,
+    "DIPPR_Vapor_Pressure_Constant_D": 6.89E-06,
+    "Normal_Boiling_Point": 411,
+    "Ideal_Gas_Heat_Capacity_Const_E": 0,
+    "DIPPR_Vapor_Pressure_Constant_C": -8.276576824,
+    "Ideal_Gas_Heat_Capacity_Const_D": 5.12E-08,
+    "DIPPR_Vapor_Pressure_Constant_B": -7009.931773,
+    "ID": 281,
+    "CAS_Number": "71-41-0",
+    "DIPPR_Vapor_Pressure_Constant_A": 77.47969483,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "5"
+        },
+        {
+          "-name": "O",
+          "#text": "1"
+        },
+        {
+          "-name": "H",
+          "#text": "12"
+        }
+      ]
+    },
+    "Critical_Pressure": 3.897,
+    "Critical_Compressibility": 0.258,
+    "Z_Rackett": 0.2596,
+    "Acentric_Factor": 0.5748,
+    "UNIFAC": {
+      "group": [
+        {
+          "-name": "CH3",
+          "#text": "1"
+        },
+        {
+          "-name": "CH2",
+          "#text": "4"
+        },
+        {
+          "-name": "OH",
+          "#text": "1"
+        }
+      ]
+    },
+    "Formula": "C5H12O",
+    "Molar_Weight": 88.148,
+    "IG_Gibbs_Energy_of_Formation_25C": -1656.49,
+    "HvapC": 0,
+    "Ideal_Gas_Heat_Capacity_Const_A": 3.8686032,
+    "HvapTmin": 234.4,
+    "CS_Liquid_Molar_Volume": 0,
+    "DIPPR_Vapor_Pressure_TMIN": 310,
+    "Name": "1-Pentanol",
+    "HVapB": 0.375000764,
+    "HVapA": 69824960.29,
+    "CS_Acentric_Factor": 0,
+    "Liquid_Viscosity_Const_B": 1474.27939,
+    "HVapD": 0,
+    "Liquid_Viscosity_Const_A": -17.44616753,
+    "Liquid_Viscosity_Const_D": 0,
+    "Liquid_Viscosity_Const_C": 1.076432391,
+    "CS_Solubility_Parameter": 0,
+    "Liquid_Viscosity_Const_E": 0,
+    "HvapTMAX": 586
+  },
+  "110-62-3": {
+    "Name": "Pentanal",
+    "Acentric_Factor": 0.3472,
+    "Critical_Temperature": 566.1,
+    "Formula": "C5H10O",
+    "Molar_Weight": 86.132,
+    "ID": 278,
+    "CAS_Number": "110-62-3",
+    "Critical_Volume": 0.313,
+    "Critical_Pressure": 3.97,
+    "Critical_Compressibility": 0.264
+  },
+  "107-25-5": {
+    "Name": "Methyl vinyl ether",
+    "Acentric_Factor": 0.2416,
+    "Critical_Temperature": 437,
+    "Formula": "C3H6O",
+    "Molar_Weight": 58.079,
+    "ID": 245,
+    "CAS_Number": "107-25-5",
+    "Critical_Volume": 0.21,
+    "Critical_Pressure": 4.67,
+    "Critical_Compressibility": 0.27
+  },
+  "67-63-0": {
+    "IG_Entropy_of_Formation_25C": "4.28807",
+    "Critical_Temperature": 508.3,
+    "UNIQUAC_q": "2.51",
+    "UNIQUAC_r": "2.78",
+    "COSMODBName": "ISOPROPANOL",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "-4.54E+03",
+    "Critical_Volume": 0.222,
+    "CAS_Number": "67-63-0",
+    "ID": 297,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "3"
+        },
+        {
+          "-name": "O",
+          "#text": "1"
+        },
+        {
+          "-name": "H",
+          "#text": "8"
+        }
+      ]
+    },
+    "Z_Rackett": 0.2493,
+    "Critical_Compressibility": 0.25,
+    "Acentric_Factor": 0.6544,
+    "HvapTmin": 203.32,
+    "CS_Liquid_Molar_Volume": 0,
+    "HVapB": 0.375001395,
+    "HVapA": 62540591.24,
+    "HVapD": 0,
+    "CS_Solubility_Parameter": 0,
+    "isPf": 0,
+    "Dipole_Moment": 0,
+    "DIPPR_Vapor_Pressure_TMAX": 374,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "Ideal_Gas_Heat_Capacity_Const_C": 6.41E-05,
+    "DIPPR_Vapor_Pressure_Constant_D": 6.89E-06,
+    "Ideal_Gas_Heat_Capacity_Const_B": 0.188489736,
+    "DIPPR_Vapor_Pressure_Constant_C": -8.177091649,
+    "Ideal_Gas_Heat_Capacity_Const_E": 0,
+    "Normal_Boiling_Point": 355.4,
+    "DIPPR_Vapor_Pressure_Constant_B": -7032.19023,
+    "Ideal_Gas_Heat_Capacity_Const_D": -9.26E-08,
+    "DIPPR_Vapor_Pressure_Constant_A": 78.5883276,
+    "Critical_Pressure": 4.765,
+    "UNIFAC": {
+      "group": [
+        {
+          "-name": "CH3",
+          "#text": "2"
+        },
+        {
+          "-name": "CH",
+          "#text": "1"
+        },
+        {
+          "-name": "OH",
+          "#text": "1"
+        }
+      ]
+    },
+    "Formula": "C3H8O",
+    "Molar_Weight": 60.095,
+    "IG_Gibbs_Energy_of_Formation_25C": -2886.54,
+    "HvapC": 0,
+    "Ideal_Gas_Heat_Capacity_Const_A": 32.426766,
+    "DIPPR_Vapor_Pressure_TMIN": 273,
+    "Name": "2-Propanol",
+    "CS_Acentric_Factor": 0,
+    "Liquid_Viscosity_Const_B": 1414.309135,
+    "Liquid_Viscosity_Const_A": -17.54546742,
+    "Liquid_Viscosity_Const_D": 0,
+    "Liquid_Viscosity_Const_C": 1.085239985,
+    "HvapTMAX": 508.3,
+    "Liquid_Viscosity_Const_E": 0
+  },
+  "111-65-9": {
+    "IG_Entropy_of_Formation_25C": "6.47968",
+    "Critical_Temperature": 568.7,
+    "UNIQUAC_q": "4.936",
+    "UNIQUAC_r": "5.8486",
+    "COSMODBName": "N-OCTANE",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "-1827.4",
+    "Critical_Volume": 0.486,
+    "CAS_Number": "111-65-9",
+    "ID": 265,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "8"
+        },
+        {
+          "-name": "H",
+          "#text": "18"
+        }
+      ]
+    },
+    "Z_Rackett": 2.57E-01,
+    "Critical_Compressibility": 0.256,
+    "Acentric_Factor": 0.3996,
+    "HvapTmin": 216,
+    "CS_Liquid_Molar_Volume": 163.5,
+    "HVapB": 0.38467,
+    "HVapA": 55180000,
+    "HVapD": 0,
+    "PR_Volume_Translation_Coefficient": 0.0314,
+    "CS_Solubility_Parameter": 7.551,
+    "isPf": 0,
+    "Dipole_Moment": 0.00E+00,
+    "DIPPR_Vapor_Pressure_TMAX": 568,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "SRK_Volume_Translation_Coefficient": 0.1794,
+    "Ideal_Gas_Heat_Capacity_Const_C": 2.42E-04,
+    "DIPPR_Vapor_Pressure_Constant_D": 7.18E-06,
+    "Ideal_Gas_Heat_Capacity_Const_B": 4.81E-01,
+    "DIPPR_Vapor_Pressure_Constant_C": -11.003,
+    "Ideal_Gas_Heat_Capacity_Const_E": 1.88E-10,
+    "Normal_Boiling_Point": 398.83,
+    "DIPPR_Vapor_Pressure_Constant_B": -7900.2,
+    "Ideal_Gas_Heat_Capacity_Const_D": -5.17E-07,
+    "DIPPR_Vapor_Pressure_Constant_A": 96.084,
+    "Critical_Pressure": 2.49,
+    "UNIFAC": {
+      "group": [
+        {
+          "-name": "CH3",
+          "#text": "2"
+        },
+        {
+          "-name": "CH2",
+          "#text": "6"
+        }
+      ]
+    },
+    "Formula": "C8H18",
+    "Molar_Weight": 114.229,
+    "IG_Gibbs_Energy_of_Formation_25C": 140.07,
+    "HvapC": 0,
+    "Ideal_Gas_Heat_Capacity_Const_A": 3.72E+01,
+    "DIPPR_Vapor_Pressure_TMIN": 216,
+    "Name": "Octane",
+    "CS_Acentric_Factor": 0.3992,
+    "Liquid_Viscosity_Const_B": 1497.4,
+    "Liquid_Viscosity_Const_A": -20.463,
+    "Liquid_Viscosity_Const_D": 0,
+    "Liquid_Viscosity_Const_C": 1.379,
+    "HvapTMAX": 569,
+    "Liquid_Viscosity_Const_E": 0
+  },
+  "71-43-2": {
+    "IG_Entropy_of_Formation_25C": "3.73473",
+    "Critical_Temperature": 562.05,
+    "UNIQUAC_q": "2.4",
+    "UNIQUAC_r": "3.1878",
+    "COSMODBName": "BENZENE",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "1.06E+03",
+    "Critical_Volume": 0.256,
+    "CAS_Number": "71-43-2",
+    "ID": 16,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "6"
+        },
+        {
+          "-name": "H",
+          "#text": "6"
+        }
+      ]
+    },
+    "Z_Rackett": 0.2698,
+    "Critical_Compressibility": 0.268,
+    "Acentric_Factor": 0.2103,
+    "HvapTmin": 224.84,
+    "CS_Liquid_Molar_Volume": 89.4,
+    "HVapB": 0.374997654,
+    "HVapA": 44623896.04,
+    "HVapD": 0,
+    "CS_Solubility_Parameter": 9.16,
+    "isPf": 0,
+    "Dipole_Moment": 0,
+    "DIPPR_Vapor_Pressure_TMAX": 377,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "Ideal_Gas_Heat_Capacity_Const_C": -0.000301701,
+    "DIPPR_Vapor_Pressure_Constant_D": 6.89E-06,
+    "Ideal_Gas_Heat_Capacity_Const_B": 0.47436444,
+    "DIPPR_Vapor_Pressure_Constant_C": -9.225897362,
+    "Ideal_Gas_Heat_Capacity_Const_E": 0,
+    "Normal_Boiling_Point": 353.3,
+    "DIPPR_Vapor_Pressure_Constant_B": -6486.200002,
+    "Ideal_Gas_Heat_Capacity_Const_D": 7.13E-08,
+    "DIPPR_Vapor_Pressure_Constant_A": 83.10597439,
+    "Critical_Pressure": 4.895,
+    "UNIFAC": {
+      "group": {
+        "-name": "ACH",
+        "#text": "6"
+      }
+    },
+    "Formula": "C6H6",
+    "Molar_Weight": 78.112,
+    "IG_Gibbs_Energy_of_Formation_25C": 1659.12,
+    "HvapC": 0,
+    "Ideal_Gas_Heat_Capacity_Const_A": 33.9172668,
+    "DIPPR_Vapor_Pressure_TMIN": 280,
+    "Name": "Benzene",
+    "CS_Acentric_Factor": 0.2130,
+    "Liquid_Viscosity_Const_B": 1533.100064,
+    "Liquid_Viscosity_Const_A": -24.43032955,
+    "Liquid_Viscosity_Const_D": 0,
+    "Liquid_Viscosity_Const_C": 2.128986324,
+    "HvapTMAX": 562.1,
+    "Liquid_Viscosity_Const_E": 0
+  },
+  "3877-15-4": {
+    "Name": "Methylpropyl sulfide",
+    "Acentric_Factor": 0.2737,
+    "Critical_Temperature": 565,
+    "Formula": "C4H10S",
+    "Molar_Weight": 90.187,
+    "ID": 241,
+    "CAS_Number": "3877-15-4",
+    "Critical_Volume": 0.307,
+    "Critical_Pressure": 3.97,
+    "Critical_Compressibility": 0.259
+  },
+  "98-82-8": {
+    "Name": "Cumene",
+    "Acentric_Factor": 0.3274,
+    "Critical_Temperature": 631,
+    "Formula": "C9H12",
+    "Molar_Weight": 120.192,
+    "ID": 62,
+    "CAS_Number": "98-82-8",
+    "Critical_Volume": 0.434,
+    "Critical_Pressure": 3.209,
+    "Critical_Compressibility": 0.265
+  },
+  "115-21-9": {
+    "Name": "Ethyltrichlorosilane",
+    "Acentric_Factor": 0.2691,
+    "Critical_Temperature": 559.95,
+    "Formula": "C2H5Cl3Si",
+    "Molar_Weight": 163.506,
+    "ID": 148,
+    "CAS_Number": "115-21-9",
+    "Critical_Volume": 0.414,
+    "Critical_Pressure": 3.33,
+    "Critical_Compressibility": 0.296
+  },
+  "109-66-0": {
+    "IG_Entropy_of_Formation_25C": "4.84627",
+    "Critical_Temperature": 469.7,
+    "UNIQUAC_q": "3.316",
+    "UNIQUAC_r": "3.8254",
+    "COSMODBName": "N-PENTANE",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "-2034.1",
+    "Critical_Volume": 0.313,
+    "CAS_Number": "109-66-0",
+    "ID": 279,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "5"
+        },
+        {
+          "-name": "H",
+          "#text": "12"
+        }
+      ]
+    },
+    "Z_Rackett": 2.72E-01,
+    "Critical_Compressibility": 0.27,
+    "Acentric_Factor": 0.2515,
+    "HvapTmin": 143,
+    "CS_Liquid_Molar_Volume": 116.1,
+    "HVapB": 0.38681,
+    "HVapA": 39109000,
+    "HVapD": 0,
+    "PR_Volume_Translation_Coefficient": -0.0390,
+    "CS_Solubility_Parameter": 7.02,
+    "isPf": 0,
+    "Dipole_Moment": 0.00E+00,
+    "DIPPR_Vapor_Pressure_TMAX": 469,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "SRK_Volume_Translation_Coefficient": 0.1209,
+    "Ideal_Gas_Heat_Capacity_Const_C": -8.09E-05,
+    "DIPPR_Vapor_Pressure_Constant_D": 9.62E-06,
+    "Ideal_Gas_Heat_Capacity_Const_B": 4.15E-01,
+    "DIPPR_Vapor_Pressure_Constant_C": -8.8253,
+    "Ideal_Gas_Heat_Capacity_Const_E": 4.69E-11,
+    "Normal_Boiling_Point": 309.22,
+    "DIPPR_Vapor_Pressure_Constant_B": -5420.3,
+    "Ideal_Gas_Heat_Capacity_Const_D": -1.01E-07,
+    "DIPPR_Vapor_Pressure_Constant_A": 78.741,
+    "Critical_Pressure": 3.37,
+    "UNIFAC": {
+      "group": [
+        {
+          "-name": "CH3",
+          "#text": "2"
+        },
+        {
+          "-name": "CH2",
+          "#text": "3"
+        }
+      ]
+    },
+    "Formula": "C5H12",
+    "Molar_Weight": 72.149,
+    "IG_Gibbs_Energy_of_Formation_25C": -122.15,
+    "HvapC": 0,
+    "Ideal_Gas_Heat_Capacity_Const_A": 4.84E+00,
+    "DIPPR_Vapor_Pressure_TMIN": 143,
+    "Name": "Pentane",
+    "CS_Acentric_Factor": 0.2387,
+    "Liquid_Viscosity_Const_B": 1836.6,
+    "Liquid_Viscosity_Const_A": -53.509,
+    "Liquid_Viscosity_Const_D": -0.000019627,
+    "Liquid_Viscosity_Const_C": 7.1409,
+    "HvapTMAX": 470,
+    "Liquid_Viscosity_Const_E": 2
+  },
+  "110-74-7": {
+    "Name": "Propyl formate",
+    "Acentric_Factor": 0.3088,
+    "Critical_Temperature": 538,
+    "Formula": "C4H8O2",
+    "Molar_Weight": 88.105,
+    "ID": 306,
+    "CAS_Number": "110-74-7",
+    "Critical_Volume": 0.285,
+    "Critical_Pressure": 4.02,
+    "Critical_Compressibility": 0.256
+  },
+  "100-42-5": {
+    "Name": "Styrene",
+    "Acentric_Factor": 0.2971,
+    "Critical_Temperature": 636,
+    "Formula": "C8H8",
+    "Molar_Weight": 104.149,
+    "ID": 312,
+    "CAS_Number": "100-42-5",
+    "Critical_Volume": 0.352,
+    "Critical_Pressure": 3.84,
+    "Critical_Compressibility": 0.256
+  },
+  "108-86-1": {
+    "Name": "Bromobenzene",
+    "Acentric_Factor": 0.2506,
+    "Critical_Temperature": 670.15,
+    "Formula": "C6H5Br",
+    "Molar_Weight": 157.008,
+    "ID": 26,
+    "CAS_Number": "108-86-1",
+    "Critical_Volume": 0.324,
+    "Critical_Pressure": 4.519,
+    "Critical_Compressibility": 0.263
+  },
+  "109-99-9": {
+    "Name": "Tetrahydrofuran",
+    "Acentric_Factor": 0.2254,
+    "Critical_Temperature": 540.15,
+    "Formula": "C4H8O",
+    "Molar_Weight": 72.106,
+    "ID": 320,
+    "CAS_Number": "109-99-9",
+    "Critical_Volume": 0.224,
+    "Critical_Pressure": 5.19,
+    "Critical_Compressibility": 0.259
+  },
+  "100-41-4": {
+    "IG_Entropy_of_Formation_25C": "5.00132",
+    "Critical_Temperature": 617.15,
+    "UNIQUAC_q": "3.51",
+    "UNIQUAC_r": "4.6",
+    "COSMODBName": "ETHYLBENZENE",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "2.82E+02",
+    "Critical_Volume": 0.374,
+    "CAS_Number": "100-41-4",
+    "ID": 129,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "8"
+        },
+        {
+          "-name": "H",
+          "#text": "10"
+        }
+      ]
+    },
+    "Z_Rackett": 0.30347,
+    "Critical_Compressibility": 0.263,
+    "Acentric_Factor": 0.3035,
+    "HvapTmin": 246.84,
+    "CS_Liquid_Molar_Volume": 123.1,
+    "HVapB": 0.375000513,
+    "HVapA": 53526344.16,
+    "HVapD": 0,
+    "CS_Solubility_Parameter": 8.79,
+    "isPf": 0,
+    "Dipole_Moment": 0,
+    "DIPPR_Vapor_Pressure_TMAX": 450,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "Ideal_Gas_Heat_Capacity_Const_C": -0.000481063,
+    "DIPPR_Vapor_Pressure_Constant_D": 6.89E-06,
+    "Ideal_Gas_Heat_Capacity_Const_B": 0.70715052,
+    "DIPPR_Vapor_Pressure_Constant_C": -9.054950182,
+    "Ideal_Gas_Heat_Capacity_Const_E": 0,
+    "Normal_Boiling_Point": 409.3,
+    "DIPPR_Vapor_Pressure_Constant_B": -6754.198772,
+    "Ideal_Gas_Heat_Capacity_Const_D": 1.30E-07,
+    "DIPPR_Vapor_Pressure_Constant_A": 81.53200029,
+    "Critical_Pressure": 3.609,
+    "UNIFAC": {
+      "group": [
+        {
+          "-name": "CH3",
+          "#text": "1"
+        },
+        {
+          "-name": "ACH",
+          "#text": "5"
+        },
+        {
+          "-name": "ACCH2",
+          "#text": "1"
+        }
+      ]
+    },
+    "Formula": "C8H10",
+    "Molar_Weight": 106.165,
+    "IG_Gibbs_Energy_of_Formation_25C": 1231.35,
+    "HvapC": 0,
+    "Ideal_Gas_Heat_Capacity_Const_A": -43.0989192,
+    "DIPPR_Vapor_Pressure_TMIN": 300,
+    "Name": "Ethylbenzene",
+    "CS_Acentric_Factor": 0.2936,
+    "Liquid_Viscosity_Const_B": 1266.623604,
+    "Liquid_Viscosity_Const_A": -24.47689632,
+    "Liquid_Viscosity_Const_D": 0,
+    "Liquid_Viscosity_Const_C": 2.288674143,
+    "HvapTMAX": 617.1,
+    "Liquid_Viscosity_Const_E": 0
+  },
+  "74-98-6": {
+    "IG_Entropy_of_Formation_25C": "3.74721",
+    "Critical_Temperature": 369.83,
+    "UNIQUAC_q": "2.236",
+    "UNIQUAC_r": "2.4766",
+    "COSMODBName": "PROPANE",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "-2373.9",
+    "Critical_Volume": 0.2,
+    "CAS_Number": "74-98-6",
+    "ID": 295,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "3"
+        },
+        {
+          "-name": "H",
+          "#text": "8"
+        }
+      ]
+    },
+    "Z_Rackett": 2.76E-01,
+    "Critical_Compressibility": 0.276,
+    "Acentric_Factor": 0.1523,
+    "HvapTmin": 85,
+    "CS_Liquid_Molar_Volume": 84,
+    "HVapB": 0.78237,
+    "HVapA": 29209000,
+    "HVapD": 0.39246,
+    "PR_Volume_Translation_Coefficient": -0.0863,
+    "CS_Solubility_Parameter": 6.40,
+    "isPf": 0,
+    "Dipole_Moment": 0.00E+00,
+    "DIPPR_Vapor_Pressure_TMAX": 369,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "SRK_Volume_Translation_Coefficient": 0.0825,
+    "Ideal_Gas_Heat_Capacity_Const_C": 3.25E-04,
+    "DIPPR_Vapor_Pressure_Constant_D": 0.000010919,
+    "Ideal_Gas_Heat_Capacity_Const_B": 8.37E-02,
+    "DIPPR_Vapor_Pressure_Constant_C": -6.0669,
+    "Ideal_Gas_Heat_Capacity_Const_E": 1.31E-10,
+    "Normal_Boiling_Point": 231.11,
+    "DIPPR_Vapor_Pressure_Constant_B": -3492.6,
+    "Ideal_Gas_Heat_Capacity_Const_D": -3.96E-07,
+    "DIPPR_Vapor_Pressure_Constant_A": 59.078,
+    "Critical_Pressure": 4.248,
+    "UNIFAC": {
+      "group": [
+        {
+          "-name": "CH3",
+          "#text": "2"
+        },
+        {
+          "-name": "CH2",
+          "#text": "1"
+        }
+      ]
+    },
+    "Formula": "C3H8",
+    "Molar_Weight": 44.096,
+    "IG_Gibbs_Energy_of_Formation_25C": -553.13,
+    "HvapC": -0.77319,
+    "Ideal_Gas_Heat_Capacity_Const_A": 2.96E+01,
+    "DIPPR_Vapor_Pressure_TMIN": 85,
+    "Name": "Propane",
+    "CS_Acentric_Factor": 0.1538,
+    "Liquid_Viscosity_Const_B": 646.25,
+    "Liquid_Viscosity_Const_A": -17.156,
+    "Liquid_Viscosity_Const_D": -7.34E-11,
+    "Liquid_Viscosity_Const_C": 1.1101,
+    "HvapTMAX": 370,
+    "Liquid_Viscosity_Const_E": 4
+  },
+  "121-44-8": {
+    "Name": "Triethyl amine",
+    "Acentric_Factor": 0.3162,
+    "Critical_Temperature": 535.15,
+    "Formula": "C6H15N",
+    "Molar_Weight": 101.190,
+    "ID": 328,
+    "CAS_Number": "121-44-8",
+    "Critical_Volume": 0.39,
+    "Critical_Pressure": 3.04,
+    "Critical_Compressibility": 0.266
+  },
+  "106-51-4": {
+    "Name": "Quinone",
+    "Acentric_Factor": 0.4945,
+    "Critical_Temperature": 683,
+    "Formula": "C6H4O2",
+    "Molar_Weight": 108.095,
+    "ID": 310,
+    "CAS_Number": "106-51-4",
+    "Critical_Volume": 0.291,
+    "Critical_Pressure": 5.96,
+    "Critical_Compressibility": 0.305
+  },
+  "539-30-0": {
+    "Name": "Benzyl ethyl ether",
+    "Acentric_Factor": 0.4332,
+    "Critical_Temperature": 662,
+    "Formula": "C9H12O",
+    "Molar_Weight": 136.191,
+    "ID": 22,
+    "CAS_Number": "539-30-0",
+    "Critical_Volume": 0.442,
+    "Critical_Pressure": 3.11,
+    "Critical_Compressibility": 0.25
+  },
+  "28.960": {
+    "Name": "Air Mixture",
+    "Critical_Temperature": 3.774,
+    "Formula": "132259-10-0",
+    "Molar_Weight": 132.45,
+    "ID": 11,
+    "CAS_Number": "28.960",
+    "Critical_Volume": 0.313,
+    "Critical_Pressure": 0.09147
+  },
+  "592-76-7": {
+    "Name": "1-Heptene",
+    "Acentric_Factor": 0.3432,
+    "Critical_Temperature": 537.4,
+    "Formula": "C7H14",
+    "Molar_Weight": 98.186,
+    "ID": 166,
+    "CAS_Number": "592-76-7",
+    "Critical_Volume": 0.402,
+    "Critical_Pressure": 2.92,
+    "Critical_Compressibility": 0.263
+  },
+  "74-84-0": {
+    "IG_Entropy_of_Formation_25C": "3.1775",
+    "Critical_Temperature": 305.32,
+    "UNIQUAC_q": "1.696",
+    "UNIQUAC_r": "1.8022",
+    "COSMODBName": "ETHANE",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "-2787.5",
+    "Critical_Volume": 0.1455,
+    "CAS_Number": "74-84-0",
+    "ID": 125,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "2"
+        },
+        {
+          "-name": "H",
+          "#text": "6"
+        }
+      ]
+    },
+    "Z_Rackett": 2.81E-01,
+    "Critical_Compressibility": 0.279,
+    "Acentric_Factor": 0.0995,
+    "HvapTmin": 90,
+    "CS_Liquid_Molar_Volume": 68,
+    "HVapB": 0.6046,
+    "HVapA": 21091000,
+    "HVapD": 0.32799,
+    "PR_Volume_Translation_Coefficient": -0.1134,
+    "CS_Solubility_Parameter": 6.05,
+    "isPf": 0,
+    "Dipole_Moment": 0,
+    "DIPPR_Vapor_Pressure_TMAX": 305.32,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "SRK_Volume_Translation_Coefficient": 0.0605,
+    "Ideal_Gas_Heat_Capacity_Const_C": 3.57E-04,
+    "DIPPR_Vapor_Pressure_Constant_D": 1.49E-05,
+    "Ideal_Gas_Heat_Capacity_Const_B": -1.11E-02,
+    "DIPPR_Vapor_Pressure_Constant_C": -5.1283,
+    "Ideal_Gas_Heat_Capacity_Const_E": 1.19E-10,
+    "Normal_Boiling_Point": 184.55,
+    "DIPPR_Vapor_Pressure_Constant_B": -2598.7,
+    "Ideal_Gas_Heat_Capacity_Const_D": -3.76E-07,
+    "DIPPR_Vapor_Pressure_Constant_A": 51.857,
+    "Critical_Pressure": 4.872,
+    "UNIFAC": {
+      "group": {
+        "-name": "CH3",
+        "#text": "2"
+      }
+    },
+    "Formula": "C2H6",
+    "Molar_Weight": 30.069,
+    "IG_Gibbs_Energy_of_Formation_25C": -1061.54,
+    "HvapC": -0.55492,
+    "Ideal_Gas_Heat_Capacity_Const_A": 3.33E+01,
+    "DIPPR_Vapor_Pressure_TMIN": 90.35,
+    "Name": "Ethane",
+    "CS_Acentric_Factor": 0.1064,
+    "Liquid_Viscosity_Const_B": 276.38,
+    "Liquid_Viscosity_Const_A": -70.046,
+    "Liquid_Viscosity_Const_D": -3.11E-18,
+    "Liquid_Viscosity_Const_C": -0.6087,
+    "HvapTMAX": 305,
+    "Liquid_Viscosity_Const_E": 7
+  },
+  "513-53-1": {
+    "Name": "sec-Butyl mercaptan",
+    "Acentric_Factor": 0.2506,
+    "Critical_Temperature": 554,
+    "Formula": "C4H10S",
+    "Molar_Weight": 90.187,
+    "ID": 42,
+    "CAS_Number": "513-53-1",
+    "Critical_Volume": 0.307,
+    "Critical_Pressure": 4.06,
+    "Critical_Compressibility": 0.271
+  },
+  "540-84-1": {
+    "Name": "2,2,4-Trimethylpentane",
+    "Acentric_Factor": 0.3035,
+    "Critical_Temperature": 543.8,
+    "Formula": "C8H18",
+    "Molar_Weight": 114.229,
+    "ID": 332,
+    "CAS_Number": "540-84-1",
+    "Critical_Volume": 0.468,
+    "Critical_Pressure": 2.57,
+    "Critical_Compressibility": 0.266
+  },
+  "1120-62-3": {
+    "Name": "3-Methylcyclopentene",
+    "Acentric_Factor": 0.2296,
+    "Critical_Temperature": 526,
+    "Formula": "C6H10",
+    "Molar_Weight": 82.144,
+    "ID": 219,
+    "CAS_Number": "1120-62-3",
+    "Critical_Volume": 0.303,
+    "Critical_Pressure": 4.13,
+    "Critical_Compressibility": 0.286
+  },
+  "565-80-0": {
+    "Name": "Di-isopropyl ketone",
+    "Acentric_Factor": 0.4044,
+    "Critical_Temperature": 576,
+    "Formula": "C7H14O",
+    "Molar_Weight": 114.185,
+    "ID": 102,
+    "CAS_Number": "565-80-0",
+    "Critical_Volume": 0.416,
+    "Critical_Pressure": 3.02,
+    "Critical_Compressibility": 0.262
+  },
+  "7664-41-7": {
+    "Name": "Ammonia",
+    "Acentric_Factor": 0.2526,
+    "Critical_Temperature": 405.65,
+    "Formula": "H3N",
+    "Molar_Weight": 17.031,
+    "ID": 12,
+    "CAS_Number": "7664-41-7",
+    "Critical_Volume": 0.07247,
+    "Critical_Pressure": 11.28,
+    "Critical_Compressibility": 0.242
+  },
+  "110-00-9": {
+    "Name": "Furan",
+    "Acentric_Factor": 0.2015,
+    "Critical_Temperature": 490.15,
+    "Formula": "C4H4O",
+    "Molar_Weight": 68.074,
+    "ID": 156,
+    "CAS_Number": "110-00-9",
+    "Critical_Volume": 0.218,
+    "Critical_Pressure": 5.5,
+    "Critical_Compressibility": 0.294
+  },
+  "75-09-2": {
+    "Name": "Dichloromethane",
+    "Acentric_Factor": 0.1986,
+    "Critical_Temperature": 510,
+    "Formula": "CH2Cl2",
+    "Molar_Weight": 84.933,
+    "ID": 90,
+    "CAS_Number": "75-09-2",
+    "Critical_Volume": 0.185,
+    "Critical_Pressure": 6.08,
+    "Critical_Compressibility": 0.265
+  },
+  "109-94-4": {
+    "Name": "Ethyl formate",
+    "Acentric_Factor": 0.2847,
+    "Critical_Temperature": 508.4,
+    "Formula": "C3H6O2",
+    "Molar_Weight": 74.079,
+    "ID": 140,
+    "CAS_Number": "109-94-4",
+    "Critical_Volume": 0.229,
+    "Critical_Pressure": 4.74,
+    "Critical_Compressibility": 0.257
+  },
+  "110-01-0": {
+    "Name": "Tetrahydrothiophene",
+    "Acentric_Factor": 0.1996,
+    "Critical_Temperature": 631.95,
+    "Formula": "C4H8S",
+    "Molar_Weight": 88.171,
+    "ID": 322,
+    "CAS_Number": "110-01-0",
+    "Critical_Volume": 0.249,
+    "Critical_Pressure": 5.16,
+    "Critical_Compressibility": 0.245
+  },
+  "590-66-9": {
+    "Name": "1,1-Dimethylcyclohexane",
+    "Acentric_Factor": 0.2326,
+    "Critical_Temperature": 591.15,
+    "Formula": "C8H16",
+    "Molar_Weight": 112.213,
+    "ID": 108,
+    "CAS_Number": "590-66-9",
+    "Critical_Volume": 0.45,
+    "Critical_Pressure": 2.938,
+    "Critical_Compressibility": 0.269
+  },
+  "110-43-0": {
+    "Name": "2-Heptanone",
+    "Acentric_Factor": 0.4190,
+    "Critical_Temperature": 611.4,
+    "Formula": "C7H14O",
+    "Molar_Weight": 114.185,
+    "ID": 165,
+    "CAS_Number": "110-43-0",
+    "Critical_Volume": 0.434,
+    "Critical_Pressure": 2.94,
+    "Critical_Compressibility": 0.251
+  },
+  "50-00-0": {
+    "Name": "Formaldehyde",
+    "Acentric_Factor": 0.2818,
+    "Critical_Temperature": 408,
+    "Formula": "CH2O",
+    "Molar_Weight": 30.026,
+    "ID": 153,
+    "CAS_Number": "50-00-0",
+    "Critical_Volume": 0.115,
+    "Critical_Pressure": 6.59,
+    "Critical_Compressibility": 0.223
+  },
+  "7778-85-0": {
+    "Name": "1,2-Dimethoxypropane",
+    "Acentric_Factor": 0.3522,
+    "Critical_Temperature": 543,
+    "Formula": "C5H12O2",
+    "Molar_Weight": 104.148,
+    "ID": 104,
+    "CAS_Number": "7778-85-0",
+    "Critical_Volume": 0.35,
+    "Critical_Pressure": 3.446,
+    "Critical_Compressibility": 0.267
+  },
+  "591-78-6": {
+    "Name": "2-Hexanone",
+    "Acentric_Factor": 0.3846,
+    "Critical_Temperature": 587.61,
+    "Formula": "C6H12O",
+    "Molar_Weight": 100.159,
+    "ID": 175,
+    "CAS_Number": "591-78-6",
+    "Critical_Volume": 0.378,
+    "Critical_Pressure": 3.287,
+    "Critical_Compressibility": 0.254
+  },
+  "7446-11-9": {
+    "Name": "Sulfur trioxide",
+    "Acentric_Factor": 0.4240,
+    "Critical_Temperature": 490.85,
+    "Formula": "O3S",
+    "Molar_Weight": 80.063,
+    "ID": 316,
+    "CAS_Number": "7446-11-9",
+    "Critical_Volume": 0.127,
+    "Critical_Pressure": 8.21,
+    "Critical_Compressibility": 0.255
+  },
+  "590-67-0": {
+    "Name": "1-Methylcyclohexanol",
+    "Acentric_Factor": 0.2213,
+    "Critical_Temperature": 686,
+    "Formula": "C7H14O",
+    "Molar_Weight": 114.185,
+    "ID": 214,
+    "CAS_Number": "590-67-0",
+    "Critical_Volume": 0.374,
+    "Critical_Pressure": 4,
+    "Critical_Compressibility": 0.262
+  },
+  "119-64-2": {
+    "Name": "1,2,3,4-Tetrahydronaphthalene",
+    "Acentric_Factor": 0.3353,
+    "Critical_Temperature": 720,
+    "Formula": "C10H12",
+    "Molar_Weight": 132.202,
+    "ID": 321,
+    "CAS_Number": "119-64-2",
+    "Critical_Volume": 0.408,
+    "Critical_Pressure": 3.65,
+    "Critical_Compressibility": 0.249
+  },
+  "79-09-4": {
+    "Name": "Propionic acid",
+    "Acentric_Factor": 0.5796,
+    "Critical_Temperature": 600.81,
+    "Formula": "C3H6O2",
+    "Molar_Weight": 74.079,
+    "ID": 300,
+    "CAS_Number": "79-09-4",
+    "Critical_Volume": 0.235,
+    "Critical_Pressure": 4.668,
+    "Critical_Compressibility": 0.22
+  },
+  "79-31-2": {
+    "Name": "Isobutyric acid",
+    "Acentric_Factor": 0.6141,
+    "Critical_Temperature": 605,
+    "Formula": "C4H8O2",
+    "Molar_Weight": 88.105,
+    "ID": 189,
+    "CAS_Number": "79-31-2",
+    "Critical_Volume": 0.292,
+    "Critical_Pressure": 3.7,
+    "Critical_Compressibility": 0.215
+  },
+  "108-38-3": {
+    "IG_Entropy_of_Formation_25C": "4.97233",
+    "Critical_Temperature": 617,
+    "UNIQUAC_q": "3.54",
+    "UNIQUAC_r": "4.66",
+    "COSMODBName": "M-XYLENE",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "163.14",
+    "Critical_Volume": 0.375,
+    "CAS_Number": "108-38-3",
+    "ID": 343,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "8"
+        },
+        {
+          "-name": "H",
+          "#text": "10"
+        }
+      ]
+    },
+    "Z_Rackett": 0.2625,
+    "Critical_Compressibility": 0.259,
+    "Acentric_Factor": 0.3265,
+    "HvapTmin": 246.8,
+    "CS_Liquid_Molar_Volume": 123.5,
+    "HVapB": 0.374999393,
+    "HVapA": 55028716.78,
+    "HVapD": 0,
+    "CS_Solubility_Parameter": 8.82,
+    "isPf": 0,
+    "Dipole_Moment": 0,
+    "DIPPR_Vapor_Pressure_TMAX": 440,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "Ideal_Gas_Heat_Capacity_Const_C": -0.000374719,
+    "DIPPR_Vapor_Pressure_Constant_D": 6.89E-06,
+    "Ideal_Gas_Heat_Capacity_Const_B": 0.62969472,
+    "DIPPR_Vapor_Pressure_Constant_C": -9.040191598,
+    "Ideal_Gas_Heat_Capacity_Const_E": 0,
+    "Normal_Boiling_Point": 412.3,
+    "DIPPR_Vapor_Pressure_Constant_B": -6780.324692,
+    "Ideal_Gas_Heat_Capacity_Const_D": 8.48E-08,
+    "DIPPR_Vapor_Pressure_Constant_A": 81.46007933,
+    "Critical_Pressure": 3.541,
+    "UNIFAC": {
+      "group": [
+        {
+          "-name": "ACH",
+          "#text": "4"
+        },
+        {
+          "-name": "ACCH3",
+          "#text": "2"
+        }
+      ]
+    },
+    "Formula": "C8H10",
+    "Molar_Weight": 106.165,
+    "IG_Gibbs_Energy_of_Formation_25C": 1118.63,
+    "HvapC": 0,
+    "Ideal_Gas_Heat_Capacity_Const_A": -29.1652488,
+    "DIPPR_Vapor_Pressure_TMIN": 300,
+    "Name": "m-Xylene",
+    "CS_Acentric_Factor": 0.3045,
+    "Liquid_Viscosity_Const_B": 1266.373909,
+    "Liquid_Viscosity_Const_A": -24.50161164,
+    "Liquid_Viscosity_Const_D": 0,
+    "Liquid_Viscosity_Const_C": 2.287507923,
+    "HvapTMAX": 617,
+    "Liquid_Viscosity_Const_E": 0
+  },
+  "111-70-6": {
+    "IG_Entropy_of_Formation_25C": "6.645",
+    "Critical_Temperature": 632.3,
+    "isHYP": "0",
+    "COSMODBName": "1-HEPTANOL",
+    "isPf": 0,
+    "Dipole_Moment": 0,
+    "IG_Enthalpy_of_Formation_25C": "-2.89E+03",
+    "Critical_Volume": 0.444,
+    "DIPPR_Vapor_Pressure_TMAX": 449,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "Ideal_Gas_Heat_Capacity_Const_C": -0.000344657,
+    "Ideal_Gas_Heat_Capacity_Const_B": 0.67784292,
+    "DIPPR_Vapor_Pressure_Constant_D": 6.89E-06,
+    "Normal_Boiling_Point": 449.5,
+    "Ideal_Gas_Heat_Capacity_Const_E": 0,
+    "DIPPR_Vapor_Pressure_Constant_C": -8.353171299,
+    "Ideal_Gas_Heat_Capacity_Const_D": 6.05E-08,
+    "DIPPR_Vapor_Pressure_Constant_B": -6883.964084,
+    "ID": 162,
+    "CAS_Number": "111-70-6",
+    "DIPPR_Vapor_Pressure_Constant_A": 76.80593668,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "7"
+        },
+        {
+          "-name": "O",
+          "#text": "1"
+        },
+        {
+          "-name": "H",
+          "#text": "16"
+        }
+      ]
+    },
+    "Critical_Pressure": 3.085,
+    "Critical_Compressibility": 0.261,
+    "Z_Rackett": 0,
+    "Acentric_Factor": 0.5621,
+    "UNIFAC": {
+      "group": [
+        {
+          "-name": "CH3",
+          "#text": "1"
+        },
+        {
+          "-name": "CH2",
+          "#text": "6"
+        },
+        {
+          "-name": "OH",
+          "#text": "1"
+        }
+      ]
+    },
+    "Formula": "C7H16O",
+    "Molar_Weight": 116.201,
+    "IG_Gibbs_Energy_of_Formation_25C": -1078.30,
+    "HvapC": 0,
+    "Ideal_Gas_Heat_Capacity_Const_A": 4.9069296,
+    "HvapTmin": 253.2,
+    "CS_Liquid_Molar_Volume": 0,
+    "DIPPR_Vapor_Pressure_TMIN": 333,
+    "Name": "1-Heptanol",
+    "HVapB": 0.37500033,
+    "HVapA": 76602519.05,
+    "CS_Acentric_Factor": 0,
+    "Liquid_Viscosity_Const_B": 1629.514366,
+    "HVapD": 0,
+    "Liquid_Viscosity_Const_A": -17.59199478,
+    "Liquid_Viscosity_Const_D": 0,
+    "Liquid_Viscosity_Const_C": 1.044788059,
+    "CS_Solubility_Parameter": 0,
+    "Liquid_Viscosity_Const_E": 0,
+    "HvapTMAX": 633
+  },
+  "75-07-0": {
+    "Name": "Acetaldehyde",
+    "Acentric_Factor": 0.2907,
+    "Critical_Temperature": 466,
+    "Formula": "C2H4O",
+    "Molar_Weight": 44.053,
+    "ID": 1,
+    "CAS_Number": "75-07-0",
+    "Critical_Volume": 0.154,
+    "Critical_Pressure": 5.55,
+    "Critical_Compressibility": 0.221
+  },
+  "75-73-0": {
+    "Name": "Carbon tetrafluoride",
+    "Acentric_Factor": 0.1790,
+    "Critical_Temperature": 227.51,
+    "Formula": "CF4",
+    "Molar_Weight": 88.004,
+    "ID": 51,
+    "CAS_Number": "75-73-0",
+    "Critical_Volume": 0.143,
+    "Critical_Pressure": 3.745,
+    "Critical_Compressibility": 0.283
+  },
+  "120-61-6": {
+    "Name": "Dimethyl terephthalate",
+    "Acentric_Factor": 0.6371,
+    "Critical_Temperature": 772,
+    "Formula": "C10H10O4",
+    "Molar_Weight": 194.184,
+    "ID": 119,
+    "CAS_Number": "120-61-6",
+    "Critical_Volume": 0.529,
+    "Critical_Pressure": 2.78,
+    "Critical_Compressibility": 0.229
+  },
+  "75-54-7": {
+    "Name": "Methyldichlorosilane",
+    "Acentric_Factor": 0.2758,
+    "Critical_Temperature": 483,
+    "Formula": "CH4Cl2Si",
+    "Molar_Weight": 115.034,
+    "ID": 220,
+    "CAS_Number": "75-54-7",
+    "Critical_Volume": 0.289,
+    "Critical_Pressure": 3.95,
+    "Critical_Compressibility": 0.284
+  },
+  "75-37-6": {
+    "Name": "1,1-Difluoroethane",
+    "Acentric_Factor": 0.2751,
+    "Critical_Temperature": 386.44,
+    "Formula": "C2H4F2",
+    "Molar_Weight": 66.050,
+    "ID": 97,
+    "CAS_Number": "75-37-6",
+    "Critical_Volume": 0.179,
+    "Critical_Pressure": 4.52,
+    "Critical_Compressibility": 0.252
+  },
+  "111-71-7": {
+    "Name": "Heptanal",
+    "Acentric_Factor": 0.4279,
+    "Critical_Temperature": 616.8,
+    "Formula": "C7H14O",
+    "Molar_Weight": 114.185,
+    "ID": 159,
+    "CAS_Number": "111-71-7",
+    "Critical_Volume": 0.434,
+    "Critical_Pressure": 3.16,
+    "Critical_Compressibility": 0.267
+  },
+  "75-08-1": {
+    "Name": "Ethyl mercaptan",
+    "Acentric_Factor": 0.1878,
+    "Critical_Temperature": 499.15,
+    "Formula": "C2H6S",
+    "Molar_Weight": 62.134,
+    "ID": 145,
+    "CAS_Number": "75-08-1",
+    "Critical_Volume": 0.207,
+    "Critical_Pressure": 5.49,
+    "Critical_Compressibility": 0.274
+  },
+  "629-50-5": {
+    "Name": "Tridecane",
+    "Acentric_Factor": 0.6174,
+    "Critical_Temperature": 675,
+    "Formula": "C13H28",
+    "Molar_Weight": 184.361,
+    "ID": 327,
+    "CAS_Number": "629-50-5",
+    "Critical_Volume": 0.826,
+    "Critical_Pressure": 1.68,
+    "Critical_Compressibility": 0.247
+  },
+  "142-96-1": {
+    "Name": "Dibutyl ether",
+    "Acentric_Factor": 0.4476,
+    "Critical_Temperature": 584.1,
+    "Formula": "C8H18O",
+    "Molar_Weight": 130.228,
+    "ID": 84,
+    "CAS_Number": "142-96-1",
+    "Critical_Volume": 0.487,
+    "Critical_Pressure": 2.46,
+    "Critical_Compressibility": 0.247
+  },
+  "65-85-0": {
+    "Name": "Benzoic acid",
+    "Acentric_Factor": 0.6028,
+    "Critical_Temperature": 751,
+    "Formula": "C7H6O2",
+    "Molar_Weight": 122.121,
+    "ID": 18,
+    "CAS_Number": "65-85-0",
+    "Critical_Volume": 0.344,
+    "Critical_Pressure": 4.47,
+    "Critical_Compressibility": 0.246
+  },
+  "92-52-4": {
+    "Name": "Biphenyl",
+    "Acentric_Factor": 0.4029,
+    "Critical_Temperature": 773,
+    "Formula": "C12H10",
+    "Molar_Weight": 154.208,
+    "ID": 24,
+    "CAS_Number": "92-52-4",
+    "Critical_Volume": 0.497,
+    "Critical_Pressure": 3.38,
+    "Critical_Compressibility": 0.261
+  },
+  "79-00-5": {
+    "Name": "1,1,2-Trichloroethane",
+    "Acentric_Factor": 0.2591,
+    "Critical_Temperature": 602,
+    "Formula": "C2H3Cl3",
+    "Molar_Weight": 133.404,
+    "ID": 326,
+    "CAS_Number": "79-00-5",
+    "Critical_Volume": 0.281,
+    "Critical_Pressure": 4.48,
+    "Critical_Compressibility": 0.252
+  },
+  "143-08-8": {
+    "Name": "1-Nonanol",
+    "Acentric_Factor": 0.5841,
+    "Critical_Temperature": 670.9,
+    "Formula": "C9H20O",
+    "Molar_Weight": 144.255,
+    "ID": 258,
+    "CAS_Number": "143-08-8",
+    "Critical_Volume": 0.576,
+    "Critical_Pressure": 2.527,
+    "Critical_Compressibility": 0.261
+  },
+  "628-29-5": {
+    "Name": "Methylbutyl sulfide",
+    "Acentric_Factor": 0.3229,
+    "Critical_Temperature": 593,
+    "Formula": "C5H12S",
+    "Molar_Weight": 104.214,
+    "ID": 209,
+    "CAS_Number": "628-29-5",
+    "Critical_Volume": 0.36,
+    "Critical_Pressure": 3.47,
+    "Critical_Compressibility": 0.253
+  },
+  "124-07-2": {
+    "Name": "Octanoic acid",
+    "Acentric_Factor": 0.7706,
+    "Critical_Temperature": 694.26,
+    "Formula": "C8H16O2",
+    "Molar_Weight": 144.211,
+    "ID": 266,
+    "CAS_Number": "124-07-2",
+    "Critical_Volume": 0.523,
+    "Critical_Pressure": 2.779,
+    "Critical_Compressibility": 0.252
+  },
+  "625-54-7": {
+    "Name": "Ethylisopropyl ether",
+    "Acentric_Factor": 0.3056,
+    "Critical_Temperature": 489,
+    "Formula": "C5H12O",
+    "Molar_Weight": 88.148,
+    "ID": 143,
+    "CAS_Number": "625-54-7",
+    "Critical_Volume": 0.329,
+    "Critical_Pressure": 3.41,
+    "Critical_Compressibility": 0.276
+  },
+  "75-05-8": {
+    "Name": "Acetonitrile",
+    "Acentric_Factor": 0.3379,
+    "Critical_Temperature": 545.5,
+    "Formula": "C2H3N",
+    "Molar_Weight": 41.052,
+    "ID": 6,
+    "CAS_Number": "75-05-8",
+    "Critical_Volume": 0.173,
+    "Critical_Pressure": 4.83,
+    "Critical_Compressibility": 0.184
+  },
+  "124-40-3": {
+    "Name": "Dimethyl amine",
+    "Acentric_Factor": 0.2999,
+    "Critical_Temperature": 437.2,
+    "Formula": "C2H7N",
+    "Molar_Weight": 45.084,
+    "ID": 106,
+    "CAS_Number": "124-40-3",
+    "Critical_Volume": 0.18,
+    "Critical_Pressure": 5.34,
+    "Critical_Compressibility": 0.264
+  },
+  "107-21-1": {
+    "Name": "Ethylene glycol",
+    "Acentric_Factor": 0.5068,
+    "Critical_Temperature": 720,
+    "Formula": "C2H6O2",
+    "Molar_Weight": 62.068,
+    "ID": 137,
+    "CAS_Number": "107-21-1",
+    "Critical_Volume": 0.191,
+    "Critical_Pressure": 8.2,
+    "Critical_Compressibility": 0.262
+  },
+  "540-54-5": {
+    "Name": "1-Chloropropane",
+    "Acentric_Factor": 0.2277,
+    "Critical_Temperature": 503.15,
+    "Formula": "C3H7Cl",
+    "Molar_Weight": 78.541,
+    "ID": 57,
+    "CAS_Number": "540-54-5",
+    "Critical_Volume": 0.247,
+    "Critical_Pressure": 4.58,
+    "Critical_Compressibility": 0.27
+  },
+  "287-92-3": {
+    "Name": "Cyclopentane",
+    "Acentric_Factor": 0.1949,
+    "Critical_Temperature": 511.7,
+    "Formula": "C5H10",
+    "Molar_Weight": 70.133,
+    "ID": 69,
+    "CAS_Number": "287-92-3",
+    "Critical_Volume": 0.26,
+    "Critical_Pressure": 4.51,
+    "Critical_Compressibility": 0.276
+  },
+  "64-17-5": {
+    "IG_Entropy_of_Formation_25C": "3.89199",
+    "Critical_Temperature": 514,
+    "UNIQUAC_q": "1.97",
+    "UNIQUAC_r": "2.11",
+    "COSMODBName": "ETHANOL",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "-5.10E+03",
+    "Critical_Volume": 0.168,
+    "CAS_Number": "64-17-5",
+    "ID": 126,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "2"
+        },
+        {
+          "-name": "O",
+          "#text": "1"
+        },
+        {
+          "-name": "H",
+          "#text": "6"
+        }
+      ]
+    },
+    "Z_Rackett": 0.2502,
+    "Critical_Compressibility": 0.241,
+    "Acentric_Factor": 0.6436,
+    "HvapTmin": 206.48,
+    "CS_Liquid_Molar_Volume": 0,
+    "HVapB": 0.375000345,
+    "HVapA": 59503155.91,
+    "HVapD": 0,
+    "CS_Solubility_Parameter": 0,
+    "isPf": 0,
+    "Dipole_Moment": 0,
+    "DIPPR_Vapor_Pressure_TMAX": 369,
+    "DIPPR_Vapor_Pressure_Constant_E": 2,
+    "Ideal_Gas_Heat_Capacity_Const_C": -8.39E-05,
+    "DIPPR_Vapor_Pressure_Constant_D": 6.89E-06,
+    "Ideal_Gas_Heat_Capacity_Const_B": 0.214071084,
+    "DIPPR_Vapor_Pressure_Constant_C": -8.230099775,
+    "Ideal_Gas_Heat_Capacity_Const_E": 0,
+    "Normal_Boiling_Point": 351.5,
+    "DIPPR_Vapor_Pressure_Constant_B": -6955.286607,
+    "Ideal_Gas_Heat_Capacity_Const_D": 1.37E-09,
+    "DIPPR_Vapor_Pressure_Constant_A": 78.83471789,
+    "Critical_Pressure": 6.137,
+    "UNIFAC": {
+      "group": [
+        {
+          "-name": "CH3",
+          "#text": "1"
+        },
+        {
+          "-name": "CH2",
+          "#text": "1"
+        },
+        {
+          "-name": "OH",
+          "#text": "1"
+        }
+      ]
+    },
+    "Formula": "C2H6O",
+    "Molar_Weight": 46.068,
+    "IG_Gibbs_Energy_of_Formation_25C": -3643.43,
+    "HvapC": 0,
+    "Ideal_Gas_Heat_Capacity_Const_A": 9.0141804,
+    "DIPPR_Vapor_Pressure_TMIN": 270,
+    "Name": "Ethanol",
+    "CS_Acentric_Factor": 0,
+    "Liquid_Viscosity_Const_B": 1030.095766,
+    "Liquid_Viscosity_Const_A": -17.43997901,
+    "Liquid_Viscosity_Const_D": 0,
+    "Liquid_Viscosity_Const_C": 1.238575247,
+    "HvapTMAX": 516.2,
+    "Liquid_Viscosity_Const_E": 0
+  },
+  "64-18-6": {
+    "Name": "Formic acid",
+    "Acentric_Factor": 0.3173,
+    "Critical_Temperature": 588,
+    "Formula": "CH2O2",
+    "Molar_Weight": 46.026,
+    "ID": 155,
+    "CAS_Number": "64-18-6",
+    "Critical_Volume": 0.125,
+    "Critical_Pressure": 5.81,
+    "Critical_Compressibility": 0.149
+  },
+  "124-38-9": {
+    "IG_Entropy_of_Formation_25C": "2.69333",
+    "UNIQUAC_q": "1.292",
+    "Critical_Temperature": 304.21,
+    "UNIQUAC_r": "1.2986",
+    "isHYP": "0",
+    "IG_Enthalpy_of_Formation_25C": "-8941.4",
+    "Critical_Volume": 0.094,
+    "CAS_Number": "124-38-9",
+    "ID": 47,
+    "elements": {
+      "element": [
+        {
+          "-name": "C",
+          "#text": "1"
+        },
+        {
+          "-name": "O",
+          "#text": "2"
+        }
+      ]
+    },
+    "Z_Rackett": 2.72E-01,
+    "Critical_Compressibility": 0.274,
+    "Acentric_Factor": 0.2236,
+    "HvapTmin": 216.58,
+    "CS_Liquid_Molar_Volume": 0,
+    "HVapB": 0.382,
+    "HVapA": 21730000,
+    "HVapD": 0.42213,
+    "PR_Volume_Translation_Coefficient": -0.0817,
+    "CS_Solubility_Parameter": 0,
+    "isPf": 0,
+    "Dipole_Moment": 0.00E+00,
+    "DIPPR_Vapor_Pressure_TMAX": 304.21,
+    "DIPPR_Vapor_Pressure_Constant_E": 1,
+    "Ideal_Gas_Heat_Capacity_Const_C": 2.65E-04,
+    "SRK_Volume_Translation_Coefficient": 0.0833,
+    "DIPPR_Vapor_Pressure_Constant_D": 0.040909,
+    "Ideal_Gas_Heat_Capacity_Const_B": -2.24E-02,
+    "DIPPR_Vapor_Pressure_Constant_C": -21.268,
+    "Ideal_Gas_Heat_Capacity_Const_E": 2.01E-10,
+    "Normal_Boiling_Point": 0,
+    "DIPPR_Vapor_Pressure_Constant_B": -4735,
+    "Ideal_Gas_Heat_Capacity_Const_D": -4.15E-07,
+    "DIPPR_Vapor_Pressure_Constant_A": 140.54,
+    "Critical_Pressure": 7.383,
+    "UNIFAC": {
+      "group": {
+        "-name": "CO2",
+        "#text": "1"
+      }
+    },
+    "Formula": "CO2",
+    "Molar_Weight": 44.010,
+    "IG_Gibbs_Energy_of_Formation_25C": -8960.87,
+    "HvapC": -0.4339,
+    "Ideal_Gas_Heat_Capacity_Const_A": 2.92E+01,
+    "DIPPR_Vapor_Pressure_TMIN": 216.58,
+    "Name": "Carbon dioxide",
+    "Liquid_Viscosity_Const_B": -402.92,
+    "CS_Acentric_Factor": 0,
+    "Liquid_Viscosity_Const_A": 18.775,
+    "Liquid_Viscosity_Const_D": -6.92E-26,
+    "Liquid_Viscosity_Const_C": -4.6854,
+    "Liquid_Viscosity_Const_E": 10,
+    "HvapTMAX": 304
+  },
+  "108-87-2": {
+    "Name": "Methylcyclohexane",
+    "Acentric_Factor": 0.2361,
+    "Critical_Temperature": 572.1,
+    "Formula": "C7H14",
+    "Molar_Weight": 98.186,
+    "ID": 213,
+    "CAS_Number": "108-87-2",
+    "Critical_Volume": 0.369,
+    "Critical_Pressure": 3.48,
+    "Critical_Compressibility": 0.27
+  },
+  "141-78-6": {
+    "Name": "Ethyl acetate",
+    "Acentric_Factor": 0.3664,
+    "Critical_Temperature": 523.3,
+    "Formula": "C4H8O2",
+    "Molar_Weight": 88.105,
+    "ID": 127,
+    "CAS_Number": "141-78-6",
+    "Critical_Volume": 0.286,
+    "Critical_Pressure": 3.88,
+    "Critical_Compressibility": 0.255
+  },
+  "629-92-5": {
+    "Name": "Nonadecane",
+    "Acentric_Factor": 0.8522,
+    "Critical_Temperature": 758,
+    "Formula": "C19H40",
+    "Molar_Weight": 268.521,
+    "ID": 254,
+    "CAS_Number": "629-92-5",
+    "Critical_Volume": 1.26,
+    "Critical_Pressure": 1.21,
+    "Critical_Compressibility": 0.242
+  },
+  "107-83-5": {
+    "Name": "2-Methylpentane",
+    "Acentric_Factor": 0.2791,
+    "Critical_Temperature": 497.7,
+    "Formula": "C6H14",
+    "Molar_Weight": 86.175,
+    "ID": 234,
+    "CAS_Number": "107-83-5",
+    "Critical_Volume": 0.368,
+    "Critical_Pressure": 3.04,
+    "Critical_Compressibility": 0.27
+  },
+  "10028-15-6": {
+    "Name": "Ozone",
+    "Acentric_Factor": 0.2119,
+    "Critical_Temperature": 261,
+    "Formula": "O3",
+    "Molar_Weight": 47.998,
+    "ID": 276,
+    "CAS_Number": "10028-15-6",
+    "Critical_Volume": 0.089,
+    "Critical_Pressure": 5.57,
+    "Critical_Compressibility": 0.228
+  },
+  "144-62-7": {
+    "Name": "Oxalic acid",
+    "Acentric_Factor": 0.9176,
+    "Critical_Temperature": 804,
+    "Formula": "C2H2O4",
+    "Molar_Weight": 90.035,
+    "ID": 274,
+    "CAS_Number": "144-62-7",
+    "Critical_Volume": 0.205,
+    "Critical_Pressure": 7.02,
+    "Critical_Compressibility": 0.215
+  },
+  "624-72-6": {
+    "Name": "1,2-Difluoroethane",
+    "Acentric_Factor": 0.2224,
+    "Critical_Temperature": 445,
+    "Formula": "C2H4F2",
+    "Molar_Weight": 66.050,
+    "ID": 98,
+    "CAS_Number": "624-72-6",
+    "Critical_Volume": 0.195,
+    "Critical_Pressure": 4.34,
+    "Critical_Compressibility": 0.229
+  },
+  "71-36-3": {
+    "Name": "1-Butanol",
+    "Acentric_Factor": 0.5883,
+    "Critical_Temperature": 563.1,
+    "Formula": "C4H10O",
+    "Molar_Weight": 74.122,
+    "ID": 34,
+    "CAS_Number": "71-36-3",
+    "Critical_Volume": 0.273,
+    "Critical_Pressure": 4.414,
+    "Critical_Compressibility": 0.258
+  },
+  "104-51-8": {
+    "Name": "Butylbenzene",
+    "Acentric_Factor": 0.3941,
+    "Critical_Temperature": 660.5,
+    "Formula": "C10H14",
+    "Molar_Weight": 134.218,
+    "ID": 40,
+    "CAS_Number": "104-51-8",
+    "Critical_Volume": 0.497,
+    "Critical_Pressure": 2.89,
+    "Critical_Compressibility": 0.262
+  },
+  "627-19-0": {
+    "Name": "1-Pentyne",
+    "Acentric_Factor": 0.2899,
+    "Critical_Temperature": 481.2,
+    "Formula": "C5H8",
+    "Molar_Weight": 68.117,
+    "ID": 288,
+    "CAS_Number": "627-19-0",
+    "Critical_Volume": 0.277,
+    "Critical_Pressure": 4.17,
+    "Critical_Compressibility": 0.289
+  },
+  "7443-70-1": {
+    "Name": "cis-2-Methylcyclohexanol",
+    "Acentric_Factor": 0.6805,
+    "Critical_Temperature": 614,
+    "Formula": "C7H14O",
+    "Molar_Weight": 114.185,
+    "ID": 215,
+    "CAS_Number": "7443-70-1",
+    "Critical_Volume": 0.374,
+    "Critical_Pressure": 3.79,
+    "Critical_Compressibility": 0.278
+  },
+  "7783-54-2": {
+    "Name": "Nitrogen trifluoride",
+    "Acentric_Factor": 0.1200,
+    "Critical_Temperature": 234,
+    "Formula": "F3N",
+    "Molar_Weight": 71.002,
+    "ID": 250,
+    "CAS_Number": "7783-54-2",
+    "Critical_Volume": 0.11875,
+    "Critical_Pressure": 4.461,
+    "Critical_Compressibility": 0.272
+  },
+  "75-50-3": {
+    "Name": "Trimethyl amine",
+    "Acentric_Factor": 0.2062,
+    "Critical_Temperature": 433.25,
+    "Formula": "C3H9N",
+    "Molar_Weight": 59.110,
+    "ID": 329,
+    "CAS_Number": "75-50-3",
+    "Critical_Volume": 0.254,
+    "Critical_Pressure": 4.07,
+    "Critical_Compressibility": 0.287
+  },
+  "75-33-2": {
+    "Name": "2-Propyl mercaptan",
+    "Acentric_Factor": 0.2138,
+    "Critical_Temperature": 517,
+    "Formula": "C3H8S",
+    "Molar_Weight": 76.161,
+    "ID": 307,
+    "CAS_Number": "75-33-2",
+    "Critical_Volume": 0.254,
+    "Critical_Pressure": 4.75,
+    "Critical_Compressibility": 0.281
+  },
+  "10035-10-6": {
+    "Name": "Hydrogen bromide",
+    "Acentric_Factor": 0.0734,
+    "Critical_Temperature": 363.15,
+    "Formula": "HBr",
+    "Molar_Weight": 80.912,
+    "ID": 184,
+    "CAS_Number": "10035-10-6",
+    "Critical_Volume": 0.1,
+    "Critical_Pressure": 8.552,
+    "Critical_Compressibility": 0.283
+  },
+  "109-60-4": {
+    "Name": "Propyl acetate",
+    "Acentric_Factor": 0.3889,
+    "Critical_Temperature": 549.73,
+    "Formula": "C5H10O2",
+    "Molar_Weight": 102.132,
+    "ID": 302,
+    "CAS_Number": "109-60-4",
+    "Critical_Volume": 0.345,
+    "Critical_Pressure": 3.36,
+    "Critical_Compressibility": 0.254
+  },
+  "628-71-7": {
+    "Name": "1-Heptyne",
+    "Acentric_Factor": 0.3778,
+    "Critical_Temperature": 547,
+    "Formula": "C7H12",
+    "Molar_Weight": 96.170,
+    "ID": 168,
+    "CAS_Number": "628-71-7",
+    "Critical_Volume": 0.387,
+    "Critical_Pressure": 3.21,
+    "Critical_Compressibility": 0.273
+  },
+  "628-80-8": {
+    "Name": "Methyl pentyl ether",
+    "Acentric_Factor": 0.3442,
+    "Critical_Temperature": 546.49,
+    "Formula": "C6H14O",
+    "Molar_Weight": 102.175,
+    "ID": 235,
+    "CAS_Number": "628-80-8",
+    "Critical_Volume": 0.38,
+    "Critical_Pressure": 3.042,
+    "Critical_Compressibility": 0.254
+  }
+}

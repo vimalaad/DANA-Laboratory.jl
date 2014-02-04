@@ -1,0 +1,427 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*
+*--------------------------------------------------------------------
+* Models to simulate a power plant.
+*--------------------------------------------------------------------
+* Author: Argimiro R. Secchi
+* $Id: power_plant.mso 195 2007-03-07 20:30:12Z arge $
+*-------------------------------------------------------------------*#
+
+# Declaracao de tipos
+	CalorEspecifico		as Real(Default=1e-3,Lower=0,Upper=1,Unit='MJ/kg/K');
+	CoefGlobal_area		as Real(Default=10,Lower=0,Upper=1e3,Unit='1000*kW/K');
+	Dif_Pres			as Real(Default=0,Lower=-50,Upper=50,Unit='MPa');
+	Dif_Temp			as Real(Default=0,Lower=-300,Upper=300,Unit='K');
+	Eficiencia			as Real(Default=0.75,Lower=0,Upper=1);
+	EnergiaInterna		as Real(Default=2,Lower=0,Upper=10,Unit='MJ/kg');
+	Entalpia			as Real(Default=3,Lower=1e-3,Upper=7,Unit='MJ/kg');
+	Entropia			as Real(Default=5,Lower=1e-3,Upper=8,Unit='kJ/kg/K');
+	Fracao				as Real(Default=0.5,Lower=0,Upper=1);
+	Potencia			as Real(Default=10,Lower=0,Upper=500,Unit='1000*kW');
+	Pressao				as Real(Default=1,Lower=5e-4,Upper=20,Unit='MPa');
+	MassaEspecifica		as Real(Default=1e3,Lower=1e-3,Upper=1e6,Unit='kg/m^3');
+    NoType				as Real(Default=1,Lower=-2,Upper=2);
+	Temperatura			as Real(Default=600,Lower=273.16,Upper=900,Unit='K');
+	VazaoMassica		as Real(Default=50,Lower=0,Upper=1e4,Unit='kg/s');
+	VolumeEspecifico	as Real(Default=1e-3,Lower=1e-6,Upper=500,Unit='m^3/kg');
+
+Model Corrente
+	#Brief="Corrente para conexão entre os equipamentos"
+	VARIABLES
+	F as VazaoMassica;
+	P as Pressao;
+	T as Temperatura;
+	S as Entropia;
+	H as Entalpia;
+end
+
+Model Fonte
+	ATTRIBUTES
+	Pallete = true;
+	Icon = "icon/fonte2";
+	Brief="Corrente de saída";
+	Info = " ";
+
+	PARAMETERS
+outer PP as Plugin(Brief="Steam tables");
+
+	VARIABLES
+out Fout	as	Corrente(Symbol="_{out}", PosX = 1, PosY = 0.5);
+
+	EQUATIONS
+	[Fout.S,Fout.H] = PP.propPTl(Fout.P,Fout.T);
+end
+
+Model Sumidouro
+	ATTRIBUTES
+	Pallete = true;
+	Icon = "icon/sumidouro";
+	Brief="Sumidouro de corrente de processo";
+	Info = " ";
+	
+	VARIABLES
+in Fin	as	Corrente(Symbol="_{in}", PosX = 0, PosY = 0.5 );
+end
+
+
+Model SumidouroQ
+	ATTRIBUTES
+	Pallete = true;
+	Icon = "icon/sumidouroQ";
+	Brief="Sumidouro de calor";
+	
+		VARIABLES
+in Qin	as	Potencia(Symbol="_{in}", PosX = 0, PosY = 0.5);
+end
+
+# Modelo de turbina sem sangria
+Model Turbina
+	ATTRIBUTES
+	Pallete = true;
+	Icon = "icon/turbina";
+
+	PARAMETERS
+outer propterm as Plugin(Brief="Steam tables", Type="water");
+	
+	VARIABLES
+	H_IS		as Entalpia;
+	EF_T		as Eficiencia (Brief="Eficiencia da turbina");
+	POT_TURB	as Potencia (Brief="Potencia da turbina");
+in	Fin		as Corrente (Symbol="_{in}");
+out	Fout	as Corrente (Symbol="_{out}");
+
+	EQUATIONS
+
+	H_IS = propterm.propPS(Fout.P,Fin.S);
+
+	Fout.H = (H_IS - Fin.H) * EF_T + Fin.H;
+	
+	[Fout.S,Fout.T] = propterm.propPH(Fout.P,Fout.H);
+			
+	Fin.F * (Fin.H - Fout.H) = POT_TURB;
+
+	Fout.F = Fin.F;
+end
+
+# Modelo de turbina com sangria
+Model Turbina_sangra
+ATTRIBUTES
+	Pallete = true;
+	Icon = "icon/turbina_sa";
+
+	PARAMETERS
+outer propterm as Plugin(Brief="Steam tables", Type="water");
+
+	VARIABLES
+	H_IS		as Entalpia;
+	EF_T		as Eficiencia(Brief="Eficiencia da turbina");
+	POT_TURB	as Potencia(Brief="Potencia da turbina");
+	y			as Fracao(Brief="Fracao massica da sangria");
+in	Fin			as Corrente (Symbol="_{in}");
+out Fout		as Corrente (Symbol="_{out}");
+out Fouts		as Corrente (Symbol="_{outx}");#(Brief="Sangria da Turbina")
+
+	EQUATIONS
+
+	H_IS = propterm.propPS(Fout.P,Fin.S);
+
+	Fout.H = (H_IS - Fin.H) * EF_T + Fin.H;
+	
+	[Fout.S,Fout.T] = propterm.propPH(Fout.P,Fout.H);
+			
+	Fin.F * (Fin.H - Fout.H) = POT_TURB;
+
+	Fouts.F = Fin.F * y;
+	Fout.F = Fin.F - Fouts.F;
+	Fouts.P = Fout.P;
+	Fouts.T = Fout.T;
+	Fouts.S = Fout.S;
+	Fouts.H = Fout.H;
+end
+
+# Modelo de condensador com uma alimentacao
+Model Condensador
+	ATTRIBUTES
+	Pallete = true;
+	Icon = "icon/condensador";
+
+	PARAMETERS
+outer propterm as Plugin(Brief="Steam tables", Type="water");
+	
+	VARIABLES
+	Q_COND	as Potencia (Brief="Taxa de calor removido");
+	G_S		as Dif_Temp (Brief="Grau de sub-resfriamento");
+in	Fin		as Corrente (Symbol="_{in}");
+out	Fout	as Corrente (Symbol="_{out}");
+
+	EQUATIONS
+
+	Fout.P = Fin.P;
+	Fout.T = propterm.Tsat(Fout.P) - G_S;
+	
+	[Fout.S,Fout.H] = propterm.propPTl(Fout.P,Fout.T);
+	 
+	Q_COND = Fin.F * (Fin.H - Fout.H);
+	Fout.F = Fin.F;
+end
+
+# Modelo de condensador com duas alimentacoes
+Model Condensador_2alim
+	ATTRIBUTES
+	Pallete = true;
+	Icon = "icon/condensador";
+
+	PARAMETERS
+outer propterm as Plugin(Brief="Steam tables", Type="water");
+    
+	VARIABLES
+	Q_COND	as Potencia (Brief="Taxa de calor removido");
+	G_S		as Dif_Temp (Brief="Grau de sub-resfriamento");
+in	Fin1	as Corrente (Brief="Corrente com pressao igual a saida", Symbol="_{in1}");
+in	Fin2	as Corrente (Symbol="_{in2}");
+out	Fout	as Corrente (Symbol="_{out}");
+
+	EQUATIONS
+
+	Fout.P = Fin1.P;
+	Fout.T = propterm.Tsat(Fout.P) - G_S;
+	
+	[Fout.S,Fout.H] = propterm.propPTl(Fout.P,Fout.T);
+
+	Fout.F = Fin1.F + Fin2.F;
+	Q_COND = Fin1.F * Fin1.H + Fin2.F * Fin2.H - Fout.F * Fout.H;
+end
+
+# Modelo de tanque de armazenamento com tres alimentacoes
+Model Tanque
+	ATTRIBUTES
+	Pallete = true;
+	Icon = "icon/tanque2";
+
+	PARAMETERS
+outer propterm as Plugin(Brief="Steam tables", Type="water");
+	
+    VARIABLES
+in	Fin1	as Corrente (Symbol="_{in1}");
+in	Fin2	as Corrente (Symbol="_{in2}");
+in	Fin3	as Corrente (Symbol="_{in3}");
+out	Fout	as Corrente (Symbol="_{out}");
+
+	EQUATIONS
+
+	Fout.F = Fin1.F + Fin2.F + Fin3.F;
+	Fout.F * Fout.H = Fin1.F * Fin1.H + Fin2.F * Fin2.H + Fin3.F * Fin3.H;
+
+	[Fout.S,Fout.T] = propterm.propPH(Fout.P,Fout.H);
+end
+
+# Modelo de trocador de calor, dada a carga termica
+Model Trocador
+	PARAMETERS
+outer propterm as Plugin(Brief="Steam tables", Type="water");
+	
+    VARIABLES
+	Q		as Potencia;
+	DP		as Dif_Pres;
+in	Fin		as Corrente (Symbol="_{in}");
+out	Fout	as Corrente (Symbol="_{out}");
+
+	EQUATIONS
+
+	Fout.F = Fin.F;
+	Fout.P = Fin.P - DP;
+	Fout.F * (Fout.H - Fin.H) = Q;
+	[Fout.S,Fout.T] = propterm.propPH(Fout.P,Fout.H);
+end
+
+# Modelo de torre de refrigeracao
+Model Torre
+	ATTRIBUTES
+	Pallete = true;
+	Icon = "icon/torreresf";
+
+	PARAMETERS
+	cpa		as CalorEspecifico;
+
+	VARIABLES
+	F		as VazaoMassica;
+	Q		as Potencia;
+	DTh		as Dif_Temp;
+	DTc		as Dif_Temp;
+	DTar	as Dif_Temp; # grau de aquecimento do ar
+	Th		as Temperatura;
+	Tc		as Temperatura;
+	Tar_c	as Temperatura;
+	Tar_h	as Temperatura;
+	Uat		as CoefGlobal_area;
+
+	EQUATIONS
+
+	DTar = Tar_h - Tar_c;
+	DTh = Th - Tar_h;
+	DTc = Tc  - Tar_c;
+	F * cpa * (Th - Tc) = Q;
+	Uat * (DTh - DTc) = Q * ln(abs(DTh/DTc));
+#	Uat * 0.5 * (DTh + DTc) = Q;
+end
+
+# Modelo de bomba
+Model Bomba
+	ATTRIBUTES
+	Pallete = true;
+	Icon = "icon/bomba1";
+
+	PARAMETERS
+outer propterm as Plugin(Brief="Steam tables", Type="water");
+	v_esp	  as VolumeEspecifico;
+	
+	VARIABLES
+	H_IS	as Entalpia;
+	POT_BMB	as Potencia(Brief="Potencia do motor da bomba");
+	POT_EF	as Potencia(Brief="Potencia injetada pela bomba");
+	EF_B	as Eficiencia(Brief="Eficiencia da bomba");
+in	Fin		as Corrente (Symbol="_{in}");
+out	Fout	as Corrente (Symbol="_{out}");
+	
+	EQUATIONS
+
+	H_IS = propterm.propPS(Fout.P,Fin.S);
+
+	(Fout.H - Fin.H) * EF_B = H_IS - Fin.H;
+#	(Fout.H - Fin.H) * Fin.F = POT_EF; # Forma alternativa
+        
+	[Fout.S,Fout.T] = propterm.propPH(Fout.P,Fout.H);
+
+	POT_EF = POT_BMB * EF_B;
+	POT_EF = Fin.F * v_esp * (Fout.P - Fin.P);
+	Fout.F = Fin.F;
+end
+
+# Modelo de gerador de vapor
+Model Gerador_Vapor
+	ATTRIBUTES
+    Pallete = true;
+	Icon = "icon/caldeira";	
+
+	PARAMETERS
+outer propterm as Plugin(Brief="Steam tables", Type="water");
+
+    VARIABLES
+	Q_GV		as Potencia (Brief="Taxa de calor gerado na caldeira");
+	EF_GV		as Eficiencia (Brief="Eficiencia do gerador de vapor");
+	Qra			as Potencia (Brief="Taxa de calor nos reaquecedores");
+	Qsa			as Potencia (Brief="Taxa de calor nos superaquecedores");
+	Qca			as Potencia (Brief="Taxa de calor no evaporador");
+	Qec			as Potencia (Brief="Taxa de calor nos economizadores");
+in	Fin_a		as Corrente (Brief="Agua de alimentacao", Symbol="_{in_a}");
+in	Fin_ra		as Corrente (Brief="Vapor a ser Reaquecido", Symbol="_{in_ra}");
+out	Fout_sa	    as Corrente (Brief="Vapor Superaquecido", Symbol="_{out_sa}");
+out	Fout_ra	    as Corrente (Brief="Vapor Reaquecido", Symbol="_{out_ra}");
+	Fvap		as Corrente (Brief="Evaporador");
+	Feco		as Corrente (Brief="Economizadores");
+
+	EQUATIONS
+
+#	[Fin_a.S,Fin_a.H] = propterm.propPTl(Fin_a.P,Fin_a.T); # Reduntante no ciclo fechado
+
+	"Economizadores ECO1 + ECO1"
+#	Feco.F = Fin_a.F; # Reduntante no ciclo fechado
+	[Feco.S,Feco.H] = propterm.propPTv(Feco.P,Feco.T);	
+	Qec = Feco.F * (Feco.H - Fin_a.H);
+
+	"Evaporador - Camisa dagua"
+	Fvap.F = Feco.F;
+	[Fvap.S,Fvap.H] = propterm.propPTv(Fvap.P,Fvap.T);	
+	Qca = Fvap.F * (Fvap.H - Feco.H);
+
+	"Superaquecedores BT + AT"
+	Fout_sa.F = Fvap.F;
+	[Fout_sa.S,Fout_sa.H] = propterm.propPTv(Fout_sa.P,Fout_sa.T);
+	Qsa = Fout_sa.F * (Fout_sa.H - Fvap.H);
+
+	"Reaquecedores BT + AT"
+	Fout_ra.F = Fin_ra.F;
+	[Fout_ra.S,Fout_ra.H] = propterm.propPTv(Fout_ra.P,Fout_ra.T);
+	Qra = Fout_ra.F * (Fout_ra.H - Fin_ra.H);
+
+	"Caldeira"
+	Q_GV * EF_GV = Qec + Qca + Qsa + Qra;
+end
+
+# Modelo simplificado gerador de vapor
+Model Gerador_Vapor_Simples
+	ATTRIBUTES
+    Pallete = true;
+	Icon = "icon/caldeira";	
+
+	PARAMETERS
+outer propterm as Plugin(Brief="Steam tables", Type="water");
+	
+	VARIABLES
+	Q_GV		as Potencia;
+	EF_GV		as Eficiencia;
+in	Fin			as Corrente (Symbol="_{in}");
+out	Fout		as Corrente (Symbol="_{out}");
+
+	EQUATIONS
+
+	Fout.P = Fin.P;
+	
+	[Fout.S,Fout.H] = propterm.propPTv(Fout.P,Fout.T);
+
+	Q_GV * EF_GV = Fin.F * (Fout.H - Fin.H);
+#	Fout.F = Fin.F;
+end
+
+# Modelo de gerador eletrico
+Model Gerador_Eletrico
+    ATTRIBUTES
+	Pallete = true;
+	Icon = "icon/gerador";	
+
+	PARAMETERS
+	EF_GE as Eficiencia(Brief="Eficiencia do gerador eletrico");
+
+	VARIABLES
+	POT_GE as Potencia(Brief="Potencia do gerador eletrico");
+end
+
+# Modelo de separador de corrente
+Model Splitter
+	ATTRIBUTES
+	Pallete = true;
+	Icon = "icon/splitter";	
+
+	VARIABLES
+	y			as Fracao(Brief="Fracao de massa para a segunda corrente");
+in	Fin			as Corrente (Symbol="_{in}");
+out	Fout		as Corrente (Symbol="_{out}");
+out	Fouts		as Corrente(Brief="Segunda corrente", Symbol="_{outx}");
+
+	EQUATIONS
+
+	Fout.P = Fin.P;
+	Fout.T = Fin.T;
+	Fout.S = Fin.S;
+	Fout.H = Fin.H;
+
+	Fouts.P = Fin.P;
+	Fouts.T = Fin.T;
+	Fouts.S = Fin.S;
+	Fouts.H = Fin.H;
+
+	Fouts.F = Fin.F * y;
+	Fout.F = Fin.F - Fouts.F;
+end

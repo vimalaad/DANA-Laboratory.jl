@@ -1,0 +1,248 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*
+*----------------------------------------------------------------------
+* Author: Paula B. Staudt
+* $Id$
+*--------------------------------------------------------------------*#
+
+using "streams";
+
+Model condenser
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/Condenser"; 
+	Brief 		= "Model of a dynamic condenser.";
+	Info 		=
+"== Assumptions ==
+* perfect mixing of both phases;
+* thermodynamics equilibrium.
+	
+== Specify ==
+* the inlet stream;
+* the outlet flows: OutletV.F and OutletL.F;
+* the heat supply.
+	
+== Initial Conditions ==
+* the condenser temperature (OutletL.T);
+* the condenser liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions.
+";	
+	
+	PARAMETERS
+	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	outer NComp as Integer;
+	V as volume (Brief="Condenser total volume");
+	Across as area (Brief="Cross Section Area of reboiler");
+
+	VARIABLES
+in	InletV as stream(Brief="Vapour inlet stream", PosX=0.1164, PosY=0, Symbol="_{inV}");
+out	OutletL as liquid_stream(Brief="Liquid outlet stream", PosX=0.4513, PosY=1, Symbol="_{outL}");
+out	OutletV as vapour_stream(Brief="Vapour outlet stream", PosX=0.4723, PosY=0, Symbol="_{outV}");
+in	InletQ as energy_stream (Brief="Cold supplied", PosX=1, PosY=0.6311, Symbol="_{in}");
+
+	M(NComp) as mol (Brief="Molar Holdup in the tray");
+	ML as mol (Brief="Molar liquid holdup");
+	MV as mol (Brief="Molar vapour holdup");
+	E as energy (Brief="Total Energy Holdup on tray");
+	vL as volume_mol (Brief="Liquid Molar Volume");
+	vV as volume_mol (Brief="Vapour Molar volume");
+	Level as length (Brief="Level of liquid phase");
+
+	EQUATIONS
+	"Component Molar Balance"
+	diff(M) = InletV.F*InletV.z - OutletL.F*OutletL.z
+				- OutletV.F*OutletV.z;
+
+	"Energy Balance"
+	diff(E) = InletV.F*InletV.h - OutletL.F*OutletL.h
+				- OutletV.F*OutletV.h + InletQ.Q;
+
+	"Molar Holdup"
+	M = ML*OutletL.z + MV*OutletV.z; 
+	
+	"Energy Holdup"
+	E = ML*OutletL.h + MV*OutletV.h - OutletV.P*V;
+	
+	"Mol fraction normalisation"
+	sum(OutletL.z)=1.0;
+	sum(OutletL.z)=sum(OutletV.z);
+
+	"Liquid Volume"
+	vL = PP.LiquidVolume(OutletL.T, OutletL.P, OutletL.z);
+	"Vapour Volume"
+	vV = PP.VapourVolume(OutletV.T, OutletV.P, OutletV.z);
+
+	"Chemical Equilibrium"
+	PP.LiquidFugacityCoefficient(OutletL.T, OutletL.P, OutletL.z)*OutletL.z = 
+		PP.VapourFugacityCoefficient(OutletV.T, OutletV.P, OutletV.z)*OutletV.z;
+
+	"Thermal Equilibrium"
+	OutletL.T = OutletV.T;
+
+	"Mechanical Equilibrium"
+	OutletV.P = OutletL.P;
+
+	"Geometry Constraint"
+	V = ML*vL + MV*vV;
+
+	"Level of liquid phase"
+	Level = ML*vL/Across;
+end
+
+
+#*----------------------------------------------------------------------
+* Model of a  Steady State condenser with no thermodynamics equilibrium
+*---------------------------------------------------------------------*# 
+Model condenserSteady
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/CondenserSteady"; 
+	Brief 		= "Model of a  Steady State condenser with no thermodynamics equilibrium.";
+	Info 		=
+"== Assumptions ==
+* perfect mixing of both phases;
+* no thermodynamics equilibrium.
+	
+== Specify ==
+* the inlet stream;
+* the pressure drop in the condenser;
+* the heat supply.
+";
+	
+	PARAMETERS
+	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	outer NComp as Integer;
+
+	VARIABLES
+in	InletV as stream(Brief="Vapour inlet stream", PosX=0.3431, PosY=0, Symbol="_{inV}");
+out	OutletL as liquid_stream(Brief="Liquid outlet stream", PosX=0.34375, PosY=1, Symbol="_{outL}");
+in	InletQ as energy_stream (Brief="Cold supplied", PosX=1, PosY=0.5974, Symbol="_{in}");
+	DP as press_delta (Brief="Pressure Drop in the condenser");
+
+	EQUATIONS
+	"Molar Balance"
+	InletV.F = OutletL.F;
+	InletV.z = OutletL.z;
+		
+	"Energy Balance"
+	InletV.F*InletV.h = OutletL.F*OutletL.h + InletQ.Q;
+	
+	"Pressure"
+	DP = InletV.P - OutletL.P;
+end
+
+#*-------------------------------------------------------------------
+* Condenser with reaction in liquid phase
+*--------------------------------------------------------------------*#
+Model condenserReact
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/Condenser"; 
+	Brief 		= "Model of a Condenser with reaction in liquid phase.";
+	Info 		=
+"== Assumptions ==
+* perfect mixing of both phases;
+* thermodynamics equilibrium;
+* the reaction only takes place in liquid phase.
+	
+== Specify ==
+* the reaction related variables;
+* the inlet stream;
+* the outlet flows: OutletV.F and OutletL.F;
+* the heat supply.
+
+== Initial Conditions ==
+* the condenser temperature (OutletL.T);
+* the condenser liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions.
+";
+	
+	PARAMETERS
+	outer PP as Plugin(Type="PP");
+	outer NComp as Integer;
+	V as volume (Brief="Condenser total volume");
+	Across as area (Brief="Cross Section Area of reboiler");
+
+	stoic(NComp) as Real(Brief="Stoichiometric matrix");
+	Hr as energy_mol;
+	Pstartup as pressure;
+
+	VARIABLES
+in	InletV as stream(Brief="Vapour inlet stream", PosX=0.1164, PosY=0, Symbol="_{inV}");
+out	OutletL as liquid_stream(Brief="Liquid outlet stream", PosX=0.4513, PosY=1, Symbol="_{outL}");
+out	OutletV as vapour_stream(Brief="Vapour outlet stream", PosX=0.4723, PosY=0, Symbol="_{outV}");
+in	InletQ as energy_stream (Brief="Cold supplied", PosX=1, PosY=0.6311, Symbol="_{in}");
+
+	M(NComp) as mol (Brief="Molar Holdup in the tray");
+	ML as mol (Brief="Molar liquid holdup");
+	MV as mol (Brief="Molar vapour holdup");
+	E as energy (Brief="Total Energy Holdup on tray");
+	vL as volume_mol (Brief="Liquid Molar Volume");
+	vV as volume_mol (Brief="Vapour Molar volume");
+	Level as length (Brief="Level of liquid phase");
+	Vol as volume;
+	r3 as reaction_mol (Brief = "Reaction resulting ethyl acetate", DisplayUnit = 'mol/l/s');
+	C(NComp) as conc_mol (Brief = "Molar concentration", Lower = -1);
+
+	EQUATIONS
+	"Molar Concentration"
+	OutletL.z = vL * C;
+	
+	"Reaction"
+	r3 = exp(-7150*'K'/OutletL.T)*(4.85e4*C(1)*C(2) - 1.23e4*C(3)*C(4)) * 'l/mol/s';
+	
+	"Component Molar Balance"
+	diff(M) = InletV.F*InletV.z - OutletL.F*OutletL.z
+				- OutletV.F*OutletV.z + stoic*r3*ML*vL;
+
+	"Energy Balance"
+	diff(E) = InletV.F*InletV.h - OutletL.F*OutletL.h
+				- OutletV.F*OutletV.h + InletQ.Q + Hr * r3 * ML*vL;
+
+	"Molar Holdup"
+	M = ML*OutletL.z + MV*OutletV.z; 
+	
+	"Energy Holdup"
+	E = ML*OutletL.h + MV*OutletV.h - OutletV.P*V;
+	
+	"Mol fraction normalisation"
+	sum(OutletL.z)=1.0;
+
+	"Liquid Volume"
+	vL = PP.LiquidVolume(OutletL.T, OutletL.P, OutletL.z);
+	"Vapour Volume"
+	vV = PP.VapourVolume(OutletV.T, OutletV.P, OutletV.z);
+
+	"Thermal Equilibrium"
+	OutletL.T = OutletV.T;
+
+	"Mechanical Equilibrium"
+	OutletV.P = OutletL.P;
+
+	"Geometry Constraint"
+	V = ML*vL + MV*vV;
+
+	Vol = ML*vL;
+	
+	"Level of liquid phase"
+	Level = ML*vL/Across;
+	
+	"Chemical Equilibrium"
+	PP.LiquidFugacityCoefficient(OutletL.T, OutletL.P, OutletL.z)*OutletL.z = 
+	PP.VapourFugacityCoefficient(OutletV.T, OutletV.P, OutletV.z)*OutletV.z;
+
+	sum(OutletL.z)=sum(OutletV.z);
+
+end

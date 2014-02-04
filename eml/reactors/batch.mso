@@ -1,0 +1,70 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*
+*--------------------------------------------------------------------
+* Author: Paula B. Staudt and Rafael P. Soares
+* $Id$
+*------------------------------------------------------------------*#
+
+using "streams";
+ 
+Model batch_basic
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/batch"; 
+	Brief 		= "Model of a batch reactor";
+	Info 		=
+"== Assumptions ==
+* isothermic
+";
+
+PARAMETERS
+
+outer	NComp as Integer;
+	NReac as Integer;
+	stoic(NComp, NReac) as Real (Brief = "Stoichiometric Matrix");
+
+VARIABLES
+
+in	Inlet      as stream (Brief="Inlet stream", PosX=0, PosY=0, Symbol="_{in}");
+	C(NComp) as conc_mol (Brief="Components concentration");
+	r(NReac) as reaction_mol (Brief = "Reaction rates");
+	T          as temperature (Brief="Reactor temperature");
+	P          as pressure (Brief="Reactor pressure");
+	Vr         as volume (Brief = "Reacting Volume");
+	
+	EQUATIONS
+	"Component Molar Balance"
+	diff(C*Vr) = Inlet.F*Inlet.z + sumt(stoic*r)*Vr;
+end
+
+
+Model batch_isothermic as batch_basic
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/batch"; 
+	Brief 		= "Model of a isothermal batch reactor";
+	Info 		= "
+Assumptions
+* isothermic
+";
+	
+	EQUATIONS
+	"Isotermic"
+	T = Inlet.T;
+	
+	"Isobaric"
+	P = Inlet.P;
+end
+

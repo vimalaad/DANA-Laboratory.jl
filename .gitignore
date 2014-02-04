@@ -1,0 +1,10 @@
+/*
+!.gitignore
+!CpIdeal.jl/
+!DanaModels.jl/
+!DanaTypes.jl/
+!eml/
+!EmlTranslator.jl/
+!IdealGasEos.jl/
+!NamesOfTypes.jl/
+!VirtualLab.jl/

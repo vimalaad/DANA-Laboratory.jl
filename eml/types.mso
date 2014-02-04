@@ -1,0 +1,202 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*
+*----------------------------------------------------------------------
+* Author: Paula B. Staudt
+* $Id$
+*--------------------------------------------------------------------*#
+
+
+
+#*----------------------------------------------------------------------------------*
+*
+*-------------------------  Fundamental Variables ----------------------------------*
+*
+*----------------------------------------------------------------------------------*#
+
+# Constants
+binary as Integer (Brief = "Binary variables", Default=1, Lower=0, Upper=1);
+coefficient as Real (Brief = "General Coefficient", Default=1, Lower=-50, Upper=50);
+constant as Real (Brief = "General Constant", Default=10, Lower=-5000, Upper=5000);
+positive as Real (Brief = "Positive General Constant", Default=1.0, Lower=-1e-6);
+negative as Real (Brief = "Negative General Constant", Default=-1.0, Upper=1e-6);
+fraction as Real (Brief = "Fraction" , Default=0.5, Lower=-1e-6, Upper=1.00001);
+percent as Real (Brief = "Percent", Default=50, final Lower=0, final Upper=100);
+control_signal as Real (Brief = "Control Signal", Default=1, Lower=-1e9, Upper=1e9);
+efficiency as Real (Brief = "Efficiency", Default=0.5, final Lower=0, final Upper=1);
+
+# Pressure
+pressure as Real (Brief = "Pressure", Default=1, Lower=1e-30, Upper=5e7, final Unit = 'atm');
+press_delta as pressure (Brief = "Pressure Difference", Default=0.01, Lower=-5e6);
+head_mass as Real (Brief = "Head", Default=50, Lower=-1e6, Upper=1e6, final Unit = 'kJ/kg');
+head as Real (Brief = "Head", Default=50, Lower=-1e6, Upper=1e6, final Unit = 'kJ/kmol');
+
+# Temperature
+temperature as Real (Brief = "Temperature", Default=300, Lower=27, Upper=5273, final Unit = 'K');
+temp_delta as temperature (Brief = "Temperature Difference", Default=30, Lower=-1000, Upper=1000);
+
+# Time
+time_h as positive (Brief = "Time in hours", Default=1, Upper=1e4, final Unit = 'h');
+time_min as time_h (Brief = "Time in minutes", DisplayUnit ='min');
+time_sec as time_h (Brief = "Time in seconds", DisplayUnit = 's');
+frequency as positive(Brief = "Frequency", Default=1, Upper=100, final Unit='1/s');
+
+# Size related
+angle as Real (Brief = "Angle", Default=0, Lower=-7, Upper=7, final Unit ='rad');
+area as positive (Brief = "Area", Default=1, Upper=1E6, final Unit ='m^2');
+length as positive (Brief = "Length", Default=1, Upper=5e6, final Unit = 'm');
+length_delta as length (Brief = "Difference of Length", Lower=-1000);
+volume as positive (Brief = "Volume", Default=10, Upper=1000, final Unit = 'm^3');
+volume_mol as positive (Brief = "Molar Volume", Default=10, Upper=1E6, final Unit = 'm^3/mol');
+volume_mass as positive (Brief = "Specific Volume", Default=10, Upper=1E30, final Unit = 'm^3/kg');
+
+# Eletric
+current     as positive (Brief = "Electrical Current", Default=10, Upper=1e12, final Unit ='A');
+charge      as Real (Brief = "Electrical Charge", Default=10, Lower=-1e12, Upper=1e12, final Unit ='C');
+capacitance as positive (Brief = "Electrical Capacitance", Default=10, Upper=1e12, final Unit ='F');
+indutance   as positive (Brief = "Electrical Indutance", Default=10, Upper=1e12, final Unit ='V*s/A');
+voltage     as positive (Brief = "Electrical Voltage", Default=100, Upper=1e9, final Unit = 'V');
+resistance  as positive (Brief = "Eletrical Resistance", Default=50, Upper=800, final Unit = 'ohm');
+potency     as Real(Brief = "Potency", Default = 10, Lower=-1e3, Upper=1e3, final Unit = 'kW');
+
+# Currency
+currency	as Real (Brief = "Currency", Default = 0, final Unit = 'US$');
+
+#*----------------------------------------------------------------------------------*
+*
+*-------------------------  Concentration Related ----------------------------------*
+*
+*----------------------------------------------------------------------------------*#
+
+# elementary
+mass as positive (Brief = "Mass", Default=2.5, Upper=1e6, final Unit = 'kg');
+mol as positive (Brief = "Moles", Default=2.5, Upper=1e6, final Unit = 'kmol');
+molweight as Real (Brief = "Molar Weight", Default=75, Lower=1, Upper=1e8, final Unit = 'kg/kmol');
+molweight_inv as Real (Brief = "Moles Per Mass", Default=1, Lower=0, Upper=1e30, final Unit = 'kmol/kg');
+
+# densities
+dens_mol as Real (Brief = "Molar Density", Default=1, Lower=-1e-20, Upper=5e5, final Unit = 'kmol/m^3');
+dens_mass as Real (Brief = "Mass Density", Default=1000, Lower=-1e-20, Upper=5e8, final Unit ='kg/m^3');
+
+# Concentration
+conc_mol as dens_mol (Brief = "Molar Concentration", Default=1e-3);
+inv_conc_mol as Real (Brief = "Inverse of Molar Concentration", Default=0.05, Lower=2e-4, Upper=1e30, final Unit = 'm^3/kmol');
+conc_mass as dens_mass (Brief = "Mass Concentration");
+inv_conc_mass as Real (Brief = "Inverse of Mass Concentration", Default=0.001, Lower=2e-6, Upper=1e30, final Unit = 'm^3/kg');
+
+# reaction
+reaction_mol as Real (Brief = "Molar Reaction Rate", Default=0, Lower=-1e6, Upper=1e6, final Unit = 'kmol/h/m^3');
+reaction_mass as Real (Brief = "Mass Reaction Rate", Default=0,Lower=-1e3, Upper=1e9, final Unit = 'kg/h/m^3');
+
+
+#*----------------------------------------------------------------------------------*
+*
+*------------------------- Thermodynamics Properties -------------------------------*
+*
+*----------------------------------------------------------------------------------*#
+
+# Heat Capacity
+cp_mass as Real (Brief = "Mass Heat Capacity", Default=1.0, Lower=0.1, Upper=1e3, final Unit = 'kJ/kg/K');  
+cp_mol as Real (Brief = "Molar Heat Capacity", Default=100, Lower=1, Upper=1e4, final Unit = 'kJ/kmol/K'); 
+cv_mol as Real (Brief = "Molar Heat Capacity", Default=100, Lower=1, Upper=1e4, final Unit ='kJ/kmol/K');   
+
+# Enthalpy
+enth_mass as Real (Brief = "Mass Enthalpy", Default=500, Lower=-1e14, Upper=1e14, final Unit = 'kJ/kg');
+enth_mol as Real (Brief = "Molar Enthalpy", Default=500, Lower=-1e16, Upper=1e16, final Unit = 'kJ/kmol');
+
+# Entropy
+entr_mol as Real (Brief = "Molar Entropy", Default=0, Lower=-1e4, Upper=1e4, final Unit = 'kJ/kmol/K');
+entr_mass as Real (Brief = "Mass Entropy", Default=0, Lower=-1e4, Upper=1e4, final Unit = 'kJ/kg/K');
+
+# Heat
+heat_reaction as Real (Brief = "Heat Of Reaction", Default=1000, Lower=-1e8, Upper=1e8, final Unit = 'kJ/kmol');
+heat_rate as Real (Brief = "Heat Rate", Default=1000, Lower=-1e9, Upper=1e9, final Unit = 'kW');
+heat_flux as Real (Brief = "Heat Flux", Default=1, Lower=-1e5, Upper=1e5, final Unit = 'kW/m^2');
+heat_trans_coeff as positive (Brief = "Heat Transference Coefficient", Default=1, Upper=1e3, final Unit = 'kW/m^2/K');
+
+# Energy
+energy as Real (Brief = "Energy", Default=10000, Lower=-1e11, Upper=1e11, final Unit = 'kJ');
+energy_mass as Real (Brief = "Energy per mass", Default=10000, Lower=-1e15, Upper=1e15, final Unit = 'kJ/kg');
+energy_mol as Real (Brief = "Energy per mol", Default=10000, Lower=-1e15, Upper=1e15, final Unit = 'kJ/kmol');
+power as Real (Brief = "Power", Default=10, Lower=-1e8, Upper=1e8, final Unit = 'kW');
+
+
+
+#*----------------------------------------------------------------------------------*
+*
+*--------------------------- Mass Transport ----------------------------------------*
+*
+*----------------------------------------------------------------------------------*#
+
+# Flow
+flow_mass as positive (Brief = "Mass Flow", Default=1000, Upper=1e10, final Unit = 'kg/h');
+flow_mass_delta as flow_mass (Brief = "Difference of Flow Mass", Lower=-1e10);
+flow_vol as positive (Brief = "Volumetric Flow", Default=1, Upper=1e12, final Unit = 'm^3/h');
+flow_vol_delta as flow_vol (Brief = "Difference of Volumetric Flow", Lower=-1e12);
+flow_mol as positive (Brief = "Mole Flow", Default=10, Upper=1e8, final Unit = 'kmol/h');
+flow_mol_delta as flow_mol (Brief = "Difference of Mole Flow", Lower=-1e8);
+
+# Flux
+flux_mol as positive (Brief = "Molar Flux", Default=1, Upper=1e4, final Unit = 'kmol/s/m^2');   
+flux_mol_delta as flux_mol (Brief = "Difference of Molar Flux", Lower=-1e4);   
+flux_mass as positive (Brief = "Mass Flux", Default=1, Upper=1e6, final Unit = 'kg/s/m^2');
+flux_mass_delta as flux_mass (Brief = "Difference of Mass Flux", Lower=-1e6);
+flux_vol as positive (Brief = "Volumetric Flux", Default=1, Upper=1e4, final Unit = 'm^3/s/m^2');
+flux_vol_delta as flux_vol (Brief = "Difference of Volumetric Flux", Lower=-1e4);
+
+# Velocity
+vel_angular as Real (Brief = "Angular Velocity RPM", Default=1000, Lower=-100000, Upper=100000, final Unit = 'rpm');
+rotation as Real (Brief = "Angular Velocity", Default=500, Lower=-10000, Upper=10000, final Unit = 'rad/s');
+velocity as Real (Brief = "Velocity", Default=1, Lower=-1E5, Upper=1e5, final Unit = 'm/s');
+velocity_delta as velocity (Brief = "Difference of Velocity", Default=0, Lower=-1E3, Upper=-1E3);
+acceleration as Real (Brief = "General Acceleration", Default=9.81, Lower=-1e3, Upper=1e3, final Unit = 'm/s^2');
+
+# Others
+fricfactor as Real (Brief = "Friction Factor", Default=0.05, Lower=1e-5, Upper=2000);
+moment_inertia as Real (Brief = "Moment Of Inertia", Default=100, Lower=1E-3, Upper=1E4, final Unit = 'kg*m^2');
+hookes_const as Real (Brief = "Hookes Constant", Default=1e5, Lower=1, Upper=1e10, final Unit = 'N/m');
+
+
+
+#*----------------------------------------------------------------------------------*
+*
+*------------------------ Physical and Chemistry Properties ------------------------*
+*
+*----------------------------------------------------------------------------------*#
+
+# Conductivity
+conductivity as Real (Brief = "Thermal Conductivity", Default=1.0, Lower=0.001, Upper=500, final Unit = 'W/m/K');
+
+# Difusivity
+diffusivity as positive (Brief = "Diffusivity", Default=1e-3, Upper=1, final Unit ='cm^2/s');  
+
+# Fugacity
+fugacity as positive (Brief = "Fugacity Coefficient", Default=0.5, Upper=10);
+
+# Viscosity
+viscosity as Real (Brief = "Viscosity", Default=1, Lower=1e-30, Upper=1e5, final Unit = 'cP');
+
+# Molar and Specific Volume 
+vol_mol as volume_mol (Brief = "Molar Volume");
+vol_mass as volume_mass (Brief = "Specific Volume");
+
+# Others
+spec_surface_vol as positive (Brief = "Specific Surface Volume", Default=1e5, Upper=1e15, final Unit = 'm^2/m^3');
+spec_surface_mass as positive (Brief = "Specific Surface Mass", Default=100, Upper=1e12, final Unit = 'm^2/kg');
+surf_tens as positive (Brief = "Surface Tension", Default=0.05, Upper=1, final Unit = 'N/m');
+act_coeff as positive (Brief = "Activity Coefficient for Liquid", Default=1, Upper=30);
+ph as Real (Brief = "pH", Default=7, Lower=-5, Upper=20);
+
+
+

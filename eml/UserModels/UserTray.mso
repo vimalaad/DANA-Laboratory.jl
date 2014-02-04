@@ -1,0 +1,130 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*
+*----------------------------------------------------------------------
+* Author: Based on Models written by Paula B. Staudt
+* $Id$
+*--------------------------------------------------------------------*#
+
+# The complete documentation for these models needs to be updated !!!
+
+using "streams";
+
+Model User_trayBasic
+
+ATTRIBUTES
+	Pallete 	= false;
+	Icon 		= "icon/Tray"; 
+	Brief 		= "Basic description of a tray column model.";
+	Info 		=
+"To be updated";
+	
+PARAMETERS
+outer PP 		as Plugin		(Brief = "External Physical Properties", Type="PP");
+outer NComp 	as Integer;
+
+VARIABLES
+
+	Inlet 							as stream 					(Brief="Feed stream", PosX=0, PosY=0.4932, Hidden=true);
+	LiquidSideStream		as liquid_stream 		(Brief="liquid Sidestream", Hidden=true);
+	VapourSideStream 	as vapour_stream 	(Brief="vapour Sidestream", Hidden=true);
+	
+in	InletL 		as stream 			(Brief="Inlet liquid stream", PosX=0.5195, PosY=0, Symbol="_{inL}");
+in	InletV 		as stream 			(Brief="Inlet vapour stream", PosX=0.4994, PosY=1, Symbol="_{inV}");
+out	OutletL 	as liquid_stream 	(Brief="Outlet liquid stream", PosX=0.8277, PosY=1, Symbol="_{outL}");
+out	OutletV 	as vapour_stream 	(Brief="Outlet vapour stream", PosX=0.8043, PosY=0, Symbol="_{outV}");
+
+	M(NComp) 		as mol 			(Brief="Molar Holdup in the tray");
+	ML 				as mol 			(Brief="Molar liquid holdup");
+	MV 				as mol 			(Brief="Molar vapour holdup");
+	E 				as energy 		(Brief="Total Energy Holdup on tray");
+	vL 				as volume_mol 	(Brief="Liquid Molar Volume");
+	vV 				as volume_mol 	(Brief="Vapour Molar volume");
+	Level 			as length 		(Brief="Height of clear liquid on plate");
+	yideal(NComp) 	as fraction;
+	
+	
+EQUATIONS
+
+"Component Molar Balance"
+	diff(M)=Inlet.F*Inlet.z + InletL.F*InletL.z + InletV.F*InletV.z- OutletL.F*OutletL.z - OutletV.F*OutletV.z-
+	LiquidSideStream.F*LiquidSideStream.z-VapourSideStream.F*VapourSideStream.z;
+
+"Molar Holdup"
+	M = ML*OutletL.z + MV*OutletV.z;
+
+"Mol fraction normalisation"
+	sum(OutletL.z)= 1.0;
+	sum(OutletL.z)= sum(OutletV.z);
+
+"Liquid Volume"
+	vL = PP.LiquidVolume(OutletL.T, OutletL.P, OutletL.z);
+
+"Vapour Volume"
+	vV = PP.VapourVolume(OutletV.T, OutletV.P, OutletV.z);
+
+"Chemical Equilibrium"
+	PP.LiquidFugacityCoefficient(OutletL.T, OutletL.P, OutletL.z)*OutletL.z = PP.VapourFugacityCoefficient(OutletV.T, OutletV.P, yideal)*yideal;
+
+"Thermal Equilibrium"
+	OutletV.T = OutletL.T;
+
+"Mechanical Equilibrium"
+	OutletV.P = OutletL.P;
+	
+"Thermal Equilibrium Vapour Side Stream"
+	OutletV.T = VapourSideStream.T;
+
+"Thermal Equilibrium Liquid Side Stream"
+	OutletL.T = LiquidSideStream.T;
+
+"Mechanical Equilibrium Vapour Side Stream"
+	OutletV.P= VapourSideStream.P;
+
+"Mechanical Equilibrium Liquid Side Stream"
+	OutletL.P = LiquidSideStream.P;
+
+"Composition Liquid Side Stream"
+	OutletL.z= LiquidSideStream.z;
+	
+"Composition Vapour Side Stream"
+	OutletV.z= VapourSideStream.z;
+
+end
+
+Model User_tray as User_trayBasic
+
+ATTRIBUTES
+	Pallete 	= false;
+	Icon 		= "icon/Tray"; 
+	Brief 		= "Description of a column tray.";
+	Info 		=
+"To be updated";
+
+VARIABLES
+	rhoL as dens_mass;
+	rhoV as dens_mass;
+
+	btemp as Real (Brief="Temporary variable of Roffels liquid flow equation");
+	
+EQUATIONS
+
+"Liquid Density"
+	rhoL = PP.LiquidDensity(OutletL.T, OutletL.P, OutletL.z);
+	
+"Vapour Density"
+	rhoV = PP.VapourDensity(InletV.T, InletV.P, InletV.z);
+
+end
+

@@ -1,0 +1,757 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*
+*--------------------------------------------------------------------
+* Model of basic streams
+*----------------------------------------------------------------------
+* Author: Paula B. Staudt and Rafael de P. Soares
+* $Id$
+*---------------------------------------------------------------------*#
+
+using "types";
+
+Model stream
+	ATTRIBUTES
+	Pallete = false;
+	Brief = "General Material Stream";
+	Info =
+	"This is the basic building block for the EML models.
+	Every model should have input and output streams derived
+	from this model.";
+	
+	PARAMETERS
+	outer NComp as Integer (Brief = "Number of chemical components", Lower = 1); 
+
+	VARIABLES
+	F as flow_mol 			(Brief = "Stream Molar Flow Rate");
+	T as temperature 		(Brief = "Stream Temperature");
+	P as pressure 			(Brief = "Stream Pressure");
+	h as enth_mol 			(Brief = "Stream Enthalpy");
+	v as fraction			(Brief = "Vapourization fraction");
+	z(NComp) as fraction	(Brief = "Stream Molar Fraction");
+end
+
+Model liquid_stream as stream
+	ATTRIBUTES
+	Pallete = false;
+	Brief = "Liquid Material Stream";
+	Info =
+	"Model for liquid material streams.
+	This model should be used only when the phase of the stream
+	is known ''a priori''.";
+
+	PARAMETERS
+	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	
+	EQUATIONS
+	"Liquid Enthalpy"
+	h = PP.LiquidEnthalpy(T, P, z);
+	"Liquid stream"
+	v = 0;
+end
+
+Model vapour_stream as stream
+	ATTRIBUTES
+	Pallete = false;
+	Brief = "Vapour Material Stream";
+	Info =
+	"Model for vapour material streams.
+	This model should be used only when the phase of the stream
+	is known ''a priori''.";
+
+	PARAMETERS
+	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	
+	EQUATIONS
+	"Vapour Enthalpy"
+	h = PP.VapourEnthalpy(T, P, z);
+	"Vapour stream"
+	v = 1;
+end
+
+Model streamPH as stream
+	ATTRIBUTES
+	Brief = "Stream with built-in flash calculation";
+	Info = "
+	This model should be used when the vaporization fraction
+	is unknown.
+	
+	The built-in flash calculation will determine the stream
+	state as a function of the overall composition '''z''', the
+	pressure '''P''' and the enthalpy '''h'''.
+	
+	Additionally, the liquid composition '''x''' and the vapor
+	composition '''y''' are calculated.	
+	";
+	Pallete = false;
+	
+	PARAMETERS
+	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	
+	VARIABLES
+	x(NComp) as fraction	(Brief = "Liquid Molar Fraction",Hidden=true);
+	y(NComp) as fraction	(Brief = "Vapour Molar Fraction",Hidden=true);
+
+	EQUATIONS
+	"Flash Calculation"
+	[v, x, y] = PP.FlashPH(P, h, z);
+	
+	"Enthalpy"
+	h = (1-v)*PP.LiquidEnthalpy(T, P, x) + v*PP.VapourEnthalpy(T, P, y);
+	
+end
+
+Model streamPHS as streamPH
+	ATTRIBUTES
+	Brief = "Stream with built-in flash calculation";
+	Info = "
+	This model should be used when the vaporization fraction
+	is unknown.
+	
+	The built-in flash calculation will determine the stream
+	state as a function of the overall composition '''z''', the
+	pressure '''P''' and the enthalpy '''h'''.
+	
+	Additionally, the liquid composition '''x''', the vapor
+	composition '''y''' and the stream entropy are calculated.	
+	";
+	Pallete = false;
+	
+PARAMETERS
+	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	
+VARIABLES
+	s as entr_mol 	(Brief = "Stream Entropy");
+
+EQUATIONS
+
+"Entropy"
+	s = (1-v)*PP.LiquidEntropy(T, P, x) +	v*PP.VapourEntropy(T, P, y);
+	
+end
+
+Model source
+ATTRIBUTES
+	Pallete = true;
+	Icon = "icon/Source";
+	Brief = "Material stream source";
+	Info = "
+	This model should be used for boundary streams.
+	Usually these streams are known and come from another process
+	units.
+
+	The user should specify:
+	 * Total molar (mass or volumetric) flow
+	 * Temperature
+	 * Pressure
+	 * Molar or mass composition
+	
+	No matter the specification set, the model will calculate some
+	additional properties:
+	 * Mass density
+	 * Mass flow
+	 * Mass compostions
+	 * Specific volume
+	 * Vapour fraction
+	 * Volumetric flow
+	 * Liquid and Vapour compositions
+	";
+
+PARAMETERS
+	outer PP 						as Plugin			(Brief = "External Physical Properties", Type="PP");
+	outer NComp 				as Integer 			(Brief = "Number of chemical components", Lower = 1); 
+		  M(NComp)  				as molweight 	(Brief = "Component Mol Weight");
+		  CompositionBasis		as Switcher		(Brief = "Molar or Mass Composition", Valid = ["Molar", "Mass"], Default="Molar");
+		  ValidPhases				as Switcher		(Brief = "Valid Phases for Flash Calculation", Valid = ["Vapour-Only", "Liquid-Only","Vapour-Liquid"], Default="Vapour-Liquid");
+		  T_std						as temperature (Brief = "Standard temperature", Hidden=true, Default = 298.15);
+		  P_std						as pressure (Brief = "Standard pressure", Hidden=true, Default = 1);
+SET
+
+	M   = PP.MolecularWeight();
+
+VARIABLES
+
+	out Outlet 			as stream			(Brief = "Outlet stream", PosX=1, PosY=0.5256, Symbol="_{out}",Protected=true);
+	
+	Composition(NComp) as fraction			(Brief = "Stream Composition");
+	F 								as flow_mol 		(Brief = "Stream Molar Flow Rate");
+	Fw							as flow_mass		(Brief = "Stream Mass Flow");
+	Fvol          				as flow_vol        (Brief = "Volumetric Flow");
+	Fvol_std       				as flow_vol        (Brief = "Standard Volumetric Flow (1 atm, 20 C)");
+	T 								as temperature 	(Brief = "Stream Temperature");
+	T_Cdeg						as temperature	(Brief = "Temperature in °C", Lower=-200);
+	P 								as pressure 		(Brief = "Stream Pressure");
+	
+	x(NComp) 			as fraction			(Brief = "Liquid Molar Fraction",Hidden=true);
+	y(NComp) 			as fraction			(Brief = "Vapour Molar Fraction",Hidden=true);
+	
+	Mw						as molweight    		(Brief = "Average Mol Weight",Protected=true);
+	vm 						as volume_mol 		(Brief = "Molar Volume",Protected=true);	
+	vm_std					as volume_mol 		(Brief = "Standard Molar Volume",Protected=true);	
+	rho						as dens_mass			(Brief = "Stream Mass Density",Protected=true);
+	rhom						as dens_mol			(Brief = "Stream Molar Density",Protected=true);
+	
+	zmass(NComp) 		as fraction				(Brief = "Mass Fraction",Protected=true);
+	
+	EQUATIONS
+
+switch CompositionBasis
+
+	case "Molar":
+"Stream Molar Composition"
+	Outlet.z = Composition/sum(Composition); 
+
+"Stream Mass Composition"
+	zmass = M*Outlet.z / Mw;
+
+	case "Mass":
+"Stream Mass Composition"
+	zmass = Composition/sum(Composition);
+
+"Stream Molar Composition"
+	Outlet.z*sum(zmass/M) = zmass/M;
+
+end
+
+switch ValidPhases
+	
+	case "Liquid-Only":
+
+"Vapour Fraction"
+	Outlet.v = 0;
+
+"Liquid Composition"
+	x = Outlet.z;
+
+"Vapour Composition"
+	y = Outlet.z;
+
+"Overall Enthalpy"
+	Outlet.h = PP.LiquidEnthalpy(Outlet.T, Outlet.P, x);
+
+"Molar Volume"
+	vm = PP.LiquidVolume(Outlet.T, Outlet.P, x);
+
+"Standard Molar Volume"
+	vm_std = PP.LiquidVolume(T_std, P_std, x);
+
+	case "Vapour-Only":
+
+"Vapor Fraction"
+	Outlet.v = 1;
+
+"Liquid Composition"
+	x = Outlet.z;
+
+"Vapour Composition"
+	y = Outlet.z;
+
+"Overall Enthalpy"
+	Outlet.h = PP.VapourEnthalpy(Outlet.T, Outlet.P, y);
+
+"Molar Volume"
+	vm = PP.VapourVolume(Outlet.T, Outlet.P, y);
+
+"Standard Molar Volume"
+	vm_std = PP.VapourVolume(T_std, P_std, y);
+
+	case "Vapour-Liquid":
+
+"Flash Calculation"
+	[Outlet.v, x, y] = PP.Flash(Outlet.T, Outlet.P, Outlet.z);
+
+"Overall Enthalpy"
+	Outlet.h = (1-Outlet.v)*PP.LiquidEnthalpy(Outlet.T, Outlet.P, x) + Outlet.v*PP.VapourEnthalpy(Outlet.T, Outlet.P, y);
+
+"Molar Volume"
+	vm = (1-Outlet.v)*PP.LiquidVolume(Outlet.T, Outlet.P, x) + Outlet.v*PP.VapourVolume(Outlet.T, Outlet.P, y);
+
+"Standard Molar Volume"
+	vm_std = (1-Outlet.v)*PP.LiquidVolume(T_std, P_std, x) + Outlet.v*PP.VapourVolume(T_std, P_std, y);
+
+end
+
+"Molar Density"
+	rhom * vm = 1;
+
+"Average Molecular Weight"
+	Mw = sum(M*Outlet.z);
+
+"Mass or Molar Density"
+	rhom * Mw = rho;
+
+"Flow Mass"
+	Fw	=  Mw*Outlet.F;
+
+"Volumetric Flow"
+	Fvol = Outlet.F*vm ;
+
+"Standard Volumetric Flow"
+	Fvol_std = Outlet.F*vm_std ;
+
+"Temperature in °C"
+	T_Cdeg = Outlet.T - 273.15 * 'K';
+
+"Equate Flow"
+	Outlet.F = F;
+
+"Equate Pressures"
+	Outlet.P = P;
+
+"Equate Temperatures"
+	Outlet.T = T;
+	
+end
+
+Model simple_source
+
+ATTRIBUTES
+	Pallete = true;
+	Icon = "icon/Source";
+	Brief = "Simple Material stream source";
+	Info = "
+	This model should be used for boundary streams.
+	Usually these streams are known and come from another process
+	units.
+
+	The user should specify:
+	 * Total molar flow
+	 * Temperature
+	 * Pressure
+	 * Molar composition
+";
+
+PARAMETERS
+	outer PP 						as Plugin			(Brief = "External Physical Properties", Type="PP");
+	outer NComp 				as Integer 			(Brief = "Number of chemical components", Lower = 1); 
+		  M(NComp)  				as molweight 	(Brief = "Component Mol Weight");
+		  ValidPhases				as Switcher		(Brief = "Valid Phases for Flash Calculation", Valid = ["Vapour-Only", "Liquid-Only","Vapour-Liquid"], Default="Vapour-Liquid");
+	
+
+SET
+
+	M   = PP.MolecularWeight();
+
+VARIABLES
+
+	out Outlet 			as stream			(Brief = "Outlet stream", PosX=1, PosY=0.5256, Symbol="_{out}",Protected=true);
+	
+	MolarComposition(NComp) as fraction			(Brief = "Stream Molar Composition");
+	F 								as flow_mol 		(Brief = "Stream Molar Flow Rate");
+	T 								as temperature 	(Brief = "Stream Temperature");
+	T_Cdeg						as temperature	(Brief = "Temperature in °C", Lower=-200);
+	P 								as pressure 		(Brief = "Stream Pressure");
+	
+	x(NComp) 			as fraction			(Brief = "Liquid Molar Fraction",Hidden=true);
+	y(NComp) 			as fraction			(Brief = "Vapour Molar Fraction",Hidden=true);
+	
+
+EQUATIONS
+
+"Stream Molar Composition"
+	Outlet.z = MolarComposition/sum(MolarComposition); 
+
+
+switch ValidPhases
+	
+	case "Liquid-Only":
+
+"Vapour Fraction"
+	Outlet.v = 0;
+
+"Liquid Composition"
+	x = Outlet.z;
+
+"Vapour Composition"
+	y = Outlet.z;
+
+"Overall Enthalpy"
+	Outlet.h = PP.LiquidEnthalpy(Outlet.T, Outlet.P, x);
+
+
+	case "Vapour-Only":
+
+"Vapor Fraction"
+	Outlet.v = 1;
+
+"Liquid Composition"
+	x = Outlet.z;
+
+"Vapour Composition"
+	y = Outlet.z;
+
+"Overall Enthalpy"
+	Outlet.h = PP.VapourEnthalpy(Outlet.T, Outlet.P, y);
+
+
+	case "Vapour-Liquid":
+
+"Flash Calculation"
+	[Outlet.v, x, y] = PP.Flash(Outlet.T, Outlet.P, Outlet.z);
+
+"Overall Enthalpy"
+	Outlet.h = (1-Outlet.v)*PP.LiquidEnthalpy(Outlet.T, Outlet.P, x) + Outlet.v*PP.VapourEnthalpy(Outlet.T, Outlet.P, y);
+
+end
+
+"Temperature in °C"
+	T_Cdeg = Outlet.T - 273.15 * 'K';
+
+"Equate Flow"
+	Outlet.F = F;
+
+"Equate Pressures"
+	Outlet.P = P;
+
+"Equate Temperatures"
+	Outlet.T = T;
+
+end
+
+Model sink
+	ATTRIBUTES
+	Pallete = true;
+	Icon = "icon/Sink";
+	Brief = "Material stream sink";
+	Info = "
+	This model should be used for boundary streams when additional
+	information about the stream is desired.
+
+	Some of the additional informations calculated by this models are:
+	 * Mass density
+	 * Mass flow
+	 * Mass compostions
+	 * Specific volume
+	 * Vapour fraction
+	 * Volumetric flow
+	 * Liquid and Vapour compositions
+	";
+
+	PARAMETERS
+	outer PP 			as Plugin		(Brief = "External Physical Properties", Type="PP");
+	outer NComp 		as Integer 		(Brief = "Number of chemical components", Lower = 1); 
+		  M(NComp)  	as molweight 	(Brief = "Component Mol Weight");
+		  rhoModel		as Switcher		(Brief = "Density model", Valid = ["volume", "correlation"], Default="volume");
+		  T_std			as temperature	(Brief = "Standard temperature", Hidden=true, Default = 298.15);
+		  P_std			as pressure		(Brief = "Standard pressure", Hidden=true, Default = 1);
+
+	SET
+
+	M   = PP.MolecularWeight();
+	
+	VARIABLES
+	in Inlet 		as stream 		(Brief = "Inlet Stream", PosX=0, PosY=0.5308, Symbol="_{in}");
+	v 				as fraction		(Brief = "Vapourization fraction");
+	x(NComp) 		as fraction		(Brief = "Liquid Molar Fraction",Hidden=true);
+	y(NComp) 		as fraction		(Brief = "Vapour Molar Fraction",Hidden=true);
+	zmass(NComp) 	as fraction		(Brief = "Mass Fraction");
+	Mw				as molweight    (Brief = "Average Mol Weight");
+	vm 				as volume_mol 	(Brief = "Molar Volume");	
+	vm_std			as volume_mol 	(Brief = "Standard Molar Volume",Protected=true);	
+	rho				as dens_mass	(Brief = "Stream Mass Density");
+	rhom			as dens_mol		(Brief = "Stream Molar Density");
+	Fw				as flow_mass	(Brief = "Stream Mass Flow");
+	Fvol        	as flow_vol     (Brief = "Volumetric Flow");
+	Fvol_std       	as flow_vol     (Brief = "Standard Volumetric Flow (1 atm, 20 C)");
+	s 				as entr_mol		(Brief = "Stream Entropy");
+	T_Cdeg			as temperature  (Brief = "Temperature in °C", Lower=-200);
+
+	EQUATIONS
+	"Flash Calculation"
+	[v, x, y] = PP.FlashPH(Inlet.P, Inlet.h, Inlet.z);
+	
+	"Average Molecular Weight"
+	Mw = sum(M*Inlet.z);
+
+	switch rhoModel
+		case "volume":
+	"Molar Density"
+		rhom * vm = 1;
+		
+		case "correlation":
+	"Mass Density"
+		rho * ((1-v)/PP.LiquidDensity(Inlet.T,Inlet.P,x) + v/PP.VapourDensity(Inlet.T,Inlet.P,y)) = 1;
+	end
+	
+	"Mass or Molar Density"
+	rhom * Mw = rho;
+
+	"Flow Mass"
+	Fw	=  Mw*Inlet.F;
+
+	"Molar Volume"
+	vm = (1-v)*PP.LiquidVolume(Inlet.T, Inlet.P, x) + v*PP.VapourVolume(Inlet.T, Inlet.P, y);
+
+	"Standard Molar Volume"
+	vm_std = (1-v)*PP.LiquidVolume(T_std, P_std, x) + v*PP.VapourVolume(T_std, P_std, y);
+
+	"Volumetric Flow"
+	Fvol = Inlet.F*vm ;
+
+	"Standard Volumetric Flow"
+	Fvol_std = Inlet.F*vm_std ;
+
+	"Mass Fraction"
+	zmass = M*Inlet.z / Mw;
+	
+	"Overall Entropy"
+	s = (1-v)*PP.LiquidEntropy(Inlet.T, Inlet.P, x) +
+		v*PP.VapourEntropy(Inlet.T, Inlet.P, y);
+	
+	"Temperature in °C"
+	T_Cdeg = Inlet.T - 273.15 * 'K';
+
+end
+
+Model simple_sink
+	ATTRIBUTES
+	Pallete	= true;
+	Icon = "icon/Sink";
+	Brief = "Simple material stream sink";
+	Info = "
+	This model should be used for boundary streams when no additional
+	information about the stream is desired.
+	";
+	
+	VARIABLES
+	in Inlet 		as stream	(Brief = "Inlet Stream", PosX=0, PosY=0.5308, Symbol="_{in}");
+end
+
+Model energy_stream
+	ATTRIBUTES
+	Pallete = false;
+	Brief = "General Energy Stream";
+	Info =
+	"This is the basic building block for the EML models.
+	Every model should have input and output energy streams
+	derived from this model.";
+
+	VARIABLES
+	Q as heat_rate(Brief="Energy rate");
+end
+
+Model work_stream
+	ATTRIBUTES
+	Pallete = false;
+	Brief = "General Work Stream";
+	VARIABLES
+	Work		as power(Brief = "work");
+end
+
+Model work_source
+	ATTRIBUTES
+	Pallete	= true;
+	Icon = "icon/work_source";
+	Brief = "Work stream source";
+
+	VARIABLES
+	out OutletWork		as work_stream (Brief = "Outlet work stream", PosX=1, PosY=0.46, Symbol="_{out}");
+
+end
+
+Model work_sink
+	ATTRIBUTES
+	Pallete	= true;
+	Icon = "icon/work_sink";
+	Brief = "Work stream sink";
+
+	VARIABLES
+	in InletWork		as work_stream (Brief = "Inlet work stream", PosX=0, PosY=0.46, Symbol="_{in}");
+
+end
+
+Model energy_source
+	ATTRIBUTES
+	Pallete	= true;
+	Icon = "icon/energy_source";
+	Brief = "Enegry stream source";
+
+	VARIABLES
+	out OutletQ		as energy_stream (Brief = "Outlet energy stream", PosX=1, PosY=0.46, Symbol="_{out}");
+end
+
+Model energy_sink
+	ATTRIBUTES
+	Pallete	= true;
+	Icon = "icon/energy_sink";
+	Brief = "Enegry stream sink";
+
+	VARIABLES
+	in InletQ		as energy_stream (Brief = "Inlet energy stream", PosX=0, PosY=0.46, Symbol="_{in}");
+end
+
+Model sourceNoFlow
+
+ATTRIBUTES
+	Pallete = true;
+	Icon = "icon/SourceNoFlow";
+	Brief = "Simple Material stream source with no flow.";
+	Info = "
+	This model should be used for boundary streams.
+	Usually these streams are known and come from another process
+	units.";
+
+PARAMETERS
+	outer PP 				as Plugin			(Brief = "External Physical Properties", Type="PP");
+	outer NComp 		as Integer 			(Brief = "Number of chemical components", Lower = 1); 
+
+VARIABLES
+
+	out Outlet 			as stream			(Brief = "Outlet stream", PosX=1, PosY=0.5256, Symbol="_{out}",Protected=true);
+
+EQUATIONS
+
+"Stream Molar Composition"
+	Outlet.z = 1/NComp;
+
+"Stream Molar Enthalpy"
+	Outlet.h = 0 * 'J/mol';
+
+"Stream Temperature"
+	Outlet.T = 300 * 'K'; 
+
+"Stream Molar Flow"
+	Outlet.F = 0 * 'kmol/h';
+
+"Stream Pressure"
+	Outlet.P = 1 * 'atm';
+
+"Stream Vapour Fraction"
+	Outlet.v = 0;
+
+end
+
+Model info_stream
+	
+ATTRIBUTES
+	Pallete = true;
+	Icon = "icon/Info_Stream";
+	Brief = "Material stream information";
+	Info = "
+	This model should be used for middle streams when additional
+	information about the stream is desired.
+
+	Some of the additional informations calculated by this models are:
+	 * Mass density
+	 * Mass flow
+	 * Mass compostions
+	 * Specific volume
+	 * Vapour fraction
+	 * Volumetric flow
+	 * Liquid and Vapour compositions
+	 * Viscosity
+	 * Heat Capacity
+	 * Thermal Conductivity
+	 * Temperature in Celsius Degrees
+	";
+
+PARAMETERS
+	outer PP 			as Plugin			(Brief = "External Physical Properties", Type="PP");
+	outer NComp 	as Integer 			(Brief = "Number of chemical components", Lower = 1); 
+		  M(NComp)  	as molweight 	(Brief = "Component Mol Weight");
+	
+SET
+
+	M   = PP.MolecularWeight();
+	
+VARIABLES
+
+	in 	Inlet 		as stream 		(Brief = "Inlet Stream", PosX=0, PosY=0.5308, Protected=true , Symbol="_{in}");
+	out 	Outlet 		as stream 		(Brief = "Outlet Stream", PosX=1, PosY=0.5308, Protected=true , Symbol="_{out}");
+	
+	v 							as fraction			(Brief = "Vapourization fraction",Hidden=true);
+	x(NComp) 			as fraction			(Brief = "Liquid Molar Fraction",Hidden=true);
+	y(NComp) 			as fraction			(Brief = "Vapour Molar Fraction",Hidden=true);
+	
+	F(NComp)	as flow_mol		(Brief = "Component Molar Flow",Protected=true);
+	FwTotal		as flow_mass		(Brief = "Total Mass Flow",Protected=true);
+	Fw(NComp)		as flow_mass		(Brief = "Component Mass Flow",Protected=true);
+	FvolTotal	    as flow_vol     	(Brief = "Total Volumetric Flow",Protected=true);
+	T_Cdeg				as temperature  	(Brief = "Temperature in °C", Lower=-200,Protected=true);
+
+	Mu	as viscosity		(Brief="Stream Viscosity",Lower=0.0001, Symbol = "\mu",Protected=true);
+	Cp		as cp_mol			(Brief="Stream Molar Heat Capacity", Upper=1e10,Protected=true);	
+	K		as conductivity 	(Brief="Stream Thermal Conductivity", Default=1.0, Lower=1e-5, Upper=500,Protected=true);
+	Mw						as molweight    	(Brief = "Average Mol Weight",Protected=true);
+	vm	 	as volume_mol 	(Brief = "Molar Volume",Protected=true);	
+	rho		as dens_mass		(Brief = "Stream Mass Density",Protected=true);
+	rhom	as dens_mol		(Brief = "Stream Molar Density",Protected=true);
+	s 		as entr_mol		(Brief = "Stream Entropy",Protected=true);
+	zmass(NComp) as fraction			(Brief = "Mass Fraction",Protected=true);
+	
+EQUATIONS
+
+"Flash Calculation"
+	[v, x, y] = PP.FlashPH(Inlet.P, Inlet.h, Inlet.z);
+	
+"Average Molecular Weight"
+	Mw = sum(M*Inlet.z);
+
+"Mass Density"
+	rho * ((1-v)/PP.LiquidDensity(Inlet.T,Inlet.P,x) + v/PP.VapourDensity(Inlet.T,Inlet.P,y)) = 1;
+	
+"Mass or Molar Density"
+	rhom * Mw = rho;
+
+"Total Flow Mass"
+	FwTotal	=  Mw*Inlet.F;
+
+"Component Flow Mass"
+	Fw	=  FwTotal*zmass;
+
+"Molar Volume"
+	vm = (1-v)*PP.LiquidVolume(Inlet.T, Inlet.P, x) + v*PP.VapourVolume(Inlet.T,Inlet.P,y);
+	
+"Total Volumetric Flow"
+	FvolTotal = Inlet.F*vm ;
+	
+"Mass Fraction"
+	zmass = M*Inlet.z / Mw;
+
+"Stream Heat Capacity"
+	Cp 	= 	(1-v)*PP.LiquidCp(Inlet.T, Inlet.P, x) + v*PP.VapourCp(Inlet.T,Inlet.P,y);
+
+"Stream Viscosity"
+	Mu 	= 	(1-v)*PP.LiquidViscosity(Inlet.T, Inlet.P, x) + v*PP.VapourViscosity(Inlet.T,Inlet.P,y);
+
+"Stream ThermalConductivity"
+	K 	= 	(1-v)*PP.LiquidThermalConductivity(Inlet.T, Inlet.P, x) + v*PP.VapourThermalConductivity(Inlet.T,Inlet.P,y);
+
+"Stream Overall Entropy"
+	s = (1-v)*PP.LiquidEntropy(Inlet.T, Inlet.P, x) + v*PP.VapourEntropy(Inlet.T, Inlet.P, y);
+	
+"Temperature in °C"
+	T_Cdeg = Inlet.T - 273.15 * 'K';
+
+"Outlet Flow"
+	Outlet.F = Inlet.F;
+
+"Component Molar Flow"
+	F = Inlet.F*Inlet.z;
+
+"Outlet Temperature"
+	Outlet.T = Inlet.T;
+
+"Outlet Pressure"
+	Outlet.P = Inlet.P;
+
+"Outlet Vapour Fraction"
+	Outlet.v = Inlet.v;
+
+"Outlet Enthalpy"
+	Outlet.h = Inlet.h;
+
+"Outlet Composition"
+	Outlet.z= Inlet.z;
+end

@@ -1,0 +1,371 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*
+*--------------------------------------------------------------------
+* Author: Gerson Balbueno Bicca 
+* $Id: Heatex.mso 574 2008-07-25 14:18:50Z rafael $
+*--------------------------------------------------------------------*#
+
+using "heat_exchangers/HEX_Engine";
+
+Model Heatex_Basic 
+
+ATTRIBUTES
+	Pallete 	= false;
+	Brief 	= "Basic Model for Simplified Heat Exchangers";
+	Info 		=
+"Model of a simplified heat exchanger.
+This model perform only material and heat balance.
+
+== Assumptions ==
+* Steady-State operation;
+* No heat loss to the surroundings.
+
+== Specify ==
+* The Inlet streams: Hot and Cold;
+";
+	
+PARAMETERS
+outer PP 	    	as Plugin	(Brief="External Physical Properties", Type="PP");
+outer NComp   	as Integer  (Brief="Number of Components");
+	
+	M(NComp)  as molweight 	(Brief="Component Mol Weight",Hidden=true);
+	
+VARIABLES
+
+in  InletHot		as stream 			(Brief="Inlet Hot Stream", PosX=0, PosY=0.4915, Symbol="^{inHot}");
+out OutletHot	as streamPH  	(Brief="Outlet Hot Stream", PosX=1, PosY=0.4915, Symbol="^{outHot}");
+in  InletCold		as stream 			(Brief="Inlet Cold Stream", PosX=0.5237, PosY=1, Symbol="^{inCold}");
+out OutletCold	as streamPH  	(Brief="Outlet Cold Stream", PosX=0.5237, PosY=0, Symbol="^{outCold}");
+
+	A 		as area						(Brief="Exchange Surface Area");
+	Q	   	as power					(Brief="Duty", Default=7000, Lower=1e-6, Upper=1e10);
+	U	 	as heat_trans_coeff 	(Brief="Overall Heat Transfer Coefficient",Default=1,Lower=1e-6,Upper=1e10);
+	
+	PdropHotSide 	as press_delta	(Brief="Pressure Drop Hot Side",Default=0.01, Lower=0,DisplayUnit='kPa' , Symbol ="\Delta P_{hot}");
+	PdropColdSide 	as press_delta	(Brief="Pressure Drop Cold Side",Default=0.01, Lower=0,DisplayUnit='kPa' , Symbol ="\Delta P_{cold}");
+
+SET
+
+#"Component Molecular Weight"
+	M   = PP.MolecularWeight();
+
+EQUATIONS
+
+"Energy Balance Hot Stream"
+	Q = InletHot.F*(InletHot.h-OutletHot.h);
+
+"Energy Balance Cold Stream"
+	Q =-InletCold.F*(InletCold.h-OutletCold.h);
+
+"Molar Balance Hot Stream"
+	InletHot.F  = OutletHot.F;
+	
+"Molar Balance Cold Stream"
+	InletCold.F = OutletCold.F;
+
+"Hot Stream Molar Fraction Constraint"
+	OutletHot.z	=	InletHot.z;
+	
+"Cold Stream Molar Fraction Constraint"
+	OutletCold.z	=	InletCold.z;
+	
+"Pressure Drop Hot Stream"
+	OutletHot.P  = InletHot.P - PdropHotSide;
+	
+"Pressure Drop Cold Stream"
+	OutletCold.P  = InletCold.P - PdropColdSide;
+	
+end
+
+Model Heatex_LMTD  as Heatex_Basic
+
+ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/HeatExchanger_LMTD";	
+	Brief 	= "Simplified model for Heat Exchangers";
+	Info 		=
+"This model perform material and heat balance using the Log Mean Temperature Difference Approach. 
+This shortcut calculation does not require exchanger configuration or geometry data.
+
+== Assumptions ==
+* Steady-State operation;
+* No heat loss to the surroundings.
+
+== Specify ==
+* The Inlet streams: Hot and Cold.
+
+== References ==
+[1] E.A.D. Saunders, Heat Exchangers: Selection, Design and
+ Construction, Longman, Harlow, 1988. 
+
+[2] Taborek, J., Shell-and-tube heat exchangers, in Heat Exchanger Design Handbook, Vol. 3
+ Hemisphere Publishing Corp., New York, 1988. 
+
+[3] Fakheri, A. , Alternative approach for determining log mean temperature difference correction factor 
+ and number of shells of shell and tube heat exchangers, Journal of Enhanced Heat Transfer, v. 10, p. 407- 420, 2003. 
+";
+	
+PARAMETERS
+
+	ExchangerType 		as Switcher	(Brief="Type of Heat Exchanger",Valid=["Counter Flow","Cocurrent Flow", "Shell and Tube"],Default="Cocurrent Flow");
+	LMTDcorrection 	as Switcher	(Brief="LMTD Correction Factor Model",Valid=["Bowmann","Fakheri"],Default="Bowmann");
+
+VARIABLES
+
+	Method 	as LMTD_Basic		(Brief="LMTD Method of Calculation", Symbol =" ");
+	R 				as positive 			(Brief="Capacity Ratio for LMTD Correction Fator",Lower=1e-6,Hidden=true);
+	P 				as positive 			(Brief="Non - Dimensional Variable for LMTD Correction Fator ",Lower=1e-6,Hidden=true);
+	Rho 			as positive 			(Brief="Non - Dimensional Variable for LMTD Correction Fator in Fakheri Equation",Lower=1e-6,Hidden=true);
+	Phi    		as positive 			(Brief="Non - Dimensional Variable for LMTD Correction Fator in Fakheri Equation",Lower=1e-6, Symbol ="\phi",Hidden=true);
+
+EQUATIONS
+
+"Duty"
+	Q = U*A*Method.LMTD*Method.Fc;
+
+switch ExchangerType
+	
+	case "Cocurrent Flow":
+
+"Temperature Difference at Inlet"
+	Method.DT0 = InletHot.T - InletCold.T;
+
+"Temperature Difference at Outlet"
+	Method.DTL = OutletHot.T - OutletCold.T;
+
+"R: Capacity Ratio for LMTD Correction Fator"
+	R=1;
+
+"P: Non - Dimensional Variable for LMTD Correction Fator"
+	P=1;
+
+" Variable useless with this model"
+	Phi  = 1;
+	
+" Variable useless with this model"
+	Rho = 1;
+
+"LMTD Correction Factor in Cocurrent Flow"
+	Method.Fc = 1;
+
+	case "Counter Flow":
+	
+"Temperature Difference at Inlet"
+	Method.DT0 = InletHot.T - OutletCold.T;
+
+"Temperature Difference at Outlet"
+	Method.DTL = OutletHot.T - InletCold.T;
+
+"R: Capacity Ratio for LMTD Correction Fator"
+	R=1;
+
+"P: Non - Dimensional Variable for LMTD Correction Fator"
+	P=1;
+
+" Variable useless with this model"
+	Phi  = 1;
+	
+" Variable useless with this model"
+	Rho = 1;
+
+"LMTD Correction Factor in Counter Flow"
+	Method.Fc = 1;
+
+	case "Shell and Tube":
+
+"Temperature Difference at Inlet"
+	Method.DT0 = InletHot.T - OutletCold.T;
+
+"Temperature Difference at Outlet"
+	Method.DTL = OutletHot.T - InletCold.T;
+
+switch LMTDcorrection
+
+	case "Bowmann":
+
+" Variable not in use with Bowmann equation"
+	Phi  = 1;
+	
+" Variable not in use with Bowmann equation"
+	Rho = 1;
+
+"R: Capacity Ratio for LMTD Correction Fator when Shell and Tube"
+	R*(OutletCold.T - InletCold.T ) = (InletHot.T-OutletHot.T);
+
+"P: Non - Dimensional Variable for LMTD Correction Fator when Shell and Tube"
+	P*(InletHot.T- InletCold.T)= (OutletCold.T-InletCold.T);
+	
+ if R equal 1
+	
+    then
+	
+"LMTD Correction Fator when 1 Pass Shell Side"
+	Method.Fc = (sqrt(2)*P)/((1-P)*ln( abs( ( 2-P*0.585786)/( 2-P*3.414214))));
+
+	else
+	
+"LMTD Correction Fator when 1 Pass Shell Side"
+	Method.Fc = sqrt(R*R+1)*ln(abs((1-P*R)/(1-P)))/((1-R)*ln( abs( ( 2-P*(R+1-sqrt(R*R+1)))/ ( 2-P*(R + 1 + sqrt(R*R+1))))));
+
+end
+
+	case "Fakheri":
+
+"R: Capacity Ratio for LMTD Correction Fator when Shell and Tube"
+	R*(OutletCold.T - InletCold.T ) = (InletHot.T-OutletHot.T);
+
+"P: Non - Dimensional Variable for LMTD Correction Fator when Shell and Tube"
+	P*(InletHot.T- InletCold.T)= (OutletCold.T-InletCold.T);
+	
+"Non Dimensional Variable for LMTD Correction Fator in Fakheri Equation "
+	Phi  = (sqrt(((InletHot.T- OutletHot.T)*(InletHot.T- OutletHot.T))+((OutletCold.T - InletCold.T)*(OutletCold.T - InletCold.T))))/(2*((InletHot.T+ OutletHot.T)-(InletCold.T+ OutletCold.T)));
+
+"Non Dimensional Variable for LMTD Correction Fator in Fakheri Equation"
+	Rho*(1-P*R) = (1-P);
+
+if Rho equal 1
+	
+	then
+	
+"LMTD Correction Fator when 1 Pass Shell Side"
+	Method.Fc = (4*Phi)/(ln(abs((1+2*Phi)/(1-2*Phi))));
+
+	else
+
+"LMTD Correction Fator when 1 Pass Shell Side"
+	Method.Fc = (2*Phi*(Rho+1)*ln(abs(Rho)))/( ln(abs((1+2*Phi)/(1-2*Phi)))*(Rho-1));
+	
+end
+
+end
+
+end
+
+end
+
+Model Heatex_NTU  	as Heatex_Basic
+
+ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/HeatExchanger_NTU";	
+	Brief 	= "Simplified model for Heat Exchangers";
+	Info 		=
+"This model perform material and heat balance using the NTU-Effectiveness Approach. 
+This shortcut calculation does not require exchanger configuration or geometry data.
+
+== Assumptions ==
+* Steady-State operation;
+* No heat loss to the surroundings.
+
+== Specify ==
+* The Inlet streams: Hot and Cold.
+
+== References ==
+[1] E.A.D. Saunders, Heat Exchangers: Selection, Design and
+ Construction, Longman, Harlow, 1988. 
+
+";
+	
+PARAMETERS
+
+	ExchangerType 		as Switcher	(Brief="Type of Heat Exchanger",Valid=["Counter Flow","Cocurrent Flow", "Shell and Tube"],Default="Cocurrent Flow");
+
+VARIABLES
+
+Method 	as NTU_Basic	(Brief="NTU Method of Calculation", Symbol =" ");
+
+	xh(NComp) 	as fraction		(Brief = "Liquid Molar Fraction in Hot Side",Hidden=true);
+	yh(NComp)	as fraction		(Brief = "Vapour Molar Fraction in Hot Side",Hidden=true);
+	vh 				as fraction		(Brief = "Vapour Fraction in Hot Side",Hidden=true);
+	
+	xc(NComp) 	as fraction		(Brief = "Liquid Molar Fraction in Cold Side",Hidden=true);
+	yc(NComp)	as fraction		(Brief = "Vapour Molar Fraction in Cold Side",Hidden=true);
+	vc 				as fraction		(Brief = "Vapour Fraction in Cold Side",Hidden=true);
+
+EQUATIONS
+
+"Flash Calculation in Hot Side"
+	[vh, xh, yh] = PP.Flash(InletHot.T, InletHot.P, InletHot.z);
+
+"Flash Calculation in Cold Side"
+	[vc, xc, yc] = PP.Flash(InletCold.T, InletCold.P, InletCold.z);
+
+"Number of Units Transference"
+	Method.NTU*Method.Cmin = U*A;
+	
+"Minimum Heat Capacity"
+	Method.Cmin  = min([Method.Ch,Method.Cc]);
+
+"Maximum Heat Capacity"
+	Method.Cmax  = max([Method.Ch,Method.Cc]);
+
+"Thermal Capacity Ratio"
+	Method.Cr    = Method.Cmin/Method.Cmax;
+
+"Duty"
+	Q	= Method.Eft*Method.Cmin*(InletHot.T-InletCold.T);
+
+"Hot Stream Average Heat Capacity"
+	Method.Ch	= InletHot.F*((1-InletHot.v)*PP.LiquidCp(0.5*InletHot.T+0.5*OutletHot.T,0.5*InletHot.P+0.5*OutletHot.P,xh)+
+		InletHot.v*PP.VapourCp(0.5*InletHot.T+0.5*OutletHot.T,0.5*InletHot.P+0.5*OutletHot.P,yh));
+	
+"Cold Stream Average Heat Capacity"
+	Method.Cc 	= 	InletCold.F*((1-InletCold.v)*PP.LiquidCp(0.5*InletCold.T+0.5*OutletCold.T,0.5*InletCold.P+0.5*OutletCold.P,xc)+
+		InletCold.v*PP.VapourCp(0.5*InletCold.T+0.5*OutletCold.T,0.5*InletCold.P+0.5*OutletCold.P,yc));
+	
+"Effectiveness Correction"
+	Method.Eft1 = 1;
+
+if Method.Cr equal 0 
+	
+	then
+	
+"Effectiveness"
+	Method.Eft = 1-exp(-Method.NTU);
+	
+	else
+
+switch  ExchangerType
+
+	case "Cocurrent Flow":
+	
+"Effectiveness in Cocurrent Flow"
+	Method.Eft = (1-exp(-Method.NTU*(1+Method.Cr)))/(1+Method.Cr);
+
+	case "Counter Flow":
+
+if Method.Cr equal 1
+	
+	then
+"Effectiveness in Counter Flow"
+	Method.Eft = Method.NTU/(1+Method.NTU);
+	
+	else
+"Effectiveness in Counter Flow"
+	Method.Eft = (1-exp(-Method.NTU*(1-Method.Cr)))/(1-Method.Cr*exp(-Method.NTU*(1-Method.Cr)));
+	
+end
+
+	case "Shell and Tube":
+	
+"TEMA E Shell Effectiveness"
+	Method.Eft 	= 2*(1+Method.Cr+sqrt(1+Method.Cr^2)*((1+exp(-Method.NTU*sqrt(1+Method.Cr^2)))/(1-exp(-Method.NTU*sqrt(1+Method.Cr^2)))) )^(-1);
+
+end
+
+
+end
+
+end

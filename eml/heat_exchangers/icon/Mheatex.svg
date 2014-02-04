@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg15559"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   width="210mm"
+   height="297mm"
+   sodipodi:docbase="/home/bicca/Desktop/biblioteca/biblioteca/trunk/eml/heat_exchangers/icon"
+   sodipodi:docname="Mheatex.svg"
+   inkscape:export-filename="/home/bicca/apps/repositorio/biblioteca/trunk/eml/heat_exchangers/icon/Mheatex.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   sodipodi:modified="true">
+  <metadata
+     id="metadata15564">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs15562">
+    <linearGradient
+       id="linearGradient6760">
+      <stop
+         id="stop12971"
+         offset="0"
+         style="stop-color:#3447ff;stop-opacity:1;" />
+      <stop
+         style="stop-color:white;stop-opacity:0.94117647;"
+         offset="0.51282054"
+         id="stop22168" />
+      <stop
+         id="stop6764"
+         offset="1"
+         style="stop-color:#341dff;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6760"
+       id="linearGradient16459"
+       x1="177.75"
+       y1="482.99863"
+       x2="601.00775"
+       y2="482.99863"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.4526821,0,0,1.7424168,176.40569,-449.25332)" />
+  </defs>
+  <sodipodi:namedview
+     inkscape:window-height="930"
+     inkscape:window-width="1280"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     guidetolerance="10.0"
+     gridtolerance="10.0"
+     objecttolerance="10.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     showgrid="true"
+     inkscape:zoom="1.4329667"
+     inkscape:cx="311.13359"
+     inkscape:cy="665.15865"
+     inkscape:window-x="0"
+     inkscape:window-y="69"
+     inkscape:current-layer="svg15559" />
+  <rect
+     style="fill:url(#linearGradient16459);fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:3.99654961;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="rect15566"
+     width="189.56418"
+     height="315.85294"
+     x="257.88849"
+     y="234.40518" />
+  <path
+     style="fill:none;fill-rule:evenodd;stroke:#0000dc;stroke-width:3.10842728999999984;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     d="M 221.67391,322.79062 L 275.99574,322.79062 L 285.04939,357.63896 L 294.10305,287.94229 L 303.15668,357.63896 L 312.21032,287.94229 L 321.26396,357.63896 L 330.31761,287.94229 L 339.37126,357.63896 L 348.4249,287.94229 L 357.47854,357.63896 L 366.53218,287.94229 L 375.58582,357.63896 L 384.63948,287.94229 L 393.6931,357.63896 L 402.74674,287.94229 L 411.80039,357.63896 L 420.85404,287.94229 L 429.90767,322.79062 L 475.17589,322.79062 L 475.17589,322.79062"
+     id="path17352" />
+  <path
+     style="fill:none;fill-rule:evenodd;stroke:#ec0000;stroke-width:3.10842728999999984;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     d="M 222.1655,461.99551 L 276.48736,461.99551 L 285.541,496.84385 L 294.59465,427.14718 L 303.64829,496.84385 L 312.70192,427.14718 L 321.75558,496.84385 L 330.80921,427.14718 L 339.86285,496.84385 L 348.9165,427.14718 L 357.97014,496.84385 L 367.02378,427.14718 L 376.07742,496.84385 L 385.13107,427.14718 L 394.18472,496.84385 L 403.23835,427.14718 L 412.29199,496.84385 L 421.34565,427.14718 L 430.39928,461.99551 L 475.66749,461.99551 L 475.66749,461.99551"
+     id="path18243" />
+</svg>

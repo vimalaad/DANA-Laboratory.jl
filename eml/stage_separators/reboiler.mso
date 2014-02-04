@@ -1,0 +1,321 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*
+*----------------------------------------------------------------------
+* Author: Paula B. Staudt
+* $Id$
+*--------------------------------------------------------------------*#
+
+using "streams";
+
+Model reboiler
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/Reboiler"; 
+	Brief 		= "Model of a dynamic reboiler - kettle.";
+	Info 		=
+"== Assumptions ==
+
+* perfect mixing of both phases;
+* thermodynamics equilibrium;
+* no liquid entrainment in the vapour stream.
+	
+== Specify ==
+
+* the inlet stream;
+* the liquid inlet stream;
+* the outlet flows: OutletV.F and OutletL.F;
+* the heat supply.
+	
+== Initial Conditions ==
+
+* the reboiler temperature (OutletL.T);
+* the reboiler liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions.
+";	
+	
+	PARAMETERS
+	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	outer NComp as Integer;
+	Across as area (Brief="Cross Section Area of reboiler");
+	V as volume (Brief="Total volume of reboiler");
+
+	VARIABLES
+in	Inlet as stream(Brief="Feed Stream", PosX=0.8127, PosY=0, Symbol="_{in}");
+in	InletL as stream(Brief="Liquid inlet stream", PosX=0, PosY=0.5254, Symbol="_{inL}");
+out	OutletL as liquid_stream(Brief="Liquid outlet stream", PosX=0.2413, PosY=1, Symbol="_{outL}");
+out	OutletV as vapour_stream(Brief="Vapour outlet stream", PosX=0.5079, PosY=0, Symbol="_{outV}");
+in	InletQ as energy_stream (Brief="Heat supplied", PosX=1, PosY=0.6123, Symbol="_{in}");
+
+	M(NComp) as mol (Brief="Molar Holdup in the tray");
+	ML as mol (Brief="Molar liquid holdup");
+	MV as mol (Brief="Molar vapour holdup");
+	E as energy (Brief="Total Energy Holdup on tray");
+	vL as volume_mol (Brief="Liquid Molar Volume");
+	vV as volume_mol (Brief="Vapour Molar volume");
+	Level as length (Brief="Level of liquid phase");
+	rhoV as dens_mass (Brief="Vapour Density");
+
+	EQUATIONS
+	"Component Molar Balance"
+	diff(M)= Inlet.F*Inlet.z + InletL.F*InletL.z
+		- OutletL.F*OutletL.z - OutletV.F*OutletV.z;
+	
+	"Energy Balance"
+	diff(E) = Inlet.F*Inlet.h + InletL.F*InletL.h
+		- OutletL.F*OutletL.h - OutletV.F*OutletV.h + InletQ.Q;
+	
+	"Molar Holdup"
+	M = ML*OutletL.z + MV*OutletV.z; 
+	
+	"Energy Holdup"
+	E = ML*OutletL.h + MV*OutletV.h - OutletL.P*V;
+	
+	"Mol fraction normalisation"
+	sum(OutletL.z)=1.0;
+	sum(OutletL.z)=sum(OutletV.z);
+
+	"Vapour Density"
+	rhoV = PP.VapourDensity(OutletV.T, OutletV.P, OutletV.z);
+
+	"Liquid Volume"
+	vL = PP.LiquidVolume(OutletL.T, OutletL.P, OutletL.z);
+	
+	"Vapour Volume"
+	vV = PP.VapourVolume(OutletV.T, OutletV.P, OutletV.z);
+	
+	"Chemical Equilibrium"
+	PP.LiquidFugacityCoefficient(OutletL.T, OutletL.P, OutletL.z)*OutletL.z = 
+		PP.VapourFugacityCoefficient(OutletV.T, OutletV.P, OutletV.z)*OutletV.z;
+
+	"Mechanical Equilibrium"
+	OutletL.P = OutletV.P;
+	
+	"Thermal Equilibrium"
+	OutletL.T = OutletV.T;
+	
+	"Geometry Constraint"
+	V = ML*vL + MV*vV;
+	
+	"Level of liquid phase"
+	Level = ML*vL/Across;
+end
+
+#*----------------------------------------------------------------------
+* Model of a  Steady State reboiler with no thermodynamics equilibrium
+*---------------------------------------------------------------------*# 
+Model reboilerSteady
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/ReboilerSteady"; 
+	Brief 		= "Model of a  Steady State reboiler with no thermodynamics equilibrium - thermosyphon.";
+	Info 		=
+"== Assumptions ==
+* perfect mixing of both phases;
+* no thermodynamics equilibrium;
+* no liquid entrainment in the vapour stream.
+	
+== Specify ==
+* the InletL stream;
+* the heat supply OR the outlet temperature (OutletV.T);
+";	
+
+	PARAMETERS
+	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	outer NComp as Integer;
+	DP as press_delta (Brief="Pressure Drop in the reboiler");
+
+	VARIABLES
+in	InletL as stream(Brief="Liquid inlet stream", PosX=0.3345, PosY=1, Symbol="_{inL}");
+out	OutletV as vapour_stream(Brief="Vapour outlet stream", PosX=0.3369, PosY=0, Symbol="_{outV}");
+in	InletQ as energy_stream (Brief="Heat supplied", PosX=1, PosY=0.6111, Symbol="_{in}");
+	vV as volume_mol (Brief="Vapour Molar volume");
+	rhoV as dens_mass (Brief="Vapour Density");
+
+	EQUATIONS
+	"Molar Balance"
+	InletL.F = OutletV.F;
+	InletL.z = OutletV.z;
+	
+	"Vapour Volume"
+	vV = PP.VapourVolume(OutletV.T, OutletV.P, OutletV.z);
+	
+	"Vapour Density"
+	rhoV = PP.VapourDensity(OutletV.T, OutletV.P, OutletV.z);
+
+	"Energy Balance"
+	InletL.F*InletL.h + InletQ.Q = OutletV.F*OutletV.h;
+	
+	"Pressure"
+	DP = InletL.P - OutletV.P;
+end
+
+#*----------------------------------------------------------------------
+* Model of a  Steady State reboiler with fake calculation of 
+* vaporisation fraction and output temperature, but with a real
+* calculation of the output stream enthalpy
+*---------------------------------------------------------------------*# 
+Model reboilerSteady_fakeH
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/ReboilerSteady"; 
+	Brief 		= "Model of a  Steady State reboiler with fake calculation of outlet conditions.";
+	Info 		=
+"Model of a  Steady State reboiler with fake calculation of 
+vaporisation fraction and output temperature, but with a real 
+calculation of the output stream enthalpy.
+";
+	
+	PARAMETERS
+	outer PP as Plugin(Brief = "External Physical Properties", Type="PP");
+	outer NComp as Integer;
+	DP as press_delta (Brief="Pressure Drop in the reboiler");
+	k as Real (Brief = "Flow Constant", Unit='mol/J');
+	
+	VARIABLES
+in	InletL as stream(Brief="Liquid inlet stream", PosX=0.3345, PosY=1, Symbol="_{inL}");
+out	OutletV as vapour_stream(Brief="Vapour outlet stream", PosX=0.3369, PosY=0, Symbol="_{outV}");
+in	InletQ as energy_stream (Brief="Heat supplied", PosX=1, PosY=0.6111, Symbol="_{in}");
+
+	EQUATIONS
+	"Molar Balance"
+	InletL.F = OutletV.F;
+	InletL.z = OutletV.z;
+	
+	"Energy Balance"
+	InletL.F*InletL.h + InletQ.Q = OutletV.F*OutletV.h;
+	
+	"Pressure"
+	DP = InletL.P - OutletV.P;
+
+	"Fake Vapourisation Fraction"
+	OutletV.v = 1.0;
+	
+	"Fake output temperature"
+	OutletV.T = 300*'K';
+	
+	"Pressure Drop through the reboiler"
+	OutletV.F = k*InletQ.Q;
+end
+
+#*-------------------------------------------------------------------
+* Model of a dynamic reboiler with reaction
+*-------------------------------------------------------------------*#
+Model reboilerReact
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/Reboiler"; 
+	Brief 		= "Model of a dynamic reboiler with reaction.";
+	Info 		=
+"== Assumptions ==
+* perfect mixing of both phases;
+* thermodynamics equilibrium;
+* no liquid entrainment in the vapour stream;
+* the reaction takes place only in the liquid phase.
+	
+== Specify ==
+* the kinetics variables;
+* the inlet stream;
+* the liquid inlet stream;
+* the outlet flows: OutletV.F and OutletL.F;
+* the heat supply.
+
+== Initial Conditions ==
+* the reboiler temperature (OutletL.T);
+* the reboiler liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions.
+";
+	
+	PARAMETERS
+	outer PP as Plugin(Type="PP");
+	outer NComp as Integer;
+	Across as area (Brief="Cross Section Area of reboiler");
+	V as volume (Brief="Total volume of reboiler");
+
+	stoic(NComp) as Real(Brief="Stoichiometric matrix");
+	Hr as energy_mol;
+	Pstartup as pressure;
+
+	VARIABLES
+in	Inlet as stream(Brief="Feed Stream", PosX=0.8127, PosY=0, Symbol="_{in}");
+in	InletL as stream(Brief="Liquid inlet stream", PosX=0, PosY=0.5254, Symbol="_{inL}");
+out	OutletL as liquid_stream(Brief="Liquid outlet stream", PosX=0.2413, PosY=1, Symbol="_{outL}");
+out	OutletV as vapour_stream(Brief="Vapour outlet stream", PosX=0.5079, PosY=0, Symbol="_{outV}");
+in	InletQ as energy_stream (Brief="Heat supplied", PosX=1, PosY=0.6123, Symbol="_{in}");
+
+	M(NComp) as mol (Brief="Molar Holdup in the tray");
+	ML as mol (Brief="Molar liquid holdup");
+	MV as mol (Brief="Molar vapour holdup");
+	E as energy (Brief="Total Energy Holdup on tray");
+	vL as volume_mol (Brief="Liquid Molar Volume");
+	vV as volume_mol (Brief="Vapour Molar volume");
+	Level as length (Brief="Level of liquid phase");
+	Vol as volume;
+	startup as Real;
+	rhoV as dens_mass;
+	r3 as reaction_mol (Brief = "Reaction resulting ethyl acetate", DisplayUnit = 'mol/l/s');
+	C(NComp) as conc_mol (Brief = "Molar concentration", Lower = -1);
+
+	EQUATIONS
+	"Molar Concentration"
+	OutletL.z = vL * C;
+	
+	"Reaction"
+	r3 = exp(-7150*'K'/OutletL.T)*(4.85e4*C(1)*C(2) - 1.23e4*C(3)*C(4)) * 'l/mol/s';
+
+	"Component Molar Balance"
+	diff(M)= Inlet.F*Inlet.z + InletL.F*InletL.z
+		- OutletL.F*OutletL.z - OutletV.F*OutletV.z + stoic*r3*ML*vL;
+	
+	"Energy Balance"
+	diff(E) = Inlet.F*Inlet.h + InletL.F*InletL.h
+		- OutletL.F*OutletL.h - OutletV.F*OutletV.h + InletQ.Q + Hr * r3 * vL*ML;
+	
+	"Molar Holdup"
+	M = ML*OutletL.z + MV*OutletV.z; 
+	
+	"Energy Holdup"
+	E = ML*OutletL.h + MV*OutletV.h - OutletL.P*V;
+	
+	"Mol fraction normalisation"
+	sum(OutletL.z)=1.0;
+	
+	"Liquid Volume"
+	vL = PP.LiquidVolume(OutletL.T, OutletL.P, OutletL.z);
+	"Vapour Volume"
+	vV = PP.VapourVolume(OutletV.T, OutletV.P, OutletV.z);	
+	"Vapour Density"
+	rhoV = PP.VapourDensity(OutletV.T, OutletV.P, OutletV.z);
+	
+	"Level of liquid phase"
+	Level = ML*vL/Across;
+
+	Vol = ML*vL;
+	
+	"Mechanical Equilibrium"
+	OutletL.P = OutletV.P;
+	
+	"Thermal Equilibrium"
+	OutletL.T = OutletV.T;	
+	
+	"Geometry Constraint"
+	V = ML*vL + MV*vV;		
+
+	"Chemical Equilibrium"
+	PP.LiquidFugacityCoefficient(OutletL.T, OutletL.P, OutletL.z)*OutletL.z = 
+	PP.VapourFugacityCoefficient(OutletV.T, OutletV.P, OutletV.z)*OutletV.z;
+
+	sum(OutletL.z)=sum(OutletV.z);
+	
+end

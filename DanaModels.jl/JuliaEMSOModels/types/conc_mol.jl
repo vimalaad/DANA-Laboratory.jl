@@ -1,0 +1,50 @@
+#-------------------------------------------------------------------
+#* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+#*
+#* This LIBRARY is free software; you can distribute it and/or modify
+#* it under the therms of the ALSOC FREE LICENSE as available at
+#* http://www.enq.ufrgs.br/alsoc.
+#*
+#* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+#* from http://www.rps.eng.br Copyright (C) 2002-2004.
+#* All rights reserved.
+#*
+#* EMSO is distributed under the therms of the ALSOC LICENSE as
+#* available at http://www.enq.ufrgs.br/alsoc.
+#*
+#*----------------------------------------------------------------------
+#* Author: Paula B. Staudt
+#* $Id$
+#*--------------------------------------------------------------------
+#----------------------------------------------------------------------------------*
+#*
+#*-------------------------  Fundamental Variables ----------------------------------*
+#*
+#*----------------------------------------------------------------------------------
+# Constants
+# Pressure
+# Temperature
+# Time
+# Size related
+# Eletric
+# Currency
+#----------------------------------------------------------------------------------*
+#*
+#*-------------------------  Concentration Related ----------------------------------*
+#*
+#*----------------------------------------------------------------------------------
+# elementary
+# densities
+export conc_mol
+typealias Danaconc_mol Danadens_mol
+type _conc_mol
+	function _conc_mol(_::Dict{Symbol,Any})
+		fields::Dict{Symbol,Any}=(Symbol=>Any)[]
+		fields[:Brief]="Molar Concentration"
+		fields[:Default]=1e-3
+		drive!(fields,_)
+		new(_dens_mol (fields).value)
+	end
+	value::Dict{Symbol,Any}
+end
+typealias conc_mol Danadens_mol{_conc_mol}

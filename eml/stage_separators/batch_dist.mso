@@ -1,0 +1,113 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*
+*----------------------------------------------------------------------
+* Author: Maurício Carvalho Maciel
+* $Id$
+*--------------------------------------------------------------------*#
+using "streams";
+	
+Model Diff_Dist
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/BatchDist"; 
+	Brief 		= "Model of a Batch Differential Distillation.";
+	Info 		=
+"== Assumptions ==
+* perfect mixing of both phases;
+* thermodynamics equilibrium;
+* no liquid entrainment in the vapour stream.
+	
+== Specify ==
+* the inlet stream;
+* the liquid inlet stream;
+* the molar flow of the vapour outlet stream.
+	
+== Initial Conditions ==
+* the distillator temperature (T);
+* the distillator liquid level (Level);
+* (NoComps - 1) compositions in the distillator or in the OutletV.
+";
+
+	PARAMETERS
+outer PP 		as Plugin	(Brief = "External Physical Properties", Type="PP");
+outer NComp 	as Integer	(Brief = "Number of chemical components", Lower = 1);
+	Across 		as area 	(Brief = "Cross Section Area");
+	V 			as volume 	(Brief = "Total volume");
+	
+	VARIABLES
+in	Inlet	as stream (Brief="Feed stream", PosX=0, PosY=0.9385, Symbol="_{in}");
+in	InletL 	as stream (Brief="Liquid inlet stream", PosX=0.5, PosY=0.1984, Symbol="_{inL}"); # FIXME
+out	OutletV as vapour_stream (Brief="Vapour outlet stream", PosX=1, PosY=0.1984, Symbol="_{outV}");
+in	InletQ 	as energy_stream (Brief="Heat supplied", PosX=1, PosY=0.9578, Symbol="_{in}");
+
+	M(NComp) 	as mol 			(Brief="Molar Holdup in the distillator");
+	ML 			as mol 			(Brief="Molar liquid holdup");
+	MV 			as mol 			(Brief="Molar vapour holdup");
+	E 			as energy 		(Brief="Total Energy holdup on distillator");
+	volL 		as volume_mol 	(Brief="Liquid Molar Volume");
+	volV 		as volume_mol 	(Brief="Vapour Molar volume");
+	Level		as length 		(Brief="Level of liquid phase", Default=1, Lower=0);
+	T 			as temperature	(Brief="Temperature on distillator");
+	P 			as pressure		(Brief="Pressure on distillator");
+	x(NComp)	as fraction 	(Brief = "Molar Fraction of the Liquid of the distillator");
+	h 			as enth_mol		(Brief="Molar Enthalpy of the liquid of the distillator");
+	
+	EQUATIONS
+	
+	"Component Molar Balance"
+	diff(M)= Inlet.F*Inlet.z + InletL.F*InletL.z - OutletV.F*OutletV.z;
+	
+	"Energy Balance"
+	diff(E) = Inlet.F*Inlet.h + InletL.F*InletL.h - OutletV.F*OutletV.h + InletQ.Q;
+	
+	"Molar Holdup"
+	M = ML*x + MV*OutletV.z; 
+	
+	"Energy Holdup"
+	E = ML*h + MV*OutletV.h - P*V;
+	
+	"Mol fraction normalisation"
+	sum(x)=1.0;
+	sum(x)=sum(OutletV.z);
+
+	"Liquid Volume"
+	volL = PP.LiquidVolume(T, P, x);
+	
+	"Vapour Volume"
+	volV = PP.VapourVolume(OutletV.T, OutletV.P, OutletV.z);
+	
+	"Chemical Equilibrium"
+	PP.LiquidFugacityCoefficient(T, P, x)*x = 
+		PP.VapourFugacityCoefficient(OutletV.T, OutletV.P, OutletV.z)*OutletV.z;
+
+	"Mechanical Equilibrium"
+	P = OutletV.P;
+	
+	"Thermal Equilibrium"
+	T = OutletV.T;
+	
+	"Geometry Constraint"
+	V = ML*volL + MV*volV;
+	
+	"Level of liquid phase"
+	Level = ML*volL/Across;
+	
+	"Enthalpy"
+	h = PP.LiquidEnthalpy(T, P, x);
+	
+end
+	
+	
+

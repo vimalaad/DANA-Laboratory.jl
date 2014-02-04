@@ -1,0 +1,110 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*
+*----------------------------------------------------------------------
+* Authors: Andrey Copat, Estefane S. Horn, Marcos L. Alencastro
+* $Id$
+*--------------------------------------------------------------------*#
+
+using "streams";
+
+Model Hidraulic_Turbine
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/HidraulicTurbine"; 
+	Brief 		= "Model of a Hidraulic Turbine.";
+	Info 		=
+"== Assumptions ==
+* Steady State;
+* Only Liquid;
+* Adiabatic;
+* Isentropic.
+	
+== Specify ==
+* the inlet stream;
+* the Pressure Increase (Pdiff) OR the outlet pressure (Outlet.P);
+* the Turbine efficiency (Eff);
+* the Brake efficiency (Meff);
+* the Volumetric expansivity (Beta).
+";
+	
+	PARAMETERS
+outer NComp   	as Integer			(Brief = "Number of chemical components", Lower = 1);
+outer PP   		as Plugin			(Brief = "External Physical Properties", Type="PP");
+	Mw(NComp) 	as molweight 		(Brief = "Molar Weight");
+	
+	VARIABLES
+	Eff 	as efficiency 		(Brief = "Turbine efficiency");
+	Meff 	as efficiency		(Brief = "Brake efficiency");
+	Beta 	as positive  		(Brief = "Volumetric expansivity", Unit = '1/K');
+	Head	as head				(Brief = "Head Developed");
+	FPower 	as power			(Brief = "Fluid Power");
+	BPower 	as power			(Brief = "Brake Power");
+	EPower 	as power			(Brief = "Eletrical Potency");
+	Pratio 	as positive			(Brief = "Pressure Ratio");
+	Pdrop	as press_delta		(Brief = "Pressure Drop", DisplayUnit = 'kPa', Symbol ="\Delta P");
+	Mwm 	as molweight		(Brief = "Mixture Molar Weight");
+	rho		as dens_mass  		(Brief = "Specific Mass");
+	Cp		as cp_mol			(Brief = "Heat Capacity");
+in	Inlet 	as stream			(Brief = "Inlet stream", PosX=0, PosY=0.5086, Symbol="_{in}");
+out	Outlet 	as stream			(Brief = "Outlet stream", PosX=1, PosY=0.5022, Symbol="_{out}");
+
+	SET
+	Mw = PP.MolecularWeight();	
+	
+	EQUATIONS
+	#Mixtures Properties
+	"Calculate Mwm for Inlet Mixture"
+	Mwm = sum(Mw*Inlet.z);
+
+	"Calculate rho using a External Physical Properties Routine"
+	rho = PP.LiquidDensity(Inlet.T,Inlet.P,Inlet.z);
+	
+	"Calculate Outlet Vapour Fraction"
+	Outlet.v = PP.VapourFraction(Outlet.T, Outlet.P, Outlet.z);
+	
+	"Calculate Cp Using a External Physical Properties Routine"
+	Cp = PP.LiquidCp(Inlet.T,Inlet.P,Inlet.z);
+	
+	"Pressure Ratio"
+	Outlet.P = Inlet.P * Pratio;
+
+	"Pressure Drop"
+	Outlet.P  = Inlet.P - Pdrop;
+
+	"Calculate Fluid Power"
+	FPower * rho = -Pdrop * Inlet.F * Mwm;
+
+	"Calculate Brake Power"
+	BPower = FPower * Eff;
+	
+	"Calculate Eletric Power"
+	EPower = BPower * Meff;
+	
+	"Calculate Outlet Temperature"
+	(Outlet.T - Inlet.T) * rho * Cp = (Outlet.h - Inlet.h) * rho
+	+ Pdrop * Mwm * (1-Beta*Inlet.T);
+	
+	"Calculate Outlet Enthalpy"
+	(Outlet.h - Inlet.h) * rho =  -Pdrop * Mwm;
+	
+	"Molar Balance"
+	Outlet.F = Inlet.F;
+	
+	"Calculate Outlet Composition"
+	Outlet.z = Inlet.z;
+
+	"Calculate Head"
+	Head = Outlet.h - Inlet.h;
+end

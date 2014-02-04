@@ -1,0 +1,122 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*
+*----------------------------------------------------------------------
+* Author: Maurício Carvalho Maciel, Paula B. Staudt, Rafael P. Soares
+* $Id$
+*--------------------------------------------------------------------*#
+
+
+using "streams";
+
+Model splitter_n
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/splitter_n"; 
+	Brief 		= "Model of a splitter";
+	Info 		=
+"== Assumptions ==
+* thermodynamics equilibrium
+* adiabatic
+			
+== Specify ==
+* the inlet stream
+* (Noutlet - 1) fraction of split of the outlet streams:
+
+	frac(i) = (Mole Flow of the outlet stream i / 
+				Mole Flow of the inlet stream)
+				where i = 1, 2,...,Noutlet
+";
+	
+	PARAMETERS
+	NOutlet as Integer (Brief = "Number of Outlet Streams", Lower = 1);
+	
+	VARIABLES
+in	Inlet   as stream (Brief = "Inlet stream", PosX=0, PosY=0.5001, Symbol="_{in}");
+out Outlet(NOutlet)  as stream (Brief = "Outlet streams", PosX=1, PosY=0.5, Symbol="_{out}");
+	frac(NOutlet) as fraction (Brief = "Distribution of Outlets", Default=0.5, Symbol="\phi");
+
+	EQUATIONS
+	
+	sum(frac) = 1;
+	
+	for i in [1:NOutlet]
+		
+		"Flow"
+		Outlet(i).F = Inlet.F*frac(i);
+		
+		"Composition"
+		Outlet(i).z = Inlet.z;
+	
+		"Pressure"
+		Outlet(i).P = Inlet.P;
+	
+		"Enthalpy"
+		Outlet(i).h = Inlet.h;
+	
+		"Temperature"	
+		Outlet(i).T = Inlet.T;
+	 
+		"Vapourisation Fraction"
+		Outlet(i).v = Inlet.v;
+	end
+
+end
+
+
+Model splitter
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/splitter"; 
+	Brief 		= "Splitter with 2 outlet streams";
+	Info 		=
+"== Assumptions ==
+* thermodynamics equilibrium
+* adiabatic
+			
+== Specify ==
+* the inlet stream
+* (Noutlet - 1) fraction of split of the outlet streams:
+
+	frac(i) = (Mole Flow of the outlet stream i / 
+				Mole Flow of the inlet stream)
+				where i = 1, 2,...,Noutlet
+";
+
+	VARIABLES
+in  Inlet   as stream (Brief = "Inlet stream", PosX=0, PosY=0.5069, Symbol="_{in}");
+out Outlet1 as stream (Brief = "Outlet stream 1", PosX=1, PosY=0.3027, Symbol="_{out1}");
+out Outlet2 as stream (Brief = "Outlet stream 2", PosX=1, PosY=0.7141, Symbol="_{out2}");
+	frac as fraction (Brief = "Fraction to Outlet 1", Symbol="\phi");
+
+	EQUATIONS
+	"Flow"
+	Outlet1.F = Inlet.F * frac;
+	Outlet1.F + Outlet2.F = Inlet.F;
+	"Composition"
+	Outlet1.z = Inlet.z;
+	Outlet2.z = Inlet.z;
+	"Pressure"
+	Outlet1.P = Inlet.P;
+	Outlet2.P = Inlet.P;
+	"Enthalpy"
+	Outlet1.h = Inlet.h;
+	Outlet2.h = Inlet.h;
+	"Temperature"
+	Outlet1.T = Inlet.T;
+	Outlet2.T = Inlet.T;
+	"Vapourisation Fraction"
+	Outlet1.v = Inlet.v;
+	Outlet2.v = Inlet.v;
+end

@@ -1,0 +1,729 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*--------------------------------------------------------------------
+* Author: Gerson Balbueno Bicca 
+* $Id: PHE.mso 250 2007-04-27 16:32:02Z bicca $
+*------------------------------------------------------------------*#
+using "HEX_Engine";
+
+Model PHE_PressureDrop
+	
+ATTRIBUTES
+	Pallete = false;
+	Brief = "to be documented";
+	Info =
+	"to be documented";
+	
+VARIABLES
+
+DPchannel		as press_delta	(Brief="Channel Pressure Drop",Default=0.01, Lower=1E-10,DisplayUnit='kPa', Symbol ="\Delta P^{channel}");
+DPports			as press_delta	(Brief="Ports Pressure Drop",Default=0.01, Lower=1E-10,DisplayUnit='kPa', Symbol ="\Delta P^{ports}");
+Pdrop				as press_delta	(Brief="Total Pressure Drop",Default=0.01, Lower=1E-10,DisplayUnit='kPa', Symbol ="\Delta P");
+fi      				as fricfactor		(Brief="Friction Factor", Default=0.05, Lower=1E-10, Upper=2000);
+Vchannel			as velocity		(Brief="Stream Velocity in Channel",Lower=1E-8, Symbol ="V^{channel}");
+Vports				as velocity		(Brief="Stream Velocity in Ports",Lower=1E-8, Symbol ="V^{ports}");
+Npassage			as positive 		(Brief="Number of  Channels per Pass", Symbol ="N^{passage}");
+
+end
+
+Model PHE_HeatTransfer
+	
+ATTRIBUTES
+	Pallete = false;
+	Brief = "to be documented";
+	Info =
+	"to be documented";
+	
+VARIABLES
+
+Re 	  			as positive		  			(Brief="Reynolds Number",Default=100,Lower=1);
+PR 	  			as positive		  			(Brief="Prandtl Number",Default=0.5,Lower=1e-8);
+NTU				as positive					(Brief="Number of Units Transference",Default=0.05,Lower=1E-10);
+WCp   			as positive					(Brief="Stream Heat Capacity",Lower=1E-3,Default=1E3,Unit='W/K');
+hcoeff 			as heat_trans_coeff 		(Brief="Film Coefficient",Default=1,Lower=1E-12, Upper=1E6);
+Gchannel		as flux_mass			 	(Brief ="Channel Mass Flux", Default=1, Lower=1E-6, Symbol ="G^{channel}");
+Gports 			as flux_mass 				(Brief ="Ports Mass Flux", Default=1, Lower=1E-6, Symbol ="G^{ports}");
+Phi   			as positive		  			(Brief="Viscosity Correction",Default=1,Lower=1E-6, Symbol="\phi");
+
+end
+
+Model Main_PHE
+	
+ATTRIBUTES
+	Pallete = false;
+	Brief = "to be documented";
+	Info =
+	"to be documented";
+	
+VARIABLES
+
+HeatTransfer 	as PHE_HeatTransfer 		(Brief="PHE Heat Transfer", Symbol = " ");
+PressureDrop 	as PHE_PressureDrop 	(Brief="PHE Pressure Drop", Symbol = " ");
+Properties   		as Physical_Properties   	(Brief="PHE Properties", Symbol = " ");
+
+end
+
+Model Thermal_PHE
+
+ATTRIBUTES
+	Pallete = false;
+	Brief = "to be documented";
+	Info =
+	"to be documented";
+	
+VARIABLES
+Cr    	as positive 				(Brief="Heat Capacity Ratio",Default=0.5,Lower=1E-6);
+Cmin  	as positive 				(Brief="Minimum Heat Capacity",Lower=1E-10,Default=1E3,Unit='W/K');
+Cmax 	as positive 				(Brief="Maximum Heat Capacity",Lower=1E-10,Default=1E3,Unit='W/K');
+NTU		as positive				(Brief="Number of Units Transference",Default=0.05,Lower=1E-10);
+Eft		as positive  				(Brief="Effectiveness",Default=0.5,Lower=0.1,Upper=1.1, Symbol = "\varepsilon");
+Q	   		as power					(Brief="Heat Transfer", Default=7000, Lower=1E-6, Upper=1E10);
+Uc 		as heat_trans_coeff 	(Brief="Overall Heat Transfer Coefficient Clean",Default=1,Lower=1E-6,Upper=1E10);
+Ud 		as heat_trans_coeff 	(Brief="Overall Heat Transfer Coefficient Dirty",Default=1,Lower=1E-6,Upper=1E10);
+
+end
+
+Model PHE_Geometry
+
+ ATTRIBUTES
+	Pallete 	= false;
+	Brief 		= "Parameters for a gasketed plate heat exchanger.";
+
+ PARAMETERS
+
+outer PP 	    	as Plugin		(Brief="External Physical Properties", Type="PP");
+outer NComp   as Integer   	(Brief="Number of Chemical Components",Hidden=true);
+	
+	Pi						as constant 		(Brief="Pi Number",Default=3.14159265, Hidden=true,Symbol = "\pi");
+	N1					as Integer 		(Brief="Auxiliar Constant", Hidden=true,Default = 15);
+	N2					as Integer 		(Brief="Auxiliar Constant",Hidden=true,Default = 14);
+	Kp1(N1)			as constant 		(Brief="First constant in Kumar calculation for Pressure Drop", Hidden=true);
+	Kp2(N1)			as constant 		(Brief="Second constant in Kumar calculation for Pressure Drop", Hidden=true);
+	Kc1(N2)			as constant 		(Brief="First constant in Kumar calculation for Heat Transfer", Hidden=true);
+	Kc2(N2)			as constant 		(Brief="Second constant Kumar calculation for Heat Transfer", Hidden=true);
+	M(NComp)  	as molweight	(Brief="Component Mol Weight", Hidden=true);
+	
+	
+	Lv					as length				(Brief="Vertical Ports Distance",Lower=0.1);
+	Nplates			as Integer 			(Brief="Total Number of Plates in The Whole Heat Exchanger",Default=25, Symbol ="N_{plates}");
+	NpassHot		as Integer 			(Brief="Number of Passes for Hot Side", Symbol ="Npasshot");
+	NpassCold		as Integer 			(Brief="Number of Passes for Cold Side", Symbol ="Npasscold");
+	Dports  			as length				(Brief="Ports Diameter",Lower=1e-6, Symbol ="D_{ports}");
+	Lw					as length				(Brief="Plate Width",Lower=0.1);
+	pitch				as length				(Brief="Plate Pitch",Lower=0.1);
+	pt						as length				(Brief="Plate Thickness",Lower=0.1);
+	Kwall				as conductivity 	(Brief="Plate Thermal Conductivity",Default=1.0, Symbol ="K_{wall}");
+	Rfh					as positive			(Brief="Hot Side Fouling Resistance",Unit='m^2*K/kW',Default=1e-6,Lower=0);
+	Rfc					as positive			(Brief="Cold Side Fouling Resistance",Unit='m^2*K/kW',Default=1e-6,Lower=0);
+	PhiFactor			as Real					(Brief="Enlargement Factor",Lower=1e-6, Symbol ="\phi");
+	
+	Atotal  				as area					(Brief="Total Effective  Area",Lower=1e-6, Symbol ="A_{total}", Protected=true);
+	Aports  			as area					(Brief="Port Opening  Area of Plate",Lower=1e-6, Symbol ="A_{ports}", Protected=true);
+	Achannel  		as area					(Brief="Cross-Sectional Area for Channel Flow",Lower=1e-6, Symbol ="A_{channel}", Protected=true);
+	Dh  					as length				(Brief="Equivalent Diameter of Channel",Lower=1e-6, Protected=true);
+	Depth  			as length				(Brief="Corrugation Depth",Lower=1e-6, Protected=true);
+	Nchannels		as Integer 			(Brief="Total Number of Channels in The Whole Heat Exchanger", Protected=true);
+	Lp					as length				(Brief="Plate Vertical Distance between Port Centers",Lower=0.1, Protected=true);
+	Lpack				as length				(Brief="Compact Plate Pack Length",Lower=0.1, Protected=true);
+	Lh					as length				(Brief="Plate Horizontal Distance between Port Centers",Lower=0.1, Protected=true);
+
+SET
+
+#"Vector Length of constants for Kumar's calculating Pressure Drop"
+	N1 = 15;
+
+#"Vector Length of constants for Kumar's calculating Heat Transfer"
+	N2 = 14;
+
+#"First constant for Kumar's calculating Pressure Drop"
+	Kp1 = [50,19.40,2.990,47,18.290,1.441,34,11.250,0.772,24,3.240,0.760,24,2.80,0.639];
+
+#"Second constant for Kumar's calculating Pressure Drop"
+	Kp2 = [1,0.589,0.183,1,0.652,0.206,1,0.631,0.161,1,0.457,0.215,1,0.451,0.213];
+
+#"First constant for Kumar's calculating Heat Transfer"
+	Kc1 = [0.718,0.348,0.718,0.400,0.300,0.630,0.291,0.130,0.562,0.306,0.108,0.562,0.331,0.087];
+
+#"Second constant for Kumar's calculating Heat Transfer"
+	Kc2 = [0.349,0.663,0.349,0.598,0.663,0.333,0.591,0.732,0.326,0.529,0.703,0.326,0.503,0.718];
+	
+#"Component Molecular Weight"
+	M  = PP.MolecularWeight();
+	
+#"Pi Number"
+	Pi  	= 3.14159265;
+	
+#"Plate Vertical Distance between Port Centers"
+	Lp = Lv - Dports;
+	
+#"Corrugation Depth"
+	Depth=pitch-pt;
+	
+#"Plate Horizontal Distance between Port Centers"
+	Lh=Lw-Dports;
+	
+#"Hydraulic Diameter"
+	Dh=2*Depth/PhiFactor;
+
+#"Ports Area"
+	Aports=0.25*Pi*Dports*Dports;
+	
+#"Channel Area"
+	Achannel=Depth*Lw;
+	
+#"Pack Length"
+	Lpack=Depth*(Nplates-1)+Nplates*pt;
+	
+#"Total Number of  Channels"
+	Nchannels = Nplates -1;
+	
+#"Exchange Surface Area"
+	Atotal =(Nplates-2)*Lw*Lp*PhiFactor;
+
+end
+
+Model PHE
+
+ ATTRIBUTES
+	Icon 		= "icon/phe";
+	Pallete 	= true;
+	Brief 		= "Shortcut model  for Plate and Frame heat exchanger.";
+	Info 		=
+"Model of a gasketed plate heat exchanger.
+The heat transfer and pressure loss calculations are based on Kumar [1] work.
+The following assumptions are considered in order to derive the mathematical model [2]:
+
+== Assumptions ==
+* Steady-State operation;
+* No phase changes;
+* No heat loss to the surroundings.
+* Uniform distribution of flow through the channels of a pass.
+
+== Specify ==
+* The Inlet streams: Hot and Cold;
+
+== Setting The PHE Parameters ==
+*ChevronAngle
+*Nplates
+*NpassHot
+*NpassCold
+*Dports
+*PhiFactor
+*Lv
+*Lw
+*pitch
+*pt
+*Kwall
+*Rfc
+*Rfh
+
+== Setting The PHE Option Parameters ==
+*SideOne: cold or hot
+
+== References ==
+
+[1] E.A.D. Saunders, Heat Exchangers: Selection, Design and
+ Construction, Longman, Harlow, 1988.
+
+[2] J.A.W. Gut, J.M. Pinto, Modeling of plate heat exchangers
+ with generalized configurations, Int. J. Heat Mass Transfer
+ 46 (14) (2003) 2571\2585.
+";
+
+ PARAMETERS
+
+outer PP 	    	as Plugin		(Brief="External Physical Properties", Type="PP");
+outer NComp   as Integer   	(Brief="Number of Chemical Components");
+	
+	ChevronAngle 	as Switcher			(Brief="Chevron Corrugation Inclination Angle in Degrees ",Valid=["A30_Deg","A45_Deg","A50_Deg","A60_Deg","A65_Deg"],Default="A30_Deg");
+	SideOne 			as Switcher			(Brief="Fluid Alocation in the Side I - (The odd channels)",Valid=["hot","cold"],Default="hot");
+
+ VARIABLES
+
+Geometry  			as PHE_Geometry		(Brief="Plate Heat Exchanger Geometrical Parameters", Symbol=" ");
+in  InletHot	    	as stream 					(Brief="Inlet Hot Stream", PosX=0, PosY=0.75, Symbol="^{inHot}");	
+in  InletCold	    	as stream 					(Brief="Inlet Cold Stream", PosX=0, PosY=0.25, Symbol="^{inCold}");
+out OutletHot    	as streamPH 				(Brief="Outlet Hot Stream", PosX=1, PosY=0.25, Symbol="^{outHot}");
+out OutletCold    	as streamPH 				(Brief="Outlet Cold Stream", PosX=1, PosY=0.75, Symbol="^{outCold}");
+
+	
+	HotSide  		as Main_PHE				(Brief="Plate Heat Exchanger Hot Side", Symbol="_{hot}");
+	ColdSide  	as Main_PHE				(Brief="Plate Heat Exchanger Cold Side", Symbol="_{cold}");
+	Thermal 		as Thermal_PHE			(Brief="Thermal Results", Symbol = " ");
+
+ EQUATIONS
+
+"Hot	Stream Average Temperature"
+	HotSide.Properties.Average.T = 0.5*InletHot.T + 0.5*OutletHot.T;
+
+"Cold Stream Average Temperature"
+	ColdSide.Properties.Average.T = 0.5*InletCold.T + 0.5*OutletCold.T;
+	
+"Hot Stream Average Pressure"
+	HotSide.Properties.Average.P = 0.5*InletHot.P+0.5*OutletHot.P;
+	
+"Cold Stream Average Pressure"
+	ColdSide.Properties.Average.P = 0.5*InletCold.P+0.5*OutletCold.P;
+
+"Cold Stream Wall Temperature"
+	ColdSide.Properties.Wall.Twall =   0.5*HotSide.Properties.Average.T + 0.5*ColdSide.Properties.Average.T;
+
+"Hot Stream Wall Temperature"
+	HotSide.Properties.Wall.Twall =   0.5*HotSide.Properties.Average.T + 0.5*ColdSide.Properties.Average.T;
+
+"Hot Stream Average Molecular Weight"
+	HotSide.Properties.Average.Mw = sum(Geometry.M*InletHot.z);
+
+"Cold Stream Average Molecular Weight"
+	ColdSide.Properties.Average.Mw = sum(Geometry.M*InletCold.z);
+
+ if InletCold.v equal 0
+	
+	then	
+
+"Average Heat Capacity Cold Stream"
+	ColdSide.Properties.Average.Cp 		= 	PP.LiquidCp(ColdSide.Properties.Average.T,ColdSide.Properties.Average.P,InletCold.z);
+
+"Average Mass Density Cold Stream"
+	ColdSide.Properties.Average.rho 	= 	PP.LiquidDensity(ColdSide.Properties.Average.T,ColdSide.Properties.Average.P,InletCold.z);
+
+"Inlet Mass Density Cold Stream"
+	ColdSide.Properties.Inlet.rho 		= 	PP.LiquidDensity(InletCold.T,InletCold.P,InletCold.z);
+
+"Outlet Mass Density Cold Stream"
+	ColdSide.Properties.Outlet.rho 	= 	PP.LiquidDensity(OutletCold.T,OutletCold.P,OutletCold.z);
+
+"Average Viscosity Cold Stream"
+	ColdSide.Properties.Average.Mu 	= 	PP.LiquidViscosity(ColdSide.Properties.Average.T,ColdSide.Properties.Average.P,InletCold.z);
+
+"Average	Conductivity Cold Stream"
+	ColdSide.Properties.Average.K	 	= 	PP.LiquidThermalConductivity(ColdSide.Properties.Average.T,ColdSide.Properties.Average.P,InletCold.z);
+
+"Viscosity Cold Stream at wall temperature"
+	ColdSide.Properties.Wall.Mu 		= 	PP.LiquidViscosity(ColdSide.Properties.Wall.Twall,ColdSide.Properties.Average.P,InletCold.z);
+
+	else
+
+"Average Heat Capacity ColdStream"
+	ColdSide.Properties.Average.Cp 	=	PP.VapourCp(ColdSide.Properties.Average.T,ColdSide.Properties.Average.P,InletCold.z);
+
+"Average Mass Density Cold Stream"
+	ColdSide.Properties.Average.rho 	=	PP.VapourDensity(ColdSide.Properties.Average.T,ColdSide.Properties.Average.P,InletCold.z);
+
+"Inlet Mass Density Cold Stream"
+	ColdSide.Properties.Inlet.rho 		=	PP.VapourDensity(InletCold.T,InletCold.P,InletCold.z);
+	
+"Outlet Mass Density Cold Stream"
+	ColdSide.Properties.Outlet.rho 	=	PP.VapourDensity(OutletCold.T,OutletCold.P,OutletCold.z);
+
+"Average Viscosity Cold Stream"
+	ColdSide.Properties.Average.Mu 	=	PP.VapourViscosity(ColdSide.Properties.Average.T,ColdSide.Properties.Average.P,InletCold.z);
+
+"Average Conductivity Cold Stream"
+	ColdSide.Properties.Average.K 		= 	PP.VapourThermalConductivity(ColdSide.Properties.Average.T,ColdSide.Properties.Average.P,InletCold.z);
+
+"Viscosity Cold Stream at wall temperature"
+	ColdSide.Properties.Wall.Mu 		=	PP.VapourViscosity(ColdSide.Properties.Wall.Twall,ColdSide.Properties.Average.P,InletCold.z);
+
+ end
+
+ if InletHot.v equal 0
+
+	then
+
+"Average Heat Capacity Hot Stream"
+	HotSide.Properties.Average.Cp 	=		PP.LiquidCp(HotSide.Properties.Average.T,HotSide.Properties.Average.P,InletHot.z);
+
+"Average Mass Density Hot Stream"
+	HotSide.Properties.Average.rho =		PP.LiquidDensity(HotSide.Properties.Average.T,HotSide.Properties.Average.P,InletHot.z);
+
+"Inlet Mass Density Hot Stream"
+	HotSide.Properties.Inlet.rho 		=		PP.LiquidDensity(InletHot.T,InletHot.P,InletHot.z);
+
+"Outlet Mass Density Hot Stream"
+	HotSide.Properties.Outlet.rho 	=		PP.LiquidDensity(OutletHot.T,OutletHot.P,OutletHot.z);
+
+"Average Viscosity Hot Stream"
+	HotSide.Properties.Average.Mu 	=		PP.LiquidViscosity(HotSide.Properties.Average.T,HotSide.Properties.Average.P,InletHot.z);	
+
+"Average Conductivity Hot Stream"
+	HotSide.Properties.Average.K 	=		PP.LiquidThermalConductivity(HotSide.Properties.Average.T,HotSide.Properties.Average.P,InletHot.z);	
+
+"Viscosity Hot Stream at wall temperature"
+	HotSide.Properties.Wall.Mu 		=		PP.LiquidViscosity(HotSide.Properties.Wall.Twall,HotSide.Properties.Average.P,InletHot.z);	
+
+
+	else
+
+"Average Heat Capacity Hot Stream"
+	HotSide.Properties.Average.Cp 	=		PP.VapourCp(HotSide.Properties.Average.T,HotSide.Properties.Average.P,InletHot.z);
+
+"Average Mass Density Hot Stream"
+	HotSide.Properties.Average.rho =		PP.VapourDensity(HotSide.Properties.Average.T,HotSide.Properties.Average.P,InletHot.z);
+
+"Inlet Mass Density Hot Stream"
+	HotSide.Properties.Inlet.rho 		=		PP.VapourDensity(InletHot.T,InletHot.P,InletHot.z);
+	
+"Outlet Mass Density Hot Stream"
+	HotSide.Properties.Outlet.rho 	=		PP.VapourDensity(OutletHot.T,OutletHot.P,OutletHot.z);
+
+"Average Viscosity Hot Stream"
+	HotSide.Properties.Average.Mu 	=		PP.VapourViscosity(HotSide.Properties.Average.T,HotSide.Properties.Average.P,InletHot.z);
+
+"Average Conductivity Hot Stream"
+	HotSide.Properties.Average.K 	=		PP.VapourThermalConductivity(HotSide.Properties.Average.T,HotSide.Properties.Average.P,InletHot.z);	
+
+"Viscosity Hot Stream at wall temperature"
+	HotSide.Properties.Wall.Mu 		=		PP.VapourViscosity(HotSide.Properties.Wall.Twall,HotSide.Properties.Average.P,InletHot.z);
+
+ end
+
+"Energy Balance Hot Stream"
+	Thermal.Q = InletHot.F*(InletHot.h-OutletHot.h);
+
+"Energy Balance Cold Stream"
+	Thermal.Q = InletCold.F*(OutletCold.h - InletCold.h);
+
+"Flow Mass Inlet Cold Stream"
+	ColdSide.Properties.Inlet.Fw	=  sum(Geometry.M*InletCold.z)*InletCold.F;
+
+"Flow Mass Outlet Cold Stream"
+	ColdSide.Properties.Outlet.Fw	=  sum(Geometry.M*OutletCold.z)*OutletCold.F;
+
+"Flow Mass Inlet Hot Stream"
+	HotSide.Properties.Inlet.Fw		=  sum(Geometry.M*InletHot.z)*InletHot.F;
+
+"Flow Mass Outlet Hot Stream"	
+	HotSide.Properties.Outlet.Fw	=  sum(Geometry.M*OutletHot.z)*OutletHot.F;
+
+"Molar Balance Hot Stream"
+	OutletHot.F = InletHot.F;
+	
+"Molar Balance Cold Stream"
+	OutletCold.F = InletCold.F;
+
+"Hot Stream Molar Fraction Constraint"
+	OutletHot.z=InletHot.z;
+	
+"Cold Stream Molar Fraction Constraint"
+	OutletCold.z=InletCold.z;
+
+ switch SideOne
+	
+	case "cold":
+	
+"Total Number of  Passages Cold Side"
+	ColdSide.PressureDrop.Npassage = (2*Geometry.Nchannels+1+(-1)^(Geometry.Nchannels+1))/(4*Geometry.NpassCold);
+
+"Total Number of  Passages Hot Side"
+	HotSide.PressureDrop.Npassage = (2*Geometry.Nchannels-1+(-1)^(Geometry.Nchannels))/(4*Geometry.NpassHot);
+	
+	case "hot":
+	
+"Total Number of  Passages Cold Side"
+	HotSide.PressureDrop.Npassage = (2*Geometry.Nchannels+1+(-1)^(Geometry.Nchannels+1))/(4*Geometry.NpassHot);
+
+"Total Number of  Passages Hot Side"
+	ColdSide.PressureDrop.Npassage = (2*Geometry.Nchannels-1+(-1)^(Geometry.Nchannels))/(4*Geometry.NpassCold);
+
+ end
+
+"Hot Stream Mass Flux in the Channel"
+	HotSide.HeatTransfer.Gchannel=HotSide.Properties.Inlet.Fw/(HotSide.PressureDrop.Npassage*Geometry.Achannel);
+
+"Hot Stream Mass Flux in the Ports"
+	HotSide.HeatTransfer.Gports=HotSide.Properties.Inlet.Fw/Geometry.Aports;
+
+"Cold Stream Mass Flux in the Ports"
+	ColdSide.HeatTransfer.Gports=ColdSide.Properties.Inlet.Fw/Geometry.Aports;
+
+"Cold Stream Mass Flux in the Channel"
+	ColdSide.HeatTransfer.Gchannel=ColdSide.Properties.Inlet.Fw/(ColdSide.PressureDrop.Npassage*Geometry.Achannel);
+
+"Hot Stream Pressure Drop in Ports"
+	HotSide.PressureDrop.DPports =1.5*Geometry.NpassHot*HotSide.HeatTransfer.Gports^2/(2*HotSide.Properties.Average.rho);
+
+"Cold Stream Pressure Drop in Ports"
+	ColdSide.PressureDrop.DPports =1.5*Geometry.NpassCold*ColdSide.HeatTransfer.Gports^2/(2*ColdSide.Properties.Average.rho);
+
+"Hot Stream Pressure Drop in Channels"
+	HotSide.PressureDrop.DPchannel =2*HotSide.PressureDrop.fi*Geometry.NpassHot*Geometry.Lv*HotSide.HeatTransfer.Gchannel^2/(HotSide.Properties.Average.rho*Geometry.Dh*HotSide.HeatTransfer.Phi^0.17);
+
+"Cold Stream Pressure Drop in Channels"
+	ColdSide.PressureDrop.DPchannel =2*ColdSide.PressureDrop.fi*Geometry.NpassCold*Geometry.Lv*ColdSide.HeatTransfer.Gchannel^2/(ColdSide.Properties.Average.rho*Geometry.Dh*ColdSide.HeatTransfer.Phi^0.17);
+
+"Hot Stream Total Pressure Drop"
+	HotSide.PressureDrop.Pdrop =HotSide.PressureDrop.DPchannel+HotSide.PressureDrop.DPports;
+
+"Cold Stream Total Pressure Drop"
+	ColdSide.PressureDrop.Pdrop =ColdSide.PressureDrop.DPchannel+ColdSide.PressureDrop.DPports;
+
+ switch ChevronAngle #Pressure Drop Friction Factor According to kumar's (1984)
+	
+	case "A30_Deg": #	ChevronAngle <= 30
+	
+	if 	HotSide.HeatTransfer.Re < 10
+		then
+				HotSide.PressureDrop.fi 		= Geometry.Kp1(1)/HotSide.HeatTransfer.Re^Geometry.Kp2(1);
+				ColdSide.PressureDrop.fi  	=	Geometry.Kp1(1)/ColdSide.HeatTransfer.Re^Geometry.Kp2(1);
+		else
+				if 	HotSide.HeatTransfer.Re < 100 
+					then
+							HotSide.PressureDrop.fi 		= Geometry.Kp1(2)/HotSide.HeatTransfer.Re^Geometry.Kp2(2);
+							ColdSide.PressureDrop.fi  	=	Geometry.Kp1(2)/ColdSide.HeatTransfer.Re^Geometry.Kp2(2);
+					else
+							HotSide.PressureDrop.fi 		= Geometry.Kp1(3)/HotSide.HeatTransfer.Re^Geometry.Kp2(3);
+							ColdSide.PressureDrop.fi  	=	Geometry.Kp1(3)/ColdSide.HeatTransfer.Re^Geometry.Kp2(3);
+				end
+			
+	end	
+
+	case "A45_Deg":
+	
+	if 	HotSide.HeatTransfer.Re < 15
+		then
+				HotSide.PressureDrop.fi 		= Geometry.Kp1(4)/HotSide.HeatTransfer.Re^Geometry.Kp2(4);
+				ColdSide.PressureDrop.fi  	=	Geometry.Kp1(4)/ColdSide.HeatTransfer.Re^Geometry.Kp2(4);
+		else
+				if 	HotSide.HeatTransfer.Re < 300 
+					then
+							HotSide.PressureDrop.fi 		= Geometry.Kp1(5)/HotSide.HeatTransfer.Re^Geometry.Kp2(5);
+							ColdSide.PressureDrop.fi  	=	Geometry.Kp1(5)/ColdSide.HeatTransfer.Re^Geometry.Kp2(5);
+					else
+							HotSide.PressureDrop.fi 		= Geometry.Kp1(6)/HotSide.HeatTransfer.Re^Geometry.Kp2(6);
+							ColdSide.PressureDrop.fi  	=	Geometry.Kp1(6)/ColdSide.HeatTransfer.Re^Geometry.Kp2(6);
+				end
+			
+	end	
+
+	case "A50_Deg":
+	
+	if 	HotSide.HeatTransfer.Re < 20
+		then
+				HotSide.PressureDrop.fi 		= Geometry.Kp1(7)/HotSide.HeatTransfer.Re^Geometry.Kp2(7);
+				ColdSide.PressureDrop.fi  	=	Geometry.Kp1(7)/ColdSide.HeatTransfer.Re^Geometry.Kp2(7);
+		else
+				if 	HotSide.HeatTransfer.Re < 300 
+					then
+							HotSide.PressureDrop.fi 		= Geometry.Kp1(8)/HotSide.HeatTransfer.Re^Geometry.Kp2(8);
+							ColdSide.PressureDrop.fi  	=	Geometry.Kp1(8)/ColdSide.HeatTransfer.Re^Geometry.Kp2(8);
+					else
+							HotSide.PressureDrop.fi 		= Geometry.Kp1(9)/HotSide.HeatTransfer.Re^Geometry.Kp2(9);
+							ColdSide.PressureDrop.fi  	=	Geometry.Kp1(9)/ColdSide.HeatTransfer.Re^Geometry.Kp2(9);
+				end
+			
+	end
+	
+	case "A60_Deg":
+	
+	if 	HotSide.HeatTransfer.Re < 40
+		then
+				HotSide.PressureDrop.fi 		= Geometry.Kp1(10)/HotSide.HeatTransfer.Re^Geometry.Kp2(10);
+				ColdSide.PressureDrop.fi  	=	Geometry.Kp1(10)/ColdSide.HeatTransfer.Re^Geometry.Kp2(10);
+		else
+				if 	HotSide.HeatTransfer.Re < 400 
+					then
+							HotSide.PressureDrop.fi 		= Geometry.Kp1(11)/HotSide.HeatTransfer.Re^Geometry.Kp2(11);
+							ColdSide.PressureDrop.fi  	=	Geometry.Kp1(11)/ColdSide.HeatTransfer.Re^Geometry.Kp2(11);
+					else
+							HotSide.PressureDrop.fi 		= Geometry.Kp1(12)/HotSide.HeatTransfer.Re^Geometry.Kp2(12);
+							ColdSide.PressureDrop.fi  	=	Geometry.Kp1(12)/ColdSide.HeatTransfer.Re^Geometry.Kp2(12);
+				end
+			
+	end
+	
+	case "A65_Deg": #	ChevronAngle >= 65
+	
+	if 	HotSide.HeatTransfer.Re < 50
+		then
+				HotSide.PressureDrop.fi 		= Geometry.Kp1(13)/HotSide.HeatTransfer.Re^Geometry.Kp2(13);
+				ColdSide.PressureDrop.fi  	=	Geometry.Kp1(13)/ColdSide.HeatTransfer.Re^Geometry.Kp2(13);
+		else
+				if 	HotSide.HeatTransfer.Re < 500 
+					then
+							HotSide.PressureDrop.fi 		= Geometry.Kp1(14)/HotSide.HeatTransfer.Re^Geometry.Kp2(14);
+							ColdSide.PressureDrop.fi  	=	Geometry.Kp1(14)/ColdSide.HeatTransfer.Re^Geometry.Kp2(14);
+					else
+							HotSide.PressureDrop.fi 		= Geometry.Kp1(15)/HotSide.HeatTransfer.Re^Geometry.Kp2(15);
+							ColdSide.PressureDrop.fi  	=	Geometry.Kp1(15)/ColdSide.HeatTransfer.Re^Geometry.Kp2(15);
+				end
+			
+	end
+
+ end
+
+ switch ChevronAngle # Heat Transfer Coefficient According to kumar's (1984)
+
+	case "A30_Deg": #	ChevronAngle <= 30
+	
+	if 	HotSide.HeatTransfer.Re < 10
+		then
+				HotSide.HeatTransfer.hcoeff=(HotSide.Properties.Average.K*HotSide.HeatTransfer.PR^(1/3)*HotSide.HeatTransfer.Phi^0.17*Geometry.Kc1(1)*HotSide.HeatTransfer.Re^Geometry.Kc2(1))/Geometry.Dh;
+				ColdSide.HeatTransfer.hcoeff =(ColdSide.Properties.Average.K*ColdSide.HeatTransfer.PR^(1/3)*ColdSide.HeatTransfer.Phi^0.17*Geometry.Kc1(1)*ColdSide.HeatTransfer.Re^Geometry.Kc2(1))/Geometry.Dh;
+		else
+				HotSide.HeatTransfer.hcoeff=(HotSide.Properties.Average.K*HotSide.HeatTransfer.PR^(1/3)*HotSide.HeatTransfer.Phi^0.17*Geometry.Kc1(2)*HotSide.HeatTransfer.Re^Geometry.Kc2(2))/Geometry.Dh;
+				ColdSide.HeatTransfer.hcoeff =(ColdSide.Properties.Average.K*ColdSide.HeatTransfer.PR^(1/3)*ColdSide.HeatTransfer.Phi^0.17*Geometry.Kc1(2)*ColdSide.HeatTransfer.Re^Geometry.Kc2(2))/Geometry.Dh;
+	end	
+	
+	case "A45_Deg":
+	
+	if 	HotSide.HeatTransfer.Re < 10
+		then
+				HotSide.HeatTransfer.hcoeff=(HotSide.Properties.Average.K*HotSide.HeatTransfer.PR^(1/3)*HotSide.HeatTransfer.Phi^0.17*Geometry.Kc1(3)*HotSide.HeatTransfer.Re^Geometry.Kc2(3))/Geometry.Dh;
+				ColdSide.HeatTransfer.hcoeff =(ColdSide.Properties.Average.K*ColdSide.HeatTransfer.PR^(1/3)*ColdSide.HeatTransfer.Phi^0.17*Geometry.Kc1(3)*ColdSide.HeatTransfer.Re^Geometry.Kc2(3))/Geometry.Dh;
+		else
+				if 	HotSide.HeatTransfer.Re < 100
+					then
+							HotSide.HeatTransfer.hcoeff=(HotSide.Properties.Average.K*HotSide.HeatTransfer.PR^(1/3)*HotSide.HeatTransfer.Phi^0.17*Geometry.Kc1(4)*HotSide.HeatTransfer.Re^Geometry.Kc2(4))/Geometry.Dh;
+							ColdSide.HeatTransfer.hcoeff =(ColdSide.Properties.Average.K*ColdSide.HeatTransfer.PR^(1/3)*ColdSide.HeatTransfer.Phi^0.17*Geometry.Kc1(4)*ColdSide.HeatTransfer.Re^Geometry.Kc2(4))/Geometry.Dh;
+					else
+							HotSide.HeatTransfer.hcoeff=(HotSide.Properties.Average.K*HotSide.HeatTransfer.PR^(1/3)*HotSide.HeatTransfer.Phi^0.17*Geometry.Kc1(5)*HotSide.HeatTransfer.Re^Geometry.Kc2(5))/Geometry.Dh;
+							ColdSide.HeatTransfer.hcoeff =(ColdSide.Properties.Average.K*ColdSide.HeatTransfer.PR^(1/3)*ColdSide.HeatTransfer.Phi^0.17*Geometry.Kc1(5)*ColdSide.HeatTransfer.Re^Geometry.Kc2(5))/Geometry.Dh;
+				end
+	end
+
+	case "A50_Deg":
+	
+	if 	HotSide.HeatTransfer.Re < 20
+		then
+				HotSide.HeatTransfer.hcoeff=(HotSide.Properties.Average.K*HotSide.HeatTransfer.PR^(1/3)*HotSide.HeatTransfer.Phi^0.17*Geometry.Kc1(6)*HotSide.HeatTransfer.Re^Geometry.Kc2(6))/Geometry.Dh;
+				ColdSide.HeatTransfer.hcoeff =(ColdSide.Properties.Average.K*ColdSide.HeatTransfer.PR^(1/3)*ColdSide.HeatTransfer.Phi^0.17*Geometry.Kc1(6)*ColdSide.HeatTransfer.Re^Geometry.Kc2(6))/Geometry.Dh;
+		else
+				if 	HotSide.HeatTransfer.Re < 300
+					then
+							HotSide.HeatTransfer.hcoeff=(HotSide.Properties.Average.K*HotSide.HeatTransfer.PR^(1/3)*HotSide.HeatTransfer.Phi^0.17*Geometry.Kc1(7)*HotSide.HeatTransfer.Re^Geometry.Kc2(7))/Geometry.Dh;
+							ColdSide.HeatTransfer.hcoeff =(ColdSide.Properties.Average.K*ColdSide.HeatTransfer.PR^(1/3)*ColdSide.HeatTransfer.Phi^0.17*Geometry.Kc1(7)*ColdSide.HeatTransfer.Re^Geometry.Kc2(7))/Geometry.Dh;
+					else
+							HotSide.HeatTransfer.hcoeff=(HotSide.Properties.Average.K*HotSide.HeatTransfer.PR^(1/3)*HotSide.HeatTransfer.Phi^0.17*Geometry.Kc1(8)*HotSide.HeatTransfer.Re^Geometry.Kc2(8))/Geometry.Dh;
+							ColdSide.HeatTransfer.hcoeff =(ColdSide.Properties.Average.K*ColdSide.HeatTransfer.PR^(1/3)*ColdSide.HeatTransfer.Phi^0.17*Geometry.Kc1(8)*ColdSide.HeatTransfer.Re^Geometry.Kc2(8))/Geometry.Dh;
+				end
+	end
+
+	case "A60_Deg":
+	
+	if 	HotSide.HeatTransfer.Re < 20
+		then
+				HotSide.HeatTransfer.hcoeff=(HotSide.Properties.Average.K*HotSide.HeatTransfer.PR^(1/3)*HotSide.HeatTransfer.Phi^0.17*Geometry.Kc1(9)*HotSide.HeatTransfer.Re^Geometry.Kc2(9))/Geometry.Dh;
+				ColdSide.HeatTransfer.hcoeff =(ColdSide.Properties.Average.K*ColdSide.HeatTransfer.PR^(1/3)*ColdSide.HeatTransfer.Phi^0.17*Geometry.Kc1(9)*ColdSide.HeatTransfer.Re^Geometry.Kc2(9))/Geometry.Dh;
+		else
+				if 	HotSide.HeatTransfer.Re < 400
+					then
+							HotSide.HeatTransfer.hcoeff=(HotSide.Properties.Average.K*HotSide.HeatTransfer.PR^(1/3)*HotSide.HeatTransfer.Phi^0.17*Geometry.Kc1(10)*HotSide.HeatTransfer.Re^Geometry.Kc2(10))/Geometry.Dh;
+							ColdSide.HeatTransfer.hcoeff =(ColdSide.Properties.Average.K*ColdSide.HeatTransfer.PR^(1/3)*ColdSide.HeatTransfer.Phi^0.17*Geometry.Kc1(10)*ColdSide.HeatTransfer.Re^Geometry.Kc2(10))/Geometry.Dh;
+					else
+							HotSide.HeatTransfer.hcoeff=(HotSide.Properties.Average.K*HotSide.HeatTransfer.PR^(1/3)*HotSide.HeatTransfer.Phi^0.17*Geometry.Kc1(11)*HotSide.HeatTransfer.Re^Geometry.Kc2(11))/Geometry.Dh;
+							ColdSide.HeatTransfer.hcoeff =(ColdSide.Properties.Average.K*ColdSide.HeatTransfer.PR^(1/3)*ColdSide.HeatTransfer.Phi^0.17*Geometry.Kc1(11)*ColdSide.HeatTransfer.Re^Geometry.Kc2(11))/Geometry.Dh;
+				end
+	end
+	
+	case "A65_Deg": #	ChevronAngle >= 65
+	
+	if 	HotSide.HeatTransfer.Re < 20
+		then
+				HotSide.HeatTransfer.hcoeff=(HotSide.Properties.Average.K*HotSide.HeatTransfer.PR^(1/3)*HotSide.HeatTransfer.Phi^0.17*Geometry.Kc1(12)*HotSide.HeatTransfer.Re^Geometry.Kc2(12))/Geometry.Dh;
+				ColdSide.HeatTransfer.hcoeff =(ColdSide.Properties.Average.K*ColdSide.HeatTransfer.PR^(1/3)*ColdSide.HeatTransfer.Phi^0.17*Geometry.Kc1(12)*ColdSide.HeatTransfer.Re^Geometry.Kc2(12))/Geometry.Dh;
+		else
+				if 	HotSide.HeatTransfer.Re < 500
+					then
+							HotSide.HeatTransfer.hcoeff=(HotSide.Properties.Average.K*HotSide.HeatTransfer.PR^(1/3)*HotSide.HeatTransfer.Phi^0.17*Geometry.Kc1(13)*HotSide.HeatTransfer.Re^Geometry.Kc2(13))/Geometry.Dh;
+							ColdSide.HeatTransfer.hcoeff =(ColdSide.Properties.Average.K*ColdSide.HeatTransfer.PR^(1/3)*ColdSide.HeatTransfer.Phi^0.17*Geometry.Kc1(13)*ColdSide.HeatTransfer.Re^Geometry.Kc2(13))/Geometry.Dh;
+					else
+							HotSide.HeatTransfer.hcoeff=(HotSide.Properties.Average.K*HotSide.HeatTransfer.PR^(1/3)*HotSide.HeatTransfer.Phi^0.17*Geometry.Kc1(14)*HotSide.HeatTransfer.Re^Geometry.Kc2(14))/Geometry.Dh;
+							ColdSide.HeatTransfer.hcoeff =(ColdSide.Properties.Average.K*ColdSide.HeatTransfer.PR^(1/3)*ColdSide.HeatTransfer.Phi^0.17*Geometry.Kc1(14)*ColdSide.HeatTransfer.Re^Geometry.Kc2(14))/Geometry.Dh;
+				end
+	end
+
+ end
+
+"Hot Stream Velocity in Channels"
+	HotSide.PressureDrop.Vchannel =HotSide.HeatTransfer.Gchannel/HotSide.Properties.Average.rho;
+
+"Cold Stream Velocity in Channels"
+	ColdSide.PressureDrop.Vchannel =ColdSide.HeatTransfer.Gchannel/ColdSide.Properties.Average.rho;
+
+"Hot Stream Velocity in Ports"
+	HotSide.PressureDrop.Vports =HotSide.Properties.Inlet.Fw/(Geometry.Aports*HotSide.Properties.Inlet.rho);
+
+"Cold Stream Velocity in Ports"
+	ColdSide.PressureDrop.Vports =ColdSide.Properties.Inlet.Fw/(Geometry.Aports*ColdSide.Properties.Inlet.rho);
+
+"Hot Stream Reynolds Number"
+	HotSide.HeatTransfer.Re =Geometry.Dh*HotSide.HeatTransfer.Gchannel/HotSide.Properties.Average.Mu;
+
+"Cold Stream Reynolds Number"
+	ColdSide.HeatTransfer.Re =Geometry.Dh*ColdSide.HeatTransfer.Gchannel/ColdSide.Properties.Average.Mu;
+
+"Hot Stream Prandtl Number"
+	HotSide.HeatTransfer.PR= ((HotSide.Properties.Average.Cp/HotSide.Properties.Average.Mw)*HotSide.Properties.Average.Mu)/HotSide.Properties.Average.K;
+
+"Cold Stream Prandtl Number"
+	ColdSide.HeatTransfer.PR = ((ColdSide.Properties.Average.Cp/ColdSide.Properties.Average.Mw)*ColdSide.Properties.Average.Mu)/ColdSide.Properties.Average.K;
+
+"Hot Stream Viscosity Correction"
+	HotSide.HeatTransfer.Phi= HotSide.Properties.Average.Mu/HotSide.Properties.Wall.Mu;
+
+"Cold Stream Viscosity Correction"
+	ColdSide.HeatTransfer.Phi= ColdSide.Properties.Average.Mu/ColdSide.Properties.Wall.Mu;
+
+"Hot Stream Outlet Pressure"
+	OutletHot.P  = InletHot.P - HotSide.PressureDrop.Pdrop;
+	
+"Cold Stream Outlet Pressure"
+	OutletCold.P  = InletCold.P - ColdSide.PressureDrop.Pdrop;
+	
+"Overall Heat Transfer Coefficient Clean"
+	Thermal.Uc/HotSide.HeatTransfer.hcoeff +Thermal.Uc*Geometry.pt/Geometry.Kwall+Thermal.Uc/ColdSide.HeatTransfer.hcoeff=1;
+
+"Overall Heat Transfer Coefficient Dirty"
+	Thermal.Ud*(1/HotSide.HeatTransfer.hcoeff +Geometry.pt/Geometry.Kwall+1/ColdSide.HeatTransfer.hcoeff + Geometry.Rfc + Geometry.Rfh)=1;
+
+ "Duty"
+	Thermal.Q = Thermal.Eft*Thermal.Cmin*(InletHot.T-InletCold.T);
+
+ "Heat Capacity Ratio"
+	Thermal.Cr =Thermal.Cmin/Thermal.Cmax;
+
+"Minimum Heat Capacity"
+	Thermal.Cmin  = min([HotSide.HeatTransfer.WCp,ColdSide.HeatTransfer.WCp]);
+
+"Maximum Heat Capacity"
+	Thermal.Cmax  = max([HotSide.HeatTransfer.WCp,ColdSide.HeatTransfer.WCp]);
+
+"Hot Stream Heat Capacity"
+	HotSide.HeatTransfer.WCp  = InletHot.F*HotSide.Properties.Average.Cp;
+
+"Cold Stream Heat Capacity"
+	ColdSide.HeatTransfer.WCp = InletCold.F*ColdSide.Properties.Average.Cp;
+
+"Number of Units Transference for the Whole Heat Exchanger"
+	Thermal.NTU = max([HotSide.HeatTransfer.NTU,ColdSide.HeatTransfer.NTU]);
+
+"Number of Units Transference for Hot Side"
+	HotSide.HeatTransfer.NTU*HotSide.HeatTransfer.WCp = Thermal.Ud*Geometry.Atotal;
+
+"Number of Units Transference for Cold Side"
+	ColdSide.HeatTransfer.NTU*ColdSide.HeatTransfer.WCp = Thermal.Ud*Geometry.Atotal;
+
+if  Thermal.Eft >= 1  #To be Fixed: Effectiveness in true counter flow !
+	
+	then
+"Effectiveness in Counter Flow"
+	Thermal.Eft = 1;
+	else
+"Effectiveness in Counter Flow"
+	Thermal.NTU*(Thermal.Cr-1.00001) = ln(abs((Thermal.Eft-1.00001))) - ln(abs((Thermal.Cr*Thermal.Eft-1.00001)));
+
+end
+
+end

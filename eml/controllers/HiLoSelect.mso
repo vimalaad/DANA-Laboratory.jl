@@ -1,0 +1,57 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*-----------------------------------------------------------------------
+* Author: Tiago Osório
+* $Id$
+*---------------------------------------------------------------------*#
+
+using "types";
+ 
+Model HiLoSelect
+
+ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/HiLoSelect"; 
+	Brief 		= "Model HiLo Select.";
+	Info 		=
+"== Inputs ==
+* Two different input signals.
+	
+== Outputs ==
+* One output signal.
+";
+	
+	PARAMETERS
+	Select as Switcher (Brief="HiLoSelect option", Valid=["higher","lower"], Default="higher"); 
+
+	VARIABLES
+	input1 as Real (Brief="input signal 1");
+	input2 as Real (Brief="input signal 2");
+	output as Real (Brief="output signal");
+
+	EQUATIONS
+  
+switch Select
+		
+	case "higher":
+	
+"Calculate output maximum"	
+		output = max([input1,input2]);
+		
+case "lower":
+		"Calculate output minimum"
+		output = min([input1,input2]);
+	end
+	
+end

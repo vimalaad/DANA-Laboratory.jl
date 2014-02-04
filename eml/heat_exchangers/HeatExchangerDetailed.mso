@@ -1,0 +1,1136 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*--------------------------------------------------------------------
+* Author: Gerson Balbueno Bicca 
+* $Id: HeatExchangerDetailed.mso 197 2007-03-08 14:31:57Z bicca $
+*------------------------------------------------------------------*#
+using "heat_exchangers/HEX_Engine";
+
+Model ShellandTubesBasic
+
+ATTRIBUTES
+	Pallete = false;
+	Brief  = "Basic Model for Detailed Shell and Tube Heat Exchanger.";
+	Info  =
+"to be documented.
+	
+== Assumptions ==
+* to be documented
+
+== Specify ==
+* to be documented
+
+== Setting Parameters ==
+* to be documented
+
+== References ==
+[1] E.A.D. Saunders, Heat Exchangers: Selection, Design and
+ Construction, Longman, Harlow, 1988. 
+
+[2] Taborek, J., Shell-and-tube heat exchangers, in Heat Exchanger Design Handbook, Vol. 3
+ Hemisphere Publishing Corp., New York, 1988. 
+
+[3] Bell, K. J., Mueller, A. C., Wolverine Engineering Data Book II. Wolverine Tube, Inc., <www.wlv.com>, 2001. 
+
+[4] Fakheri, A. , Alternative approach for determining log mean temperature difference correction factor 
+ and number of shells of shell and tube heat exchangers, Journal of Enhanced Heat Transfer, v. 10, p. 407- 420, 2003. 
+
+[5] Gnielinski, V., Forced convection in ducts, in Heat Exchanger Design Handbook, Vol. 2
+ Hemisphere Publishing Corp., New York, 1988.";
+
+PARAMETERS
+
+HotSide 		as Switcher	(Brief="Hot Side in the Exchanger",Valid=["shell","tubes"],Default="shell");
+ShellType	as Switcher	(Brief="TEMA Designation",Valid=["Eshell","Fshell"],Default="Eshell");
+Pattern       	as Switcher	(Brief="Tube Layout Characteristic Angle",Valid=["Triangle","Rotated Square","Square"],Default="Triangle");
+
+VARIABLES
+
+	Tubes			as Tube_Side_Main 		(Brief="Tube Side Section" , Symbol="^{tube}");	
+	Shell			as Shell_Side_Main 	(Brief="Shell Side Section" , Symbol="^{shell}");	
+	Baffles			as Baffles_Main 			(Brief="Baffle Section", Symbol=" ");
+	Clearances	as Clearances_Main 	(Brief="Diametral Clearances", Symbol=" ");
+	
+in  InletTube		as stream 					(Brief="Inlet Tube Stream", PosX=0.08, PosY=0, Symbol="_{in }^{tube}");
+out OutletTube	as streamPH 				(Brief="Outlet Tube Stream", PosX=0.08, PosY=1, Symbol="_{out }^{tube}");
+in  InletShell		as stream 					(Brief="Inlet Shell Stream", PosX=0.2237, PosY=0, Symbol="_{in }^{shell}");
+out OutletShell	as streamPH 				(Brief="Outlet Shell Stream", PosX=0.8237, PosY=1, Symbol="_{out }^{shell}");
+	Details				as Details_Main 			(Brief="Details in Heat Exchanger", Symbol = " ");
+	
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+#				Auxiliar Variables - Must be hidden						
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+	Nc		as Real 				(Brief = "Number of Tube rows Crossed in one Crossflow Section", Hidden = true, Lower=1);
+	Ncw 	as Real 				(Brief = "Number of Effective Crossflow rows in Each Window", Hidden = true, Lower=1);
+	a 			as Real 				(Brief = "Variable for calculating Ji heat transfer correction Factor", Hidden = true, Lower=1e-3);
+	b 			as Real 				(Brief = "Variable for calculating shell side pressure drop friction Factor", Hidden = true, Lower=1e-3);
+	Rb		as Real 				(Brief = "ByPass Correction Factor for Pressure Drop", Hidden = true, Lower=1e-3);
+	Rss 		as Real 				(Brief = "Correction Factor for Pressure Drop", Hidden = true, Lower=1e-3);
+	Rspd 	as Real 				(Brief = "Pressure Drop Correction Factor for Unequal Baffle Spacing", Hidden = true, Lower=1e-3);
+	mw		as Real 				(Brief = "Mass Velocity in Window Zone", Hidden = true, Unit='kg/m^2/s');
+	Ji			as constant			(Brief="Shell Side Ji Factor", Symbol ="J_i", Hidden = true, Default=0.05);
+	Jr			as positive			(Brief="Shell Side Jr Factor",  Symbol ="J_r", Hidden = true, Lower=10e-6);
+	Jl			as positive			(Brief="Shell Side Jl Factor",  Symbol ="J_l", Hidden = true, Lower=10e-6);
+	Jb			as positive			(Brief="Shell Side Jb Factor", Symbol ="J_b", Hidden = true, Lower=10e-6);
+	Jc			as positive			(Brief="Shell Side Jc Factor", Symbol ="J_c", Hidden = true, Lower=10e-6);
+	Js			as positive			(Brief="Shell Side Js Factor", Symbol ="J_s", Hidden = true, Lower=10e-6);
+	Jtotal	as positive			(Brief="Shell Side Jtotal Factor", Symbol ="J_{total}", Hidden = true, Lower=10e-6);
+	Sm	 	as area					(Brief="Shell Side Cross Flow Area", Symbol ="S_m", Hidden = true, Default=0.05,Lower=10e-6);
+
+PARAMETERS
+outer PP 	    		as Plugin		(Brief="External Physical Properties",Type = "PP");
+outer NComp   	as Integer   	(Brief="Number of Components");
+	
+M(NComp)	as molweight (Brief="Component Mol Weight");
+
+TubeFlowRegime 		 as Switcher		(Brief="Tube Side Flow Regime ",Valid=["laminar","transition","turbulent"],Default="laminar");
+ShellFlowRegime 	  	as Switcher		(Brief="Shell Side Flow Regime ",Valid=["deep laminar","laminar","turbulent"],Default="deep laminar");
+ShellRange       	  		as Switcher		(Brief="Shell Side Flow Regime Range for Correction Factor",Valid=["range1","range2","range3", "range4","range5"],Default="range1");
+Side			 	  				as Switcher		(Brief="Flag for Fluid Alocation ",Valid=["shell","tubes"],Default="shell");
+LaminarCorrelation    	as Switcher		(Brief="Tube Heat Transfer Correlation in Laminar Flow",Valid=["Hausen","Schlunder"],Default="Hausen");
+TransitionCorrelation 	as Switcher		(Brief="Tube Heat Transfer Correlation in Transition Flow",Valid=["Gnielinski","ESDU"],Default="Gnielinski");
+TurbulentCorrelation  	as Switcher		(Brief="Tube Heat Transfer Correlation in Turbulent Flow",Valid=["Petukhov","SiederTate"],Default="Petukhov");
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+#				Auxiliar Parameters	- Must be hidden							
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+Pi							as constant   (Brief="Pi Number", Hidden = true, Default=3.14159265, Symbol = "\pi");
+Aonozzle_Shell  	as area			(Brief="Shell Outlet Nozzle Area", Hidden = true, Lower=1E-6 ,  Symbol ="A_{nozzle\_out }^{shell}");
+Ainozzle_Shell  	as area			(Brief="Shell Inlet Nozzle Area", Hidden = true, Lower=1E-6 ,  Symbol ="A_{nozzle\_in }^{shell}");
+Aeonozzle_Shell 	as area			(Brief="Shell Outlet Escape Area Under Nozzle", Hidden = true, Lower=1E-6 ,  Symbol ="Aescape_{nozzle\_out }^{shell}");
+Aeinozzle_Shell 	as area			(Brief="Shell Inlet Escape Area Under Nozzle",Hidden = true, Lower=1E-6 ,  Symbol ="Aescape_{nozzle\_in }^{shell}");
+Aonozzle_Tube 	as area			(Brief="Tube Outlet Nozzle Area", Hidden = true, Lower=1E-6 ,  Symbol ="A_{nozzle\_out }^{tube}");
+Ainozzle_Tube 		as area			(Brief="Tube Inlet Nozzle Area", Hidden = true, Lower=1E-6 ,  Symbol ="A_{nozzle\_in }^{tube}");
+Kinlet_Tube   		as positive	(Brief="Tube Inlet Nozzle Pressure Loss Coeff", Hidden = true, Default=1.1, Symbol ="K_{in }^{tube}");
+Koutlet_Tube  		as positive	(Brief="Tube Outlet Nozzle Pressure Loss Coeff",Hidden = true, Default=0.7, Symbol ="K_{out }^{tube}");
+Ods 						as Real  		(Brief="Baffle cut angle in degrees", Symbol = "\theta _{ds}", Hidden = true);
+Octl 					as Real  		(Brief="Baffle cut angle relative to the centerline in degrees", Symbol = "\theta _{ctl}", Hidden = true);
+Ftw						as Real  		(Brief="Fraction of number of tubes in baffle window", Symbol = "F _{tw}", Hidden = true);
+Scd						as area  		(Brief="Shell to baffle leakage area", Symbol = "S _{cd}", Hidden = true);
+Std						as area  		(Brief="Tube to baffle hole leakage area", Symbol = "S _{td}", Hidden = true);
+Rs						as Real  		(Brief="Ratio of the shell to baffle leakage area", Symbol = "R_s", Hidden = true);
+Dw    					as length 		(Brief="Hydraulic diameter of the baffle window", Symbol = "D _w", Hidden = true);
+
+SET
+
+#"Molecular weight"
+	M   	= PP.MolecularWeight();
+	
+#"Pi Number"
+	Pi  	= 3.14159265;
+
+#"Baffle cut angle in degrees"
+	Ods	= (360/Pi)*acos(1-0.02*Baffles.BaffleCut);
+
+#"Baffle cut angle relative to the centerline"
+	Octl	= (360/Pi)*acos((Shell.ShellID/(Shell.ShellID - Clearances.BundleToShell - Tubes.TubeOD))*(1-0.02*Baffles.BaffleCut));
+
+#"Fraction of number of tubes in baffle window"
+	Ftw	= (Octl/360)-sin(Octl*Pi/180)/(2*Pi);
+
+#"Shell to baffle leakage area"
+	Scd	= Pi*Shell.ShellID*Clearances.BaffleToShell *((360-Ods)/720);
+
+#"Tube to baffle hole leakage area"
+	Std	= Pi*0.25*((Clearances.TubeToBaffle + Tubes.TubeOD)^2-Tubes.TubeOD*Tubes.TubeOD)*Tubes.NumberOfTubes*(1-Ftw);
+
+#"comments"
+	Rs		= Scd/(Scd+Std);
+
+#"comments"
+	Dw	= (4*abs((Pi*Shell.ShellID*Shell.ShellID*((Ods/360)-sin(Ods*Pi/180)/(2*Pi))/4)-(Tubes.NumberOfTubes*Pi*Tubes.TubeOD*Tubes.TubeOD*Ftw/4)))/(Pi*Tubes.TubeOD*Tubes.NumberOfTubes*Ftw+ Pi*Shell.ShellID*Ods/360);
+
+#"Tube Side Inlet Nozzle Area"
+	Ainozzle_Tube = 0.25*Pi*Tubes.InletNozzleID^2;
+
+#"Tube Side Outlet Nozzle Area"
+	Aonozzle_Tube = 0.25*Pi*Tubes.OutletNozzleID^2;
+
+#"Tube Inlet Nozzle Pressure Loss Coeff"
+	Kinlet_Tube   = 1.1;
+
+#"Tube Outlet Nozzle Pressure Loss Coeff"
+	Koutlet_Tube  = 0.7;
+
+#"Shell Outlet Nozzle Area"
+	Aonozzle_Shell  = 0.25*Pi*Shell.OutletNozzleID^2;
+
+#"Shell Inlet Nozzle Area"
+	Ainozzle_Shell  = 0.25*Pi*Shell.InletNozzleID^2;
+
+#"Shell Outlet Escape Area Under Nozzle"
+	Aeonozzle_Shell = Pi*Shell.OutletNozzleID*Clearances.Honozzle_Shell + 0.6*Aonozzle_Shell*(1-(Tubes.TubeOD/Tubes.TubePitch));
+
+#"Shell Inlet Escape Area Under Nozzle"
+	Aeinozzle_Shell = Pi*Shell.InletNozzleID*Clearances.Hinozzle_Shell + 0.6*Ainozzle_Shell*(1-(Tubes.TubeOD/Tubes.TubePitch));
+
+EQUATIONS
+
+"Shell Stream Average Temperature"
+	Shell.Properties.Average.T = 0.5*InletShell.T + 0.5*OutletShell.T;
+	
+"Tube Stream Average Temperature"
+	Tubes.Properties.Average.T = 0.5*InletTube.T + 0.5*OutletTube.T;
+	
+"Shell Stream Average Pressure"
+	Shell.Properties.Average.P = 0.5*InletShell.P+0.5*OutletShell.P;
+	
+"Tube Stream Average Pressure"
+	Tubes.Properties.Average.P = 0.5*InletTube.P+0.5*OutletTube.P;
+	
+"Shell Stream Average Molecular Weight"
+	Shell.Properties.Average.Mw = sum(M*InletShell.z);
+
+"Tube Stream Average Molecular Weight"
+	Tubes.Properties.Average.Mw = sum(M*OutletTube.z);
+	
+if InletTube.v equal 0
+	
+	then	
+	
+"Tube Stream Average Heat Capacity"
+	Tubes.Properties.Average.Cp 	= 	PP.LiquidCp(Tubes.Properties.Average.T,Tubes.Properties.Average.P,OutletTube.z);
+
+"Tube Stream Average Mass Density"
+	Tubes.Properties.Average.rho = 	PP.LiquidDensity(Tubes.Properties.Average.T,Tubes.Properties.Average.P,OutletTube.z);
+
+"Tube Stream Inlet Mass Density"
+	Tubes.Properties.Inlet.rho 	= 	PP.LiquidDensity(OutletTube.T,OutletTube.P,OutletTube.z);
+
+"Tube Stream Outlet Mass Density"
+	Tubes.Properties.Outlet.rho 	= 	PP.LiquidDensity(OutletTube.T,OutletTube.P,OutletTube.z);
+
+"TubeStream Average Viscosity"
+	Tubes.Properties.Average.Mu 	= 	PP.LiquidViscosity(Tubes.Properties.Average.T,Tubes.Properties.Average.P,OutletTube.z);
+
+"Tube Stream Average Conductivity"
+	Tubes.Properties.Average.K 	= 	PP.LiquidThermalConductivity(Tubes.Properties.Average.T,Tubes.Properties.Average.P,OutletTube.z);
+
+"Tube Stream Viscosity at Wall Temperature"
+	Tubes.Properties.Wall.Mu 	= 	PP.LiquidViscosity(Tubes.Properties.Wall.Twall,Tubes.Properties.Average.P,OutletTube.z);
+
+	else
+
+"Tube Stream Average Heat Capacity"
+	Tubes.Properties.Average.Cp 	=	PP.VapourCp(Tubes.Properties.Average.T,Tubes.Properties.Average.P,OutletTube.z);
+
+"Tube Stream Average Mass Density"
+	Tubes.Properties.Average.rho =	PP.VapourDensity(Tubes.Properties.Average.T,Tubes.Properties.Average.P,OutletTube.z);
+
+"Tube Stream Inlet Mass Density"
+	Tubes.Properties.Inlet.rho 	=	PP.VapourDensity(OutletTube.T,OutletTube.P,OutletTube.z);
+
+"Tube Stream Outlet Mass Density"	
+	Tubes.Properties.Outlet.rho 	=	PP.VapourDensity(OutletTube.T,OutletTube.P,OutletTube.z);
+
+"Tube Stream Average Viscosity "
+	Tubes.Properties.Average.Mu 	=	PP.VapourViscosity(Tubes.Properties.Average.T,Tubes.Properties.Average.P,OutletTube.z);
+
+"Tube Stream Average Conductivity "
+	Tubes.Properties.Average.K 	= 	PP.VapourThermalConductivity(Tubes.Properties.Average.T,Tubes.Properties.Average.P,OutletTube.z);
+
+"Tube Stream Viscosity at Wall Temperature"
+	Tubes.Properties.Wall.Mu 	=	PP.VapourViscosity(Tubes.Properties.Wall.Twall,Tubes.Properties.Average.P,OutletTube.z);
+
+end
+
+if InletShell.v equal 0
+
+	then
+
+"Shell Stream Average Heat Capacity"
+	Shell.Properties.Average.Cp 	=		PP.LiquidCp(Shell.Properties.Average.T,Shell.Properties.Average.P,InletShell.z);
+
+"Shell Stream Average Mass Density"
+	Shell.Properties.Average.rho 	=		PP.LiquidDensity(Shell.Properties.Average.T,Shell.Properties.Average.P,InletShell.z);
+
+"ShellStream Inlet Mass Density"	
+	Shell.Properties.Inlet.rho 	=		PP.LiquidDensity(InletShell.T,InletShell.P,InletShell.z);
+
+"Shell Stream Outlet Mass Density"	
+	Shell.Properties.Outlet.rho 	=		PP.LiquidDensity(OutletShell.T,OutletShell.P,OutletShell.z);
+
+"Shell Stream Average Viscosity"
+	Shell.Properties.Average.Mu 	=		PP.LiquidViscosity(Shell.Properties.Average.T,Shell.Properties.Average.P,InletShell.z);	
+
+"Shell Stream Average Conductivity"
+	Shell.Properties.Average.K 	=		PP.LiquidThermalConductivity(Shell.Properties.Average.T,Shell.Properties.Average.P,InletShell.z);	
+
+"ShellStream Viscosity  at Wall Temperature"
+	Shell.Properties.Wall.Mu 		=		PP.LiquidViscosity(Shell.Properties.Wall.Twall,Shell.Properties.Average.P,InletShell.z);	
+
+
+	else
+
+"Shell Stream Average Heat Capacity"
+	Shell.Properties.Average.Cp 	=		PP.VapourCp(Shell.Properties.Average.T,Shell.Properties.Average.P,InletShell.z);
+
+"Shell Stream Average Mass Density"
+	Shell.Properties.Average.rho 	=		PP.VapourDensity(Shell.Properties.Average.T,Shell.Properties.Average.P,InletShell.z);
+
+"Shell Stream Inlet Mass Density"	
+	Shell.Properties.Inlet.rho 	=		PP.VapourDensity(InletShell.T,InletShell.P,InletShell.z);
+
+"Shell Stream Outlet Mass Density"
+	Shell.Properties.Outlet.rho 	=		PP.VapourDensity(OutletShell.T,OutletShell.P,OutletShell.z);
+
+"Shell Stream Average Viscosity"
+	Shell.Properties.Average.Mu 	=		PP.VapourViscosity(Shell.Properties.Average.T,Shell.Properties.Average.P,InletShell.z);
+
+"Shell Stream Average Conductivity"
+	Shell.Properties.Average.K 	=		PP.VapourThermalConductivity(Shell.Properties.Average.T,Shell.Properties.Average.P,InletShell.z);	
+
+"Shell Stream Viscosity at Wall Temperature"
+	Shell.Properties.Wall.Mu 		=		PP.VapourViscosity(Shell.Properties.Wall.Twall,Shell.Properties.Average.P,InletShell.z);
+
+end
+
+switch Side
+	
+	case "shell":
+	
+"Energy Balance Hot Stream"
+	Details.Q = InletShell.F*(InletShell.h-OutletShell.h);
+
+"Energy Balance Cold Stream"
+	Details.Q =-InletTube.F*(InletTube.h-OutletTube.h);
+
+	when InletTube.T > InletShell.T switchto "tubes";
+
+	case "tubes":
+	
+"Energy Balance Hot Stream"
+	Details.Q = InletTube.F*(InletTube.h-OutletTube.h);
+
+"Energy Balance Cold Stream"
+	Details.Q =-InletShell.F*(InletShell.h-OutletShell.h);
+	
+	when InletTube.T < InletShell.T switchto "shell";
+	
+end
+
+"Flow Mass Inlet Tube Stream"
+	Tubes.Properties.Inlet.Fw		=  sum(M*InletTube.z)*InletTube.F;
+
+"Flow Mass Outlet Tube Stream"
+	Tubes.Properties.Outlet.Fw	=  sum(M*OutletTube.z)*OutletTube.F;
+
+"Flow Mass Inlet Shell Stream"
+	Shell.Properties.Inlet.Fw		=  sum(M*InletShell.z)*InletShell.F;
+
+"Flow Mass Outlet Shell Stream"	
+	Shell.Properties.Outlet.Fw		=  sum(M*OutletShell.z)*OutletShell.F;
+
+"Molar Balance Shell Stream"
+	OutletShell.F  = InletShell.F;
+	
+"Molar Balance Tube Stream"
+	OutletTube.F = InletTube.F;
+
+"Shell	Stream Molar Fraction Constraint"
+	OutletShell.z=InletShell.z;
+	
+"Tube Stream Molar Fraction Constraint"
+	OutletTube.z=InletTube.z;
+	
+"Jc Factor"
+	Jc = 0.55+0.72*(1-2*Ftw);
+
+"Jl Factor"
+	Jl = 0.44*(1-Rs)+(1-0.44*(1-Rs))*exp(-2.2*(Scd + Std)/Sm);
+
+"Total J Factor"
+	Jtotal = Jc*Jl*Jb*Jr*Js;
+
+"Mass Velocity in Window Zone"
+	mw	= Shell.Properties.Inlet.Fw/sqrt(abs(Sm*abs((Pi*Shell.ShellID*Shell.ShellID*((Ods/360)-sin(Ods*Pi/180)/(2*Pi))/4)-(Tubes.NumberOfTubes*Pi*Tubes.TubeOD*Tubes.TubeOD*Ftw/4))));
+
+switch TubeFlowRegime
+	
+	case "laminar":
+	
+"Friction Factor for heat Transfer: Not Necessary in Laminar Correlation - Use any one equation that you want"
+	Tubes.HeatTransfer.fi   = 16/Tubes.HeatTransfer.Re;
+	
+"Friction Factor for Pressure Drop in Laminar Flow"
+	Tubes.PressureDrop.FricFactor  = 16/Tubes.HeatTransfer.Re;
+	
+switch LaminarCorrelation
+	
+	case "Hausen":
+
+"Nusselt Number in Laminar Flow - Hausen Equation"
+	Tubes.HeatTransfer.Nu = 3.665 + ((0.19*((Tubes.TubeID/Tubes.TubeLength)*Tubes.HeatTransfer.Re*Tubes.HeatTransfer.PR)^0.8)/(1+0.117*((Tubes.TubeID/Tubes.TubeLength)*Tubes.HeatTransfer.Re*Tubes.HeatTransfer.PR)^0.467));
+	
+	case "Schlunder":
+	
+"Nusselt Number in Laminar Flow - Schlunder Equation"
+	Tubes.HeatTransfer.Nu = (49.027896+4.173281*Tubes.HeatTransfer.Re*Tubes.HeatTransfer.PR*(Tubes.TubeID/Tubes.TubeLength))^(1/3);
+
+end
+	
+	when Tubes.HeatTransfer.Re > 2300 switchto "transition";
+	
+	case "transition":
+	
+"Friction Factor for heat Transfer : for use in Gnielinski Equation"
+	Tubes.HeatTransfer.fi   = 1/(0.79*ln(Tubes.HeatTransfer.Re)-1.64)^2;
+	
+"Friction Factor for Pressure Drop in Transition Flow"
+	Tubes.PressureDrop.FricFactor  = 0.0122;
+	
+switch TransitionCorrelation
+	
+	case "Gnielinski":
+	
+"Nusselt Number in Transition Flow - Gnielinski Equation"
+	Tubes.HeatTransfer.Nu*(1+(12.7*sqrt(0.125*Tubes.HeatTransfer.fi)*((Tubes.HeatTransfer.PR)^(2/3) -1))) = 0.125*Tubes.HeatTransfer.fi*(Tubes.HeatTransfer.Re-1000)*Tubes.HeatTransfer.PR;
+
+	case "ESDU":
+	
+"Nusselt Number in Transition Flow - ESDU Equation"
+	Tubes.HeatTransfer.Nu =1;#to be implemented
+	
+end
+
+	when Tubes.HeatTransfer.Re < 2300 switchto "laminar";
+	when Tubes.HeatTransfer.Re > 10000 switchto "turbulent";
+
+	case "turbulent":
+
+"Friction Factor for heat Transfer : for use in Petukhov Equation"
+	Tubes.HeatTransfer.fi   = 1/(1.82*log(Tubes.HeatTransfer.Re)-1.64)^2;
+
+"Friction Factor for Pressure Drop in Turbulent Flow"
+	Tubes.PressureDrop.FricFactor  = 0.0035 + 0.264*Tubes.HeatTransfer.Re^(-0.42);
+
+switch TurbulentCorrelation
+	
+	case "Petukhov":
+	
+"Nusselt Number in Turbulent Flow - Petukhov Equation"
+	Tubes.HeatTransfer.Nu*(1.07+(12.7*sqrt(0.125*Tubes.HeatTransfer.fi)*((Tubes.HeatTransfer.PR)^(2/3) -1))) = 0.125*Tubes.HeatTransfer.fi*Tubes.HeatTransfer.Re*Tubes.HeatTransfer.PR;
+	
+	case "SiederTate":
+
+"Nusselt Number in Transition Flow - Sieder Tate Equation"
+	Tubes.HeatTransfer.Nu = 0.027*(Tubes.HeatTransfer.PR)^(1/3)*(Tubes.HeatTransfer.Re)^(4/5);
+
+end
+	
+	when Tubes.HeatTransfer.Re < 10000 switchto "transition";
+
+end
+
+switch Pattern
+	
+case "Triangle": 
+
+"Shell Side Cross Flow Area"
+	Sm= Baffles.Central_Spacing*(Clearances.BundleToShell+((Shell.ShellID-Clearances.BundleToShell-Tubes.TubeOD)/Tubes.TubePitch)*(Tubes.TubePitch-Tubes.TubeOD));
+
+"Number of Tube rows Crossed in one Crossflow Section"
+	Nc	= Shell.ShellID*(1-0.02*Baffles.BaffleCut)/(0.866*Tubes.TubePitch);
+
+"Number of Effective Crossflow rows in Each Window"
+	Ncw = 0.8*(Shell.ShellID*0.01*Baffles.BaffleCut-(Clearances.BundleToShell + Tubes.TubeOD)*0.5)/(0.866*Tubes.TubePitch);
+
+"Variable for calculating Ji heat transfer correction Factor"
+	a	=	1.45/(1+0.14*Shell.HeatTransfer.Re^0.519);
+	
+"Variable for calculating Shell Side Pressure Drop Friction Factor"
+	b=7/(1+0.14*Shell.HeatTransfer.Re^0.5);
+
+"Correction Factor for Pressure Drop"
+	Rss	= Clearances.SealStrip/(Shell.ShellID*(1-0.02*Baffles.BaffleCut)/(0.866*Tubes.TubePitch)) ;
+	
+"Ideal Shell Side Pressure Drop"
+	Shell.PressureDrop.Ideal= 2*Shell.PressureDrop.FricFactor*(Shell.ShellID*(1-0.02*Baffles.BaffleCut)/(0.866*Tubes.TubePitch))*(Shell.Properties.Inlet.Fw/Sm)^2/(Shell.Properties.Average.rho*Shell.HeatTransfer.Phi);
+
+"Shell Pressure End Zones"
+	Shell.PressureDrop.EndZones = Shell.PressureDrop.Ideal*(1+ (Ncw/(Shell.ShellID*(1-0.02*Baffles.BaffleCut)/(0.866*Tubes.TubePitch))))*Rb*Rspd;
+
+switch ShellRange
+	
+	case "range1":
+	
+"Ji Factor"
+	Ji =1.40*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^0.667;
+	
+"Shell Side Pressure Drop Friction Factor"
+	Shell.PressureDrop.FricFactor=48*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^-1;
+	
+	when Shell.HeatTransfer.Re > 10 switchto "range2";
+	
+	case "range2":
+	
+"Ji Factor"
+	Ji =1.36*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^-0.657;
+	
+"Shell Side Pressure Drop Friction Factor"
+	Shell.PressureDrop.FricFactor=45.10*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^-0.973;
+	
+	when Shell.HeatTransfer.Re > 100 switchto "range3";
+	
+	case "range3":
+
+"Ji Factor"
+	Ji =0.593*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^-0.477;
+	
+"Shell Side Pressure Drop Friction Factor"
+	Shell.PressureDrop.FricFactor=4.570*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^-0.476;
+	
+	when Shell.HeatTransfer.Re > 1000 switchto "range4";
+	
+	case "range4":
+
+"Ji Factor"
+	Ji =0.321*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^-0.388;
+	
+"Shell Side Pressure Drop Friction Factor"
+	Shell.PressureDrop.FricFactor=0.486*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^-0.152;
+
+	when Shell.HeatTransfer.Re > 10000 switchto "range5";
+
+	case "range5":
+
+"Ji Factor"
+	Ji =0.321*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^-0.388;
+
+"Shell Side Pressure Drop Friction Factor"
+	Shell.PressureDrop.FricFactor=0.372*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^-0.123;
+	
+	when Shell.HeatTransfer.Re < 10000 switchto "range4";
+	
+end
+
+case "Rotated Square": 
+
+"Shell Side Cross Flow Area"
+	Sm= Baffles.Central_Spacing*(Clearances.BundleToShell+((Shell.ShellID-Clearances.BundleToShell-Tubes.TubeOD)/(0.707*Tubes.TubePitch))*(Tubes.TubePitch-Tubes.TubeOD));
+
+"Number of Tube rows Crossed in one Crossflow Section"
+	Nc	= Shell.ShellID*(1-0.02*Baffles.BaffleCut)/(0.707*Tubes.TubePitch);
+
+"Number of Effective Crossflow rows in Each Window"
+	Ncw = 0.8*(Shell.ShellID*0.01*Baffles.BaffleCut-(Clearances.BundleToShell + Tubes.TubeOD)*0.5)/(0.707*Tubes.TubePitch);
+
+"Variable for calculating Ji heat transfer correction Factor"
+	a	=	1.930/(1+0.14*Shell.HeatTransfer.Re^0.500);
+
+"Variable for calculating Shell Side Pressure Drop Friction Factor"
+	b=6.59/(1+0.14*Shell.HeatTransfer.Re^0.52);
+
+"Correction Factor for Pressure Drop"
+	Rss	= Clearances.SealStrip/(Shell.ShellID*(1-0.02*Baffles.BaffleCut)/(0.707*Tubes.TubePitch)) ;
+
+"Ideal Shell Side Pressure Drop"
+	Shell.PressureDrop.Ideal= 2*Shell.PressureDrop.FricFactor*(Shell.ShellID*(1-0.02*Baffles.BaffleCut)/(0.707*Tubes.TubePitch))*(Shell.Properties.Inlet.Fw/Sm)^2/(Shell.Properties.Average.rho*Shell.HeatTransfer.Phi);
+
+"Shell Pressure End Zones"
+	Shell.PressureDrop.EndZones = Shell.PressureDrop.Ideal*(1+ (Ncw/(Shell.ShellID*(1-0.02*Baffles.BaffleCut)/(0.707*Tubes.TubePitch))))*Rb*Rspd;
+
+switch ShellRange
+	
+	case "range1":
+
+"Ji Factor"
+	Ji =1.550*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^0.667;
+
+"Shell Side Pressure Drop Friction Factor"
+	Shell.PressureDrop.FricFactor=32*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^-1;
+	
+	when Shell.HeatTransfer.Re > 10 switchto "range2";
+	
+	case "range2":
+
+"Ji Factor"
+	Ji =0.498*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^0.656;
+
+"Shell Side Pressure Drop Friction Factor"
+	Shell.PressureDrop.FricFactor=26.20*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^-0.913;
+	
+	when Shell.HeatTransfer.Re > 100 switchto "range3";
+	
+	case "range3":
+
+"Ji Factor"
+	Ji =0.730*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^0.500;
+
+"Shell Side Pressure Drop Friction Factor"
+	Shell.PressureDrop.FricFactor=3.50*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^-0.476;
+	
+	when Shell.HeatTransfer.Re > 1000 switchto "range4";
+	
+	case "range4":
+	
+"Ji Factor"
+	Ji =0.370*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^-0.396;
+	
+"Shell Side Pressure Drop Friction Factor"
+	Shell.PressureDrop.FricFactor=0.333*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^-0.136;
+
+	when Shell.HeatTransfer.Re > 10000 switchto "range5";
+
+	case "range5":
+
+"Ji Factor"
+	Ji =0.370*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^-0.396;
+	
+"Shell Side Pressure Drop Friction Factor"
+	Shell.PressureDrop.FricFactor=0.303*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^-0.126;
+	
+	when Shell.HeatTransfer.Re < 10000 switchto "range4";
+	
+end
+
+case "Square":
+
+"Shell Side Cross Flow Area"
+	Sm= Baffles.Central_Spacing*(Clearances.BundleToShell+((Shell.ShellID-Clearances.BundleToShell-Tubes.TubeOD)/Tubes.TubePitch)*(Tubes.TubePitch-Tubes.TubeOD));
+
+"Number of Tube rows Crossed in one Crossflow Section"
+	Nc	= Shell.ShellID*(1-0.02*Baffles.BaffleCut)/Tubes.TubePitch;
+	
+"Number of Effective Crossflow rows in Each Window"
+	Ncw = 0.8*(Shell.ShellID*0.01*Baffles.BaffleCut-(Clearances.BundleToShell + Tubes.TubeOD)*0.5)/Tubes.TubePitch;
+
+"Variable for calculating Ji heat transfer correction Factor"
+	a	=	1.187/(1+0.14*Shell.HeatTransfer.Re^0.370);
+
+"Variable for calculating Shell Side Pressure Drop Friction Factor"
+	b=6.30/(1+0.14*Shell.HeatTransfer.Re^0.38);
+
+"Correction Factor for Pressure Drop"
+	Rss	= Clearances.SealStrip/(Shell.ShellID*(1-0.02*Baffles.BaffleCut)/Tubes.TubePitch) ;
+
+"Ideal Shell Side Pressure Drop"
+	Shell.PressureDrop.Ideal= 2*Shell.PressureDrop.FricFactor*(Shell.ShellID*(1-0.02*Baffles.BaffleCut)/Tubes.TubePitch)*(Shell.Properties.Inlet.Fw/Sm)^2/(Shell.Properties.Average.rho*Shell.HeatTransfer.Phi);
+
+"Shell Pressure End Zones"
+	Shell.PressureDrop.EndZones = Shell.PressureDrop.Ideal*(1+ (Ncw/(Shell.ShellID*(1-0.02*Baffles.BaffleCut)/Tubes.TubePitch)))*Rb*Rspd;
+
+switch ShellRange
+	
+	case "range1":
+
+"Ji Factor"
+	Ji =0.970*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^-0.667;
+	
+"Shell Side Pressure Drop Friction Factor"	
+	Shell.PressureDrop.FricFactor=35*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^-1;
+
+	when Shell.HeatTransfer.Re > 10 switchto "range2";
+	
+	case "range2":
+
+"Ji Factor"
+	Ji =0.900*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^-0.631;
+
+"Shell Side Pressure Drop Friction Factor"	
+	Shell.PressureDrop.FricFactor=32.10*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^-0.963;
+
+	when Shell.HeatTransfer.Re > 100 switchto "range3";
+	
+	case "range3":
+
+"Ji Factor"
+	Ji =0.408*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^-0.460;
+
+"Shell Side Pressure Drop Friction Factor"	
+	Shell.PressureDrop.FricFactor=6.090*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^-0.602;
+
+	when Shell.HeatTransfer.Re > 1000 switchto "range4";
+	
+	case "range4":
+	
+"Ji Factor"
+	Ji =0.107*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^-0.266;
+
+"Shell Side Pressure Drop Friction Factor"	
+	Shell.PressureDrop.FricFactor=0.0815*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^0.022;
+
+	when Shell.HeatTransfer.Re > 10000 switchto "range5";
+
+	case "range5":
+	
+"Ji Factor"
+	Ji =0.370*((1.33*Tubes.TubeOD/Tubes.TubePitch)^a)*Shell.HeatTransfer.Re^-0.395;
+
+"Shell Side Pressure Drop Friction Factor"	
+	Shell.PressureDrop.FricFactor=0.391*((1.33*Tubes.TubeOD/Tubes.TubePitch)^b)*Shell.HeatTransfer.Re^-0.148;
+
+	when Shell.HeatTransfer.Re < 10000 switchto "range4";
+	
+end
+
+end
+
+switch ShellFlowRegime
+
+	case "deep laminar":
+
+"Jr Factor"	
+	Jr = (10/((Nc +Ncw)*(Baffles.NumberOfBaffles+1)))^0.18;
+
+"Js Factor"
+	Js = (Baffles.NumberOfBaffles-1+(Baffles.Inlet_Spacing/Baffles.Central_Spacing)^0.7 + (Baffles.Outlet_Spacing/Baffles.Central_Spacing)^0.7)/(Baffles.NumberOfBaffles-1+(Baffles.Inlet_Spacing/Baffles.Central_Spacing) + (Baffles.Outlet_Spacing/Baffles.Central_Spacing)); 
+
+"Jb Factor"
+	Jb =	exp(-1.35*( Clearances.BundleToShell+ Tubes.TubeOD)*Baffles.Central_Spacing/Sm*(1-(2*(Clearances.SealStrip/Nc)^(1/3))));
+
+"ByPass Correction Factor for Pressure Drop"
+	Rb	= exp(-4.7*((Clearances.BundleToShell + Tubes.TubeOD)*Baffles.Central_Spacing/Sm)*(1-(2*Rss)^(1/3)));
+
+"Pressure Drop Correction Factor for Unequal Baffle Spacing"
+	Rspd = (Baffles.Central_Spacing/Baffles.Outlet_Spacing) + (Baffles.Central_Spacing/Baffles.Inlet_Spacing);
+
+"Shell Pressure Drop Baffle Window"
+	Shell.PressureDrop.Window    = Baffles.NumberOfBaffles*((26/Shell.Properties.Average.rho)*mw*Shell.Properties.Average.Mu*(Ncw/(Tubes.TubePitch-Tubes.TubeOD)+ Baffles.Central_Spacing/(Dw*Dw))+ 0.5*mw*mw/Shell.Properties.Average.rho)*exp(-1.33*(1+Rs)*((Scd + Std)/Sm)^(-0.15*(1+Rs) + 0.8));
+
+	when Shell.HeatTransfer.Re > 20 switchto "laminar";
+
+	case "laminar":
+
+"Jr Factor"	
+	Jr = (10/((Nc +Ncw)*(Baffles.NumberOfBaffles+1)))^0.18 + (0.25-0.0125*Shell.HeatTransfer.Re)*((10/((Nc +Ncw)*(Baffles.NumberOfBaffles+1)))^0.18 - 1);
+
+"Js Factor"
+	Js = (Baffles.NumberOfBaffles-1+(Baffles.Inlet_Spacing/Baffles.Central_Spacing)^0.7 + (Baffles.Outlet_Spacing/Baffles.Central_Spacing)^0.7)/(Baffles.NumberOfBaffles-1+(Baffles.Inlet_Spacing/Baffles.Central_Spacing) + (Baffles.Outlet_Spacing/Baffles.Central_Spacing)); 
+
+"Jb Factor"
+	Jb =	exp(-1.35*( Clearances.BundleToShell+ Tubes.TubeOD)*Baffles.Central_Spacing/Sm*(1-(2*(Clearances.SealStrip/Nc)^(1/3))));
+
+"ByPass Correction Factor for Pressure Drop"
+	Rb	= exp(-4.7*((Clearances.BundleToShell+ Tubes.TubeOD)*Baffles.Central_Spacing/Sm)*(1-(2*Rss)^(1/3)));
+
+"Pressure Drop Correction Factor for Unequal Baffle Spacing"
+	Rspd = (Baffles.Central_Spacing/Baffles.Outlet_Spacing) + (Baffles.Central_Spacing/Baffles.Inlet_Spacing);
+
+"Shell Pressure Drop Baffle Window"
+	Shell.PressureDrop.Window    = Baffles.NumberOfBaffles*((26/Shell.Properties.Average.rho)*mw*Shell.Properties.Average.Mu*(Ncw/(Tubes.TubePitch-Tubes.TubeOD)+ Baffles.Central_Spacing/(Dw*Dw))+ 0.5*mw*mw/Shell.Properties.Average.rho)*exp(-1.33*(1+Rs)*((Scd + Std)/Sm)^(-0.15*(1+Rs) + 0.8));
+
+	when Shell.HeatTransfer.Re < 20 switchto "deep laminar";
+	when Shell.HeatTransfer.Re > 100 switchto "turbulent";
+
+	case "turbulent":
+
+"Jr Factor"	
+	Jr = 1;
+
+"Js Factor"
+	Js = (Baffles.NumberOfBaffles-1+(Baffles.Inlet_Spacing/Baffles.Central_Spacing)^0.4 + (Baffles.Outlet_Spacing/Baffles.Central_Spacing)^0.4)/(Baffles.NumberOfBaffles-1+(Baffles.Inlet_Spacing/Baffles.Central_Spacing) + (Baffles.Outlet_Spacing/Baffles.Central_Spacing)); 
+
+"Jb Factor"
+	Jb =	exp(-1.25*( Clearances.BundleToShell+ Tubes.TubeOD)*Baffles.Central_Spacing/Sm*(1-(2*(Clearances.SealStrip/Nc)^(1/3))));
+
+"ByPass Correction Factor for Pressure Drop"
+	Rb	= exp(-3.7*((Clearances.BundleToShell + Tubes.TubeOD)*Baffles.Central_Spacing/Sm)*(1-(2*Rss)^(1/3)));
+
+"Pressure Drop Correction Factor for Unequal Baffle Spacing"
+	Rspd = (Baffles.Central_Spacing/Baffles.Outlet_Spacing)^1.8 + (Baffles.Central_Spacing/Baffles.Inlet_Spacing)^1.8;
+
+"Shell Pressure Drop Baffle Window"
+	Shell.PressureDrop.Window    = Baffles.NumberOfBaffles*((2+0.6*Ncw)*0.5*mw*mw/Shell.Properties.Average.rho)*exp(-1.33*(1+Rs)*((Scd + Std)/Sm)^(-0.15*(1+Rs) + 0.8));
+	
+	when Shell.HeatTransfer.Re < 100 switchto "laminar";
+	
+end
+
+"Shell Pressure Drop Cross Flow"
+	Shell.PressureDrop.CrossFlow= Shell.PressureDrop.Ideal*Rb*(Baffles.NumberOfBaffles-1)*exp(-1.33*(1+Rs)*((Scd + Std)/Sm)^(-0.15*(1+Rs) + 0.8));
+
+"Shell Side Phi correction"
+	Shell.HeatTransfer.Phi 	= (Shell.Properties.Average.Mu/Shell.Properties.Wall.Mu)^0.14;
+
+"Tube Side Phi correction"
+	Tubes.HeatTransfer.Phi  = (Tubes.Properties.Average.Mu/Tubes.Properties.Wall.Mu)^0.14;
+	
+"Shell Side inlet Nozzle rho-V^2"
+	Shell.PressureDrop.RVsquare_in = Shell.Properties.Inlet.rho*(Shell.PressureDrop.Vnozzle_in)^2;
+
+"Shell Side Outlet Nozzle rho-V^2"
+	Shell.PressureDrop.RVsquare_out = Shell.Properties.Outlet.rho*(Shell.PressureDrop.Vnozzle_out)^2;
+
+"Tube Side Pressure Drop"
+	Tubes.PressureDrop.TubeFriction 	= 2*Tubes.PressureDrop.FricFactor*Tubes.TubeLength*Tubes.Properties.Average.rho*(Tubes.HeatTransfer.Vtube^2)*Tubes.Tubepasses/(Tubes.TubeID*Tubes.HeatTransfer.Phi);
+
+"Pressure Drop Tube Side Inlet Nozzle"
+	Tubes.PressureDrop.InletNozzle	= 0.5*Kinlet_Tube*Tubes.Properties.Inlet.rho*Tubes.PressureDrop.Vnozzle_in^2;
+
+"Velocity Tube Side Inlet Nozzle"
+	Tubes.PressureDrop.Vnozzle_in	= Tubes.Properties.Inlet.Fw/(Tubes.Properties.Inlet.rho*Ainozzle_Tube);
+
+"Pressure Drop Tube Side Outlet Nozzle"
+	Tubes.PressureDrop.OutletNozzle	= 0.5*Koutlet_Tube*Tubes.Properties.Outlet.rho*Tubes.PressureDrop.Vnozzle_out^2;
+
+"Velocity Tube Side Outlet Nozzle"
+	Tubes.PressureDrop.Vnozzle_out	= Tubes.Properties.Inlet.Fw/(Tubes.Properties.Outlet.rho*Aonozzle_Tube);
+
+"Shell Pressure Drop Inlet Nozzle"
+	Shell.PressureDrop.InletNozzle	= (0.5*Shell.Properties.Inlet.Fw^2/Shell.Properties.Inlet.rho)*((1/Ainozzle_Shell^2)+(1/Aeinozzle_Shell^2));
+
+"Velocity Shell Side Inlet Nozzle"
+	Shell.PressureDrop.Vnozzle_in	= Shell.Properties.Inlet.Fw/(Shell.Properties.Inlet.rho*Ainozzle_Shell);
+
+"Shell Pressure Drop Outlet Nozzle"
+	Shell.PressureDrop.OutletNozzle	= (0.5*Shell.Properties.Outlet.Fw^2/Shell.Properties.Outlet.rho)*((1/Ainozzle_Shell^2)+(1/Aeinozzle_Shell^2));
+
+"Velocity Shell Side Outlet Nozzle"
+	Shell.PressureDrop.Vnozzle_out	= Shell.Properties.Outlet.Fw/(Shell.Properties.Outlet.rho*Aonozzle_Shell);
+
+"Pressure Drop Shell Stream"
+	OutletShell.P  = InletShell.P - Shell.PressureDrop.Total;	
+	
+"Pressure Drop Tube Stream"
+	OutletTube.P  = InletTube.P - Tubes.PressureDrop.Total;
+
+"Shell Wall Temperature"
+	Shell.Properties.Wall.Twall  	= (Shell.Properties.Average.T+Tubes.Properties.Average.T)/2;
+
+"Tube Wall Temperature"
+	Tubes.Properties.Wall.Twall  = (Shell.Properties.Average.T+Tubes.Properties.Average.T)/2;
+
+"Tube Side Velocity"
+	Tubes.HeatTransfer.Vtube  	= Tubes.Properties.Inlet.Fw*Tubes.Tubepasses/((Pi*Tubes.TubeID*Tubes.TubeID/4)*Tubes.Properties.Average.rho*Tubes.NumberOfTubes);
+
+"Tube Side Reynolds Number"
+	Tubes.HeatTransfer.Re	  	= (Tubes.Properties.Average.rho*Tubes.HeatTransfer.Vtube*Tubes.TubeID)/Tubes.Properties.Average.Mu;
+	
+"Tube Side Prandtl Number"
+	Tubes.HeatTransfer.PR 		= ((Tubes.Properties.Average.Cp/Tubes.Properties.Average.Mw)*Tubes.Properties.Average.Mu)/Tubes.Properties.Average.K;
+
+"Tube Side Film Coefficient"
+	Tubes.HeatTransfer.htube= (Tubes.HeatTransfer.Nu*Tubes.Properties.Average.K/Tubes.TubeID)*Tubes.HeatTransfer.Phi;
+
+"Shell Side Prandtl Number"
+	Shell.HeatTransfer.PR 		= ((Shell.Properties.Average.Cp/Shell.Properties.Average.Mw)*Shell.Properties.Average.Mu)/Shell.Properties.Average.K;
+
+"Overall Heat Transfer Coefficient Dirty"
+	Details.Ud=1/(Tubes.TubeOD/(Tubes.HeatTransfer.htube*Tubes.TubeID)+Shell.Fouling+Tubes.Fouling*(Tubes.TubeOD/Tubes.TubeID)+(Tubes.TubeOD*ln(Tubes.TubeOD/Tubes.TubeID)/(2*Tubes.Kwall))+(1/(Shell.HeatTransfer.hshell)));
+
+"Overall Heat Transfer Coefficient Clean"
+	Details.Uc=1/(Tubes.TubeOD/(Tubes.HeatTransfer.htube*Tubes.TubeID)+(Tubes.TubeOD*ln(Tubes.TubeOD/Tubes.TubeID)/(2*Tubes.Kwall))+(1/(Shell.HeatTransfer.hshell)));
+
+"Exchange Surface Area"
+	Details.A=Pi*Tubes.TubeOD*Tubes.NumberOfTubes*Tubes.TubeLength;
+
+"Baffle Spacing Constraint"
+	Tubes.TubeLength = Baffles.Inlet_Spacing+Baffles.Outlet_Spacing+Baffles.Central_Spacing*(Baffles.NumberOfBaffles-1);
+
+"Shell Side Reynolds Number"
+	Shell.HeatTransfer.Re = (Tubes.TubeOD*Shell.Properties.Inlet.Fw/Sm)/Shell.Properties.Average.Mu;
+
+"Shell Heat Transfer Coefficient"
+	Shell.HeatTransfer.hshell			= Ji*(Shell.Properties.Average.Cp/Shell.Properties.Average.Mw)*(Shell.Properties.Inlet.Fw/Sm)*(Shell.HeatTransfer.PR^(-2/3))*Jtotal*Shell.HeatTransfer.Phi;
+
+end 
+
+Model ShellandTubes_NTU 	as ShellandTubesBasic
+
+ATTRIBUTES
+	Pallete = true;
+	Icon 	= "icon/ShellandTubes_NTU";	
+	Brief  = "Shell and Tubes Heat Exchangers";
+	Info  =
+	"to be documented";
+
+VARIABLES
+
+Method as NTU_Basic (Brief="NTU Method");
+
+EQUATIONS
+
+"Number of Units Transference"
+	Method.NTU*Method.Cmin = Details.Ud*Pi*Tubes.TubeOD*Tubes.NumberOfTubes*Tubes.TubeLength;
+
+"Minimum Heat Capacity"
+	Method.Cmin  = min([Method.Ch,Method.Cc]);
+	
+"Maximum Heat Capacity"
+	Method.Cmax  = max([Method.Ch,Method.Cc]);
+
+"Thermal Capacity Ratio"
+	Method.Cr    = Method.Cmin/Method.Cmax;
+	
+switch HotSide
+	
+	case "shell":
+
+"Duty"
+	Details.Q	= Method.Eft*Method.Cmin*(InletShell.T-InletTube.T);
+
+"Hot Stream Heat Capacity"
+	Method.Ch  = InletShell.F*Shell.Properties.Average.Cp;
+	
+"Cold Stream Heat Capacity"
+	Method.Cc = InletTube.F*Tubes.Properties.Average.Cp;
+
+	when InletTube.T > InletShell.T switchto "tubes";
+	
+	case "tubes":
+
+"Duty"
+	Details.Q	= Method.Eft*Method.Cmin*(InletTube.T-InletShell.T);
+
+"Hot Stream Heat Capacity"
+	Method.Cc = InletShell.F*Shell.Properties.Average.Cp;
+	
+"Cold Stream Heat Capacity"
+	Method.Ch = InletTube.F*Tubes.Properties.Average.Cp;
+	
+	when InletTube.T < InletShell.T switchto "shell";
+	
+end
+
+switch ShellType
+	
+	case "Fshell":
+	
+"Effectiveness Correction for 2 pass shell side"
+	Method.Eft1 = 2*(1+Method.Cr+sqrt(1+Method.Cr^2)*((1+exp(-Method.NTU*sqrt(1+Method.Cr^2)))/(1-exp(-Method.NTU*sqrt(1+Method.Cr^2)))) )^-1;
+
+"TEMA F Shell Effectiveness"
+	Method.Eft = ( ((1-Method.Eft1*Method.Cr)/(1-Method.Eft1))^2 -1  )*( ((1-Method.Eft1*Method.Cr)/(1-Method.Eft1))^2 - Method.Cr )^-1; 
+
+	case "Eshell":
+	
+"TEMA E Shell Effectiveness"
+	Method.Eft = 2*(1+Method.Cr+sqrt(1+Method.Cr^2)*((1+exp(-Method.NTU*sqrt(1+Method.Cr^2)))/(1-exp(-Method.NTU*sqrt(1+Method.Cr^2)))) )^-1;
+#	Method.Eft = 1;
+
+"Variable not in use when 1 Pass Shell Side"
+	Method.Eft1 	= 1;
+	
+end
+
+end
+
+Model ShellandTubes_LMTD 	as ShellandTubesBasic
+
+ATTRIBUTES
+	Pallete = true;
+	Icon 	= "icon/ShellandTubes_LMTD";	
+	Brief  = "Shell and Tubes Heat Exchangers";
+	Info  =
+	"to be documented.";
+
+PARAMETERS
+
+LMTDcorrection 	as Switcher	(Brief="LMTD Correction Factor Model",Valid=["Bowmann","Fakeri"],Default="Bowmann");
+	
+VARIABLES
+
+Method 	as LMTD_Basic;
+R 			as positive 	(Brief=" Capacity Ratio for LMTD Correction Fator",Lower=1e-6);
+P 			as positive 	(Brief="Non - Dimensional Variable for LMTD Correction Fator ",Lower=1e-6);
+Pc			as positive 	(Brief="Non - Dimensional Variable for LMTD Correction Fator when 2 Pass Shell Side",Lower=1e-6);
+Rho 		as positive 	(Brief="Non - Dimensional Variable for LMTD Correction Fator in Fakeri Equation",Lower=1e-6);
+Phi    	as positive 	(Brief="Non - Dimensional Variable for LMTD Correction Fator in Fakeri Equation",Lower=1e-6);
+lambdaN as positive 	(Brief="Non - Dimensional Variable for LMTD Correction Fator in Fakeri Equation when 2 Pass Shell Side",Lower=1e-6);
+lambda1 as positive  (Brief="Non - Dimensional Variable for LMTD Correction Fator in Fakeri Equationwhen 2 Pass Shell Side",Lower=1e-6);
+
+EQUATIONS
+
+"Exchange Surface Area"
+	Details.Q   = Details.Ud*Pi*Tubes.TubeOD*Tubes.NumberOfTubes*Tubes.TubeLength*Method.LMTD*Method.Fc;
+
+switch HotSide
+	
+	case "shell":
+
+"Non Dimensional Variable for LMTD Correction Fator in Fakeri Equation "
+	Phi*(2*((InletShell.T+ OutletShell.T)-(InletTube.T+ OutletTube.T)))  = (sqrt(((InletShell.T- OutletShell.T)*(InletShell.T- OutletShell.T))+((OutletTube.T - InletTube.T)*(OutletTube.T - InletTube.T))));
+
+"R: Capacity Ratio for LMTD Correction Fator"
+	R*(OutletTube.T - InletTube.T ) = (InletShell.T-OutletShell.T);
+
+"P: Non - Dimensional Variable for LMTD Correction Fator"
+	P*(InletShell.T- InletTube.T)= (OutletTube.T-InletTube.T);
+	
+"Temperature Difference at Inlet"
+	Method.DT0 = InletShell.T - OutletTube.T;
+
+"Temperature Difference at Outlet"
+	Method.DTL = OutletShell.T - InletTube.T;
+
+	when InletTube.T > InletShell.T switchto "tubes";
+	
+	case "tubes":
+
+"Non Dimensional Variable for LMTD Correction Fator in Fakeri Equation "
+	Phi*(2*((InletShell.T+ OutletShell.T)-(InletTube.T+ OutletTube.T)))  = (sqrt(((InletShell.T- OutletShell.T)*(InletShell.T- OutletShell.T))+((OutletTube.T - InletTube.T)*(OutletTube.T - InletTube.T))));
+
+"R: Capacity Ratio for LMTD Correction Fator"
+	R*(OutletShell.T - InletShell.T ) = (InletTube.T-OutletTube.T);
+
+"P: Non - Dimensional Variable for LMTD Correction Fator"
+	P*(InletTube.T- InletShell.T)= (OutletShell.T-InletShell.T);
+	
+"Temperature Difference at Inlet"
+	Method.DT0 = InletTube.T - OutletShell.T;
+
+"Temperature Difference at Outlet"
+	Method.DTL = OutletTube.T - InletShell.T;
+
+	
+	when InletTube.T < InletShell.T switchto "shell";
+	
+end
+
+switch ShellType
+	
+	case "Fshell":
+	
+switch LMTDcorrection
+	
+	case "Bowmann":
+	
+" Variable not in use with Bowmann equation"
+	lambdaN =1;
+	
+" Variable not in use with Bowmann equation"
+	lambda1 =1;
+
+#" Variable not in use with Bowmann equation"
+#	Phi = 1;
+
+" Variable not in use with Bowmann equation"
+	Rho =1;
+
+if R equal 1
+	
+	then
+	
+"Non Dimensional Variable for LMTD Correction Fator when 2 Pass Shell Side"
+	Pc*(2-P)= P;
+
+"LMTD Correction Fator when 2 Pass Shell Side"
+	Method.Fc= (sqrt(2)*Pc)/((1-Pc)*ln( abs( ( 2-Pc*0.585786)/( 2-Pc*3.414214))));
+	
+	else
+	
+"Non Dimensional Variable for LMTD Correction Fator when 2 Pass Shell Side"
+	Pc = (sqrt(abs(( 1-P*R)/(1-P)))-1)/(sqrt(abs(( 1-P*R)/(1-P)))-R);
+
+"LMTD Correction Fator when 2 Pass Shell Side"
+	Method.Fc = sqrt(R*R+1)*ln(abs((1-Pc*R)/(1-Pc)))/((1-R)*ln( abs( ( 2-Pc*(R+1-sqrt(R*R+1)))/ ( 2-Pc*(R + 1 + sqrt(R*R+1))))));
+	
+end
+
+	case "Fakeri":
+	
+" Variable not in use with Fakeri equation"
+	Pc = P;
+	
+"Non Dimensional Variable for LMTD Correction Fator in Fakeri Equation"
+	Rho*(1-P*R) = (1-P);
+
+#"Non Dimensional Variable for LMTD Correction Fator in Fakeri Equation "
+#	Phi = (sqrt(((Inlet.Hot.T - Outlet.Hot.T)*(Inlet.Hot.T- Outlet.Hot.T))+((Outlet.Cold.T -  Inlet.Cold.T)*(Outlet.Cold.T -  Inlet.Cold.T))))/(2*((Inlet.Hot.T + Outlet.Hot.T)-( Inlet.Cold.T + Outlet.Cold.T)));
+
+if Rho equal 1
+	
+	then
+	
+" Variable not in use when Rho = 1"
+	lambdaN	=	1;
+	
+" Variable not in use when Rho = 1"
+	lambda1	=	1;
+	
+"LMTD Correction Fator when 2 Pass Shell Side"
+	Method.Fc = (2*Phi )/(ln(abs((1+Phi )/(1-Phi ))));
+	
+	else
+
+"Non Dimensional Variable for LMTD Correction Fator in Fakeri Equation"
+	lambdaN	= (1/ln(sqrt(abs(Rho))))*((2*sqrt(abs(Rho))-2)/(sqrt(abs(Rho))+1));
+	
+"Non Dimensional Variable for LMTD Correction Fator in Fakeri Equation"
+	lambda1	= (1/ln(abs(Rho)))*((2*Rho-2)/(Rho+1));
+
+"LMTD Correction Fator when 2 Pass Shell Side"
+	Method.Fc =	((2*Phi *(lambdaN/lambda1))/(ln(abs((1+Phi *(lambdaN/lambda1))/(1-Phi *(lambdaN/lambda1))))))*(1/lambdaN);
+
+end
+
+
+end
+
+	case "Eshell":
+	
+" Variable not in use when 1 Pass Shell Side"
+	lambdaN =1;
+
+" Variable not in use when 1 Pass Shell Side"
+	lambda1 =1;
+	
+" Variable not in use when 1 Pass Shell Side"
+	Pc = P;
+	
+switch LMTDcorrection
+	
+	case "Bowmann":
+
+#" Variable not in use with Bowmann equation"
+#	Phi  = 1;
+	
+" Variable not in use with Bowmann equation"
+	Rho = 1;
+
+
+ if R equal 1
+	
+    then
+	
+"LMTD Correction Fator when 1 Pass Shell Side"
+	Method.Fc = (sqrt(2)*P)/((1-P)*ln( abs( ( 2-P*0.585786)/( 2-P*3.414214))));
+
+	else
+	
+"LMTD Correction Fator when 1 Pass Shell Side"
+	Method.Fc = sqrt(R*R+1)*ln(abs((1-P*R)/(1-P)))/((1-R)*ln( abs( ( 2-P*(R+1-sqrt(R*R+1)))/ ( 2-P*(R + 1 + sqrt(R*R+1))))));
+
+end
+
+	case "Fakeri":
+
+#"Non Dimensional Variable for LMTD Correction Fator in Fakeri Equation "
+#	Phi  = (sqrt(((Inlet.Hot.T- Outlet.Hot.T)*(Inlet.Hot.T- Outlet.Hot.T))+((Outlet.Cold.T - Inlet.Cold.T)*(Outlet.Cold.T - Inlet.Cold.T))))/(2*((Inlet.Hot.T+ Outlet.Hot.T)-(Inlet.Cold.T+ Outlet.Cold.T)));
+
+"Non Dimensional Variable for LMTD Correction Fator in Fakeri Equation"
+	Rho*(1-P*R) = (1-P);
+
+if Rho equal 1
+	
+	then
+	
+"LMTD Correction Fator when 1 Pass Shell Side"
+	Method.Fc = (4*Phi)/(ln(abs((1+2*Phi)/(1-2*Phi))));
+
+	else
+
+"LMTD Correction Fator when 1 Pass Shell Side"
+	Method.Fc = (2*Phi*(Rho+1)*ln(abs(Rho)))/( ln(abs((1+2*Phi)/(1-2*Phi)))*(Rho-1));
+	
+end
+
+end
+
+	
+end
+
+end
+

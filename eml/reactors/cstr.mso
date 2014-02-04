@@ -1,0 +1,103 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*
+*--------------------------------------------------------------------
+* Model of cstr reactor
+*--------------------------------------------------------------------
+* Author: Paula B. Staudt
+* $Id$
+*--------------------------------------------------------------------*#
+
+using "streams";
+
+Model cstr_basic
+
+ATTRIBUTES
+	ATTRIBUTES
+	Pallete 	= false;
+	Brief 		= "Basic model for a CSTR reactor";
+	
+PARAMETERS
+
+outer	NComp 						as Integer	(Brief = "Number Of Components");
+		NReac 						as Integer	(Brief = "Number Of Reactions");
+		stoic(NComp, NReac) 	as Real 		(Brief = "Stoichiometric Matrix");
+
+VARIABLES
+
+in	Inlet  	as stream 	(Brief="Inlet Stream", PosX=0, PosY=0, Symbol="_{in}");
+out	Outlet 	as streamPH	(Brief="Outlet Stream", PosX=1, PosY=1, Symbol="_{out}");
+
+	q    			as heat_rate 	(Brief="Heat");
+	Vr   			as volume 		(Brief="Reacting Volume");
+	M    			as mol 			(Brief = "Molar total amount");
+	C(NComp)  	as conc_mol	(Brief="Components concentration");
+
+EQUATIONS
+
+"Molar Concentration"
+	Outlet.z * M = C * Vr;
+
+"Molar fraction"
+    sum(Outlet.z) = 1;
+end
+
+Model cstr_yield as cstr_basic
+
+ATTRIBUTES
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/cstr"; 
+	Brief 		= "Model of a CSTR with given yield";
+	
+PARAMETERS
+	
+	yield(NReac) as fraction (Brief="Yield");
+	
+EQUATIONS
+
+	Outlet.z*Outlet.F = Inlet.z*Inlet.F * sumt(stoic*(1-yield));
+
+"Reactor Energy Balance"
+	diff(M*Outlet.h) = Inlet.F*Inlet.h - Outlet.F*Outlet.h - q;
+
+end
+
+
+Model cstr as cstr_basic
+	
+ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/cstr"; 
+	Brief 		= "Model of a generic CSTR";
+	Info 		= "
+Requires the information of:
+* Reaction values
+* Heat of reaction
+";
+
+VARIABLES
+	
+	r(NReac) 	as reaction_mol 	(Brief="Molar Reaction Rate");
+	Hr(NReac) 	as heat_reaction 	(Brief="Heat Reaction");
+	
+EQUATIONS
+
+"Component Molar Balance"
+	diff(Outlet.z*M) = (Inlet.F*Inlet.z - Outlet.F*Outlet.z) + sumt(stoic*r)*Vr;
+
+"Reactor Energy Balance"
+	diff(M*Outlet.h) = Inlet.F*Inlet.h - Outlet.F*Outlet.h +sum(Hr*sum(stoic*r))*Vr - q; #FIXME sum(sum())
+
+end

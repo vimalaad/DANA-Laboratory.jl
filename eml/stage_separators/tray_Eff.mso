@@ -1,0 +1,791 @@
+#*-------------------------------------------------------------------
+* Models of tray with Efficiency Prediction
+* Author: Josias J. Junges
+*-------------------------------------------------------------------*#
+
+using "streams";
+using "tray";
+
+Model trayEffEmp as tray
+	
+	ATTRIBUTES
+	Pallete 	= false;
+	Icon 		= "icon/Tray"; 
+	Brief 		= "Tray with Efficiency Prediction - Empiric Model";
+	Info =
+	"==Description==
+Prediciton based on Chan e Fair(1984) model, with entrainment correction. 
+Multicomponent mixture treated with pseudo-binary approach.
+	
+	== References ==
+*Clear Liquid Height: Bennett et al. (1983).
+*Capacity Factor: Treybal(1968).
+*Flood Velocity: Fair(1961).
+*Liquid Mixing Models: Lewis(1936).
+*Eddy Diffusivity: Molnar(1974).
+*Entrainment Correction: Colburn(1936).
+*Fraction of entrained liquid: Zuiderweg(1982).
+
+General References:
+*CHAN, H.;FAIR, J. R. Prediction of Point Efficiencies on Sieve Trays. 1. Binary Systems. Ind. Eng. Chem. Process Des. Dev., v.23, n.4, p.814-9, 1984.
+*LOCKETT, M. J. Distillation Tray Fundamentals. Cambridge: Cambridge University Press, 1986.
+";
+	PARAMETERS
+	
+	z as length (Brief="Liquid flow path length");
+	d as length (Brief="Plate Diameter");
+	Aa as area (Brief="Active Area or Bubbling Area = Atray - 2*Adowncomer");
+	fi as fraction (Brief="Fractional perforated tray area(hole area/ bubbling area)");
+	Ts as length (Brief="Tray spacing");
+outer	iLK as Integer (Brief="Pseudo-binary ligth key index");
+outer	iHK as Integer (Brief="Pseudo-binary heavy key index");	
+
+	VARIABLES
+	
+	Qv as flow_vol (Brief="Vapour volumetric flow");
+	Ql as flow_vol (Brief="Liquid volumetric flow");
+	Mv as flow_mass (Brief="Vapour mass flow", Lower=0);
+	Ml as flow_mass (Brief="Liquid mass flow", Lower=0);
+	Dv as diffusivity (Brief="Diffusivity on Vapour Phase");
+	Dl as diffusivity (Brief="Diffusivity on Liquid Phase");
+	sigma as surf_tens (Brief="Surface Tension");
+	
+	ua as velocity (Brief="Superficial velocity based on Aa");
+	fs as positive(Brief="Superficial factor", Unit='kg^.5/m^.5/s');
+	c as positive (Brief="Constant in eq. of Clear Liquid Height");
+	ae as fraction (Brief="Effective liquid volume fraction");
+	hcl as length (Brief="Clear Liquid Height"); 
+	tv as time_sec (Brief="Mean residence time of vapour in dispersion"); 
+	tl as time_sec (Brief="Mean residence time of liquid on tray");
+	us as velocity (Brief="Superficial velocity based on Ap");
+	fp as positive (Brief="Flow Parameter");
+	csb as positive (Brief="Capacity Factor");
+	uf as velocity (Brief="Flood velocity");
+	ff as positive (Brief="Flood factor");
+	lambda as Real (Brief="Stripping factor or ratio of slope of equilibrium line to slope of operating line");
+	m as Real (Brief="Slope of equilibrium line");
+	
+	VinLK as Real (Brief="Pseudo-binary key ");
+	VoutLk as Real (Brief="Pseudo-binary key");
+	LinLK as Real (Brief="Pseudo-binary key");
+	LoutLk as Real (Brief="Pseudo-binary key");
+	
+	NV as positive (Brief="Number of vapour phase transfer units"); 
+	NL as positive (Brief="Number of liquid phase transfer units");
+	NOG as positive (Brief="Number of overall vapour phase transfer units");
+	EOG as positive (Brief="Point Efficiency");
+	
+	De as Real (Brief="Eddy diffusivity for liquid mixing");
+	Pe as positive (Brief="Peclet Number");
+	n as Real (Brief="Constant");
+	Emv1 as positive (Brief="Murphree tray efficiency");
+	
+	hb as length (Brief="Height on spray regime");     
+	l as positive (Brief="Fraction of entrained liquid");    
+	uh as velocity (Brief="Gas velocity through holes");   
+	Emv2 as positive (Brief="Apparent Murphree tray efficiency");  
+	
+	EQUATIONS
+	
+	"Vapour Volumetric Flow"
+	Qv=OutletV.F*vV;
+	
+	"Liquid Volumetric Flow"
+	Ql=OutletL.F*vL;
+	
+	"Vapour Mass Flow"
+	Mv=Qv*rhoV;
+	
+	"Liquid Mass Flow"
+	Ml=Ql*rhoL;
+	
+	"Superficial Velocity"
+	ua=Qv/Aa;
+	
+	"Superficial Factor"
+	fs=ua*rhoV^.5;
+	
+	"Constant c"
+	c=.5+0.438*exp(-137.8*'1/m'*hw);
+	
+	"Effective liquid volume fraction"
+	ae=exp(-12.55*(ua*'s/m'*(rhoV/(rhoL-rhoV))^0.5)^0.91);	
+	
+	"Clear Liquid Height"
+	hcl=ae*(hw*'1/m'+c*((Ql*'s/m^3')/(lw*'1/m'*ae))^.67)*'m';
+	
+	"Mean residence time of vapour in dispersion"
+	tv=(1-ae)*hcl/(ae*ua);
+	
+	"Mean residence time of liquid on tray"
+	tl=hcl*z*lw/Ql;
+	
+	"Superficial velocity based on Ap"
+	us*Ap=Qv;
+	
+	"Flow Parameter"
+	(fp*Mv)^2*rhoL=Ml^2*rhoV;
+	
+	"Capacity Factor"
+	csb=(0.0744*Ts*'1/m'+0.0117)*(log(abs(1/fp)))+0.0304*Ts*'1/m'+0.0153;
+	
+	"Flood velocity"
+	uf = csb*(sigma*'1/(N/m)'/0.02)^.2*(abs((rhoL-rhoV)/rhoV))^.5*(fi/.1)^.44*'m/s';
+	
+	"Flood Factor"
+	ff*uf=us;
+	
+	if NComp > 2 then
+		
+		"Pseudo-binary Approach"
+		VinLK=InletV.z(iLK)/(InletV.z(iLK)+InletV.z(iHK));
+		VoutLk=OutletV.z(iLK)/(OutletV.z(iLK)+OutletV.z(iHK));
+		LinLK=InletL.z(iLK)/(InletL.z(iLK)+InletL.z(iHK));
+		LoutLk=OutletL.z(iLK)/(OutletL.z(iLK)+OutletL.z(iHK));
+		
+	else
+		VinLK=1;
+		VoutLk=1;
+		LinLK=1;
+		LoutLk=1;
+		
+	end
+	
+	"Stripping factor or ratio of slope of equilibrium line to slope of operating line"
+	lambda=m*(OutletV.F/OutletL.F);
+	
+	#Chan e Fair(1984) Model#
+	
+	"Number of vapour phase transfer units"
+	NV*(abs(hcl)*'1/m')^.5=(10300-8670*ff)*ff*(Dv*'s/m^2')^0.5*tv*'1/s';
+	
+	"Number of liquid phase transfer units"
+	NL=19700*((Dl*'s/m^2')^.5)*(.4*fs*'1/(kg^.5/m^.5/s)'+.17)*tl*'1/s';
+	
+	"Number of overall vapour phase transfer units"
+	NV*NL=NOG*(NL+lambda*NV);
+	
+	"Point Efficiency"
+	EOG=1-exp(-NOG);
+	
+	#Liquid Mixing Models#
+	
+	"Eddy diffusivity for liquid mixing"
+	De=(0.0005+0.01285*ua*'s/m'+6.32*(Ql*'s/m^3'/(lw*'1/m'))+0.312*hw*'1/m')^2;
+	
+	"Peclet Number"
+	Pe=(OutletL.F*d)/(lw*hcl*(1/vL)*De*'m^2/s');
+	
+	"Constant n"
+	n=Pe/2*((1+4*lambda*EOG/Pe)^.5-1);
+
+	if Pe equal 0 then
+		Emv1=EOG;
+	else 
+		if Pe < 20 then
+			Emv1/EOG=(1-exp(-(n+Pe)))/((n+Pe)*(1+(n+Pe)/n))+(exp(n)-1)/(n*(1+n/(n+Pe)));
+		else
+			lambda*Emv1=(exp(lambda*EOG)-1);
+		end
+	end
+	
+	#Entrainment Correction#
+	
+	"Height on spray regime"
+	hb=hcl*(265*((ua/(g*hcl)^.5)*(rhoV/rhoL)^.5)^1.7+1);
+	
+	"Gas velocity through hole"
+	uh=Qv/Ah;
+	
+	"Fraction of entrained liquid"
+	l=1e-8*(hb/Ts)^3*(uh/(Ql/Aa))^2;
+	
+	"Apparent Murphree tray efficiency"
+	Emv1=Emv2*(1+l*Emv1);
+
+	Emv=Emv2;
+	
+	end
+	
+Model trayEffFund as tray
+	
+	ATTRIBUTES
+	Pallete 	= false;
+	Icon 		= "icon/Tray"; 
+	Brief 		= "Tray with Efficiency Prediction - Fundamental Model";
+	Info =
+	"==Description==
+Prediciton based on Prado(1986), Gracia and Fair(2000,2002) model, with entrainment and weeping correction. 
+Multicomponent mixture treated with pseudo-binary approach.
+
+	== Options ==
+You can select the tray type: with downcomer or dualflow.
+	
+	== References ==
+*Clear Liquid Height (Downcomer): Dhulesia (1984).
+*Clear Liquid Height (Dualflow): Garcia e Fair(2002).
+*Froth Height: Todd & Van Winkle (1972).
+*Fraction of holes with vapour flow (Downcomer): Prado (1990).
+*Fraction of holes with vapour flow (Dualflow): Garcia e Fair (2002).
+*Fraction of active holes that are in jetting: Prado (1987), considering fj=60% when ua=uatp.
+*Capacity Factor (Downcomer): Treybal(1968).
+*Capacity Factor (Dualflow): Garcia e Fair(2002).
+*Flood Velocity: Fair(1961).
+*Liquid Mixing Models: Lewis(1936).
+*Eddy Diffusivity: Molnar(1974).
+*Entrainment Correction (Downcomer): Colburn(1936).
+*Fraction of entrained liquid (Downcomer): Zuiderweg(1982).
+
+General References:
+*GARCIA, J. A.; FAIR, J. R. A Fundamental Model for the Prediction of Distillation Sieve Tray Efficiency. 1. Database Development. Ind. Eng. Chem. Res., v.39, n.6, p. 1809-17,2000.
+*GARCIA, J. A.; FAIR, J. R. A Fundamental Model for the Prediction of Distillation Sieve Tray Efficiency. 2. Model Development and Validation. Ind. Eng. Chem. Res., v.39, n.6, p. 1818-25,2000.
+*GARCIA, J. A.; FAIR, J. R. Distillation Sieve Trays without Downcomers: Prediction of Performance Characteristics. Ind. Eng. Chem. Res., v.41, n.6, p. 1632-40,2002.
+*LOCKETT, M. J. Distillation Tray Fundamentals. Cambridge: Cambridge University Press, 1986.
+*PRADO, M.; FAIR, J. R. Fundamental Model for the Prediction of Sieve Tray Efficiency.  Ind. Eng. Chem. Res., v.29, n.6, p. 1031-42,1990.
+";
+
+	PARAMETERS
+	
+	d as length (Brief="Tray Diameter");
+	dh as length (Brief="Hole Diameter");
+	Aa as area (Brief="Case Downcomer: Active Area or Bubbling Area = Atray - 2*Adowncomer. Case dualflow: total tray area");
+	Ah as area (Brief="Area of Holes");
+	fi as fraction (Brief="Fractional perforated tray area(hole area/ bubbling area)");
+	Ts as length (Brief="Tray spacing");
+	T as length (Brief="Tray thickness");	
+	tray_type as Switcher (Valid = ["Dualflow", "Downcomer"], Default= "Downcomer");
+outer	iLK as Integer (Brief="Pseudo-binary ligth key index");
+outer	iHK as Integer (Brief="Pseudo-binary heavy key index");	
+	
+	VARIABLES
+
+	Qv as flow_vol (Brief="Vapour volumetric flow");
+	Ql as flow_vol (Brief="Liquid volumetric flow");
+	Mv as flow_mass (Brief="Vapour mass flow");
+	Ml as flow_mass (Brief="Liquid mass flow");
+	Miv as viscosity (Brief="Vapour viscosity");
+	Mil as viscosity (Brief="Liquid viscosity");
+	Dl as diffusivity (Brief="Diffusivity on Liquid Phase");
+	Dv as diffusivity (Brief="Diffusivity on Vapour Phase");
+	
+	lambda as Real (Brief="Stripping factor or ratio of slope of equilibrium line to slope of operating line");
+	m as Real (Brief="Slope of equilibrium line");
+	
+	VinLK as Real (Brief="Pseudo-binary key ");
+	VoutLk as Real (Brief="Pseudo-binary key");
+	LinLK as Real (Brief="Pseudo-binary key");
+	LoutLk as Real (Brief="Pseudo-binary key");
+	
+	us as velocity (Brief="Superficial velocity based on Ap");
+	ua as velocity (Brief="Superficial velocity based on Aa");
+	fs as positive (Brief="Superficial factor", Unit='kg^.5/m^.5/s');
+	uh as velocity (Brief="Vapour velocity through holes");
+	fp as positive (Brief="Flow Parameter");
+	hcl as length (Brief="Clear Liquid Height");
+	hcld as length (Brief="Dynamic liquid head at tray floor");
+	hf as length (Brief="Froth Height");
+	e as positive (Brief="Porosity");
+	csb as positive(Brief="Capacity Factor");
+	uf as velocity (Brief="Flood velocity");
+	ff as positive (Brief="Flood factor");
+	sigma as surf_tens (Brief="Surface Tension");
+	
+	ftm as Real (Brief="General Factor in equations of Units of Mass Transfer", Unit='cm/s^.5');
+	
+	xf as fraction (Brief="Fraction of holes with vapour flow");
+	dj as length (Brief="Jet Diameter");
+	uj as velocity (Brief="Jet velocity");
+	Reh as positive (Brief="Reynolds number for vapour flow through hole");
+	hj as length (Brief="Jet lenght");
+	tg1 as time_sec (Brief="Residence time in Zone One");
+	NL1 as positive (Brief="Number of liquid phase transfer units in Zone One");
+
+	dbs as length (Brief="Small bubble diameter");
+	dbl as length (Brief="Large bubble diameter");
+	sigCSB as positive (Brief="Surface tension correction");
+	MilCSB as positive (Brief="Liquid viscosity correction");
+	fi3 as positive;
+	dbss as length (Brief="Small bubble Sauter diameter");
+	dbls as length (Brief="Large bubble Sauterdiameter");
+	eo as positive (Brief="Etvos number");
+	mo as positive (Brief="Morton number");
+	h as positive (Brief="Constant h");
+	j as positive (Brief="Constant j");
+	usb as velocity (Brief="Terminal velocity of small bubbles");
+	ubss as velocity (Brief="Terminal velocity of small bubbles using Sauter diameter");
+	aj as fraction (Brief="Fraction of small bubbles in froth");
+	ulb as velocity (Brief="Terminal velocity of large bubbles");
+	tg2s as time_sec (Brief="Residence time of small bubbles in Zone Two");
+	tg2l as time_sec (Brief="Residence time of large bubbles in Zone Two");
+	NL2S as positive (Brief="Number of liquid phase transfer units of small bubbles in Zone Two");
+	NL2L as positive (Brief="Number of liquid phase transfer units of large bubbles in Zone Two");
+	tg3 as time_sec (Brief="Residence time in Zone Three");
+	NL3 as positive (Brief="Number of liquid phase transfer units in Zone Three");
+	ulb3 as velocity (Brief="Terminal velocity of large bubbles in Zone Three");
+	tg4s as time_sec (Brief="Residence time of small bubbles in Zone Four");
+	tg4l as time_sec (Brief="Residence time of large bubbles in Zone Four");
+	NL4S as positive (Brief="Number of liquid phase transfer units of small bubbles in Zone Four");
+	NL4L as positive (Brief="Number of liquid phase transfer units of large bubbles in Zone Four");
+	tg5 as time_sec (Brief="Residence time in Zone Five");
+	NL5 as positive (Brief="Number of liquid phase transfer units in Zone Five");
+	
+	uatp as velocity (Brief="Superficial velocity based on Aa in the transition point of froth regime to spay regime");
+	fj as positive (Brief="Fraction of active holes that are in jetting");
+	flb as positive (Brief="Fraction of active holes that are producing small bubbles");
+	fsb as positive (Brief="Fraction of active holes that are producing large bubbles");
+	
+	ftmg as positive (Brief="General Factor in equations of Units of Mass Transfer");
+	
+	Rej as positive (Brief="Reynolds number of jet");
+	Scg as positive (Brief="Schmidt number of vapour phase");
+	kl1 as positive (Brief="Liquid phase mass transfer coefficient in Zone One");
+	kg1 as positive (Brief="Vapour phase mass transfer coefficient in Zone One");
+	NG1 as positive (Brief="Number of vapour phase transfer units in Zone One");
+	
+	Peg2s as positive (Brief="Peclet number of small bubbles in Zone Two");
+	Peg2l as positive (Brief="Peclet number of large bubbles in Zone Two");
+	Peg3 as positive (Brief="Peclet number in Zone Three");
+	Peg4s as positive (Brief="Peclet number of small bubbles in Zone Four");
+	Peg4l as positive (Brief="Peclet number of large bubbles in Zone Four");
+	Peg5 as positive (Brief="Peclet number in Zone Five");
+	
+	Sh2s as positive (Brief="Sherwood number of small bubbles in Zone Two");
+	Sh2l as positive (Brief="Sherwood number of large bubbles in Zone Two");
+	Sh3 as positive (Brief="Sherwood number in Zone Three");
+	Sh4s as positive (Brief="Sherwood number of small bubbles in Zone Four");
+	Sh4l as positive (Brief="Sherwood number of large bubbles in Zone Four");
+	Sh5 as positive (Brief="Sherwood number in Zone Five");
+	
+	kg2s as positive (Brief="Vapour phase mass transfer coefficient of small bubbles in Zone Two");
+	kg2l as positive (Brief="Vapour phase mass transfer coefficient of large bubbles in Zone Two");
+	kg3 as positive (Brief="Vapour phase mass transfer coefficient in Zone Three");
+	kg4s as positive (Brief="Vapour phase mass transfer coefficient of small bubbles in Zone Four");
+	kg4l as positive (Brief="Vapour phase mass transfer coefficient of large bubbles in Zone Four");
+	kg5 as positive (Brief="Vapour phase mass transfer coefficient in Zone Five");
+	
+	kl2s as positive (Brief="Liquid phase mass transfer coefficient of small bubbles in Zone Two");
+	kl2l as positive (Brief="Liquid phase mass transfer coefficient of large bubbles in Zone Two");
+	kl3 as positive (Brief="Liquid phase mass transfer coefficient in Zone Three");
+	kl4s as positive (Brief="Liquid phase mass transfer coefficient of small bubbles in Zone Four");
+	kl4l as positive (Brief="Liquid phase mass transfer coefficient of large bubbles in Zone Four");
+	kl5 as positive (Brief="Liquid phase mass transfer coefficient in Zone Five");
+	
+	NG2S as positive (Brief="Number of Vapour phase transfer units of small bubbles in Zone Two");
+	NG2L as positive (Brief="Number of Vapour phase transfer units of large bubbles in Zone Two");
+	NG3 as positive (Brief="Number of Vapour phase transfer units in Zone Three");
+	NG4S as positive (Brief="Number of Vapour phase transfer units of small bubbles in Zone Four");
+	NG4L as positive (Brief="Number of Vapour phase transfer units of large bubbles in Zone Four");
+	NG5 as positive (Brief="Number of Vapour phase transfer units in Zone Five");
+	
+	NGFJ as positive (Brief="Number of Vapour phase transfer units of jetting");
+	NGFLB as positive (Brief="Number of Vapour phase transfer units of large bubbles");
+	EOG as positive (Brief="Point Efficiency");
+	
+	De as Real (Brief="Eddy diffusivity for liquid mixing");
+	Pe as positive (Brief="Peclet Number");
+	n as Real (Brief="Constant");
+	Emv1 as positive (Brief="Murphree tray efficiency");
+	
+	psi as Real (Brief="Correction factor of liquid entrainment in dualflow trays");
+	psi1 as Real (Brief="Correction factor of weeping in dualflow trays");
+	
+	hb as length (Brief="Height on spray regime");     
+	l as positive (Brief="Fraction of entrained liquid");      
+	Emv2 as positive (Brief="Apparent Murphree tray efficiency");
+	Emv3 as positive (Brief="Apparent Murphree tray efficiency");
+	
+
+	EQUATIONS
+	
+	"Vapour volumetric flow"
+	Qv=OutletV.F*vV;
+	
+	"Liquid volumetric flow"
+	Ql=OutletL.F*vL;
+
+	"Vapour mass flow"
+	Mv=Qv*rhoV;
+	
+	"Liquid mass flow"
+	Ml=Ql*rhoL;
+	
+	"Vapour viscosity"
+	Miv=PP.VapourViscosity(OutletL.T, OutletL.P, OutletL.z);
+	
+	"Liquid viscosity"
+	Mil=PP.LiquidViscosity(OutletL.T, OutletL.P, OutletL.z);
+
+	if NComp > 2 then
+		
+		"Pseudo-binary Approach"
+		VinLK=InletV.z(iLK)/(InletV.z(iLK)+InletV.z(iHK));
+		VoutLk=OutletV.z(iLK)/(OutletV.z(iLK)+OutletV.z(iHK));
+		LinLK=InletL.z(iLK)/(InletL.z(iLK)+InletL.z(iHK));
+		LoutLk=OutletL.z(iLK)/(OutletL.z(iLK)+OutletL.z(iHK));
+		
+	else
+		VinLK=1;
+		VoutLk=1;
+		LinLK=1;
+		LoutLk=1;
+		
+	end
+	
+	"Stripping factor or ratio of slope of equilibrium line to slope of operating line"
+	lambda=m*(OutletV.F/OutletL.F);
+	
+	"Superficial velocity based on Ap"
+	us=Qv/Ap;
+	
+	"Superficial velocity based on Aa"
+	ua=Qv/Aa;
+	
+	"Superficial factor"
+	fs=ua*rhoV^.5;
+	
+	"Vapour velocity through holes"
+	uh=Qv/Ah;
+	
+	"Flow parameter"
+	(fp*Mv)^2*rhoL=Ml^2*rhoV;
+	
+	switch tray_type
+		case "Downcomer":
+		"Clear Liquid Height"
+	hcl=0.42*(Ql*'1/m'/(lw*ua)*(rhoL/rhoV)^.5)^.33*(hw*'1/m')^.67*'m';
+		case "Dualflow":
+		"Clear Liquid Height"
+	hcl=(0.01728*((Ml*'1/(kg/s)')^(4.3*(fi^1.5))*(ua*'1/(m/s)'*(rhoV/rhoL)^.5)^1))/(rhoL*'1/(kg/m^3)'*fi^1.5*(T/(dh*1000*1000))^.42)*'m';
+	
+	end
+	
+	"Dynamic liquid head at tray floor"
+	hcld=hcl-ua*rhoV*(uh-ua)/(rhoL*g);
+	
+	"Froth Height"
+	hf=0.076*'m'+32.6*'m'*(fs*'1/(kg^.5/m^.5/s)')^2/((rhoL-rhoV)*'m^3/kg')+0.82*hcld;
+	
+	"Porosity"
+	e=1-hcl/hf;
+	
+	switch tray_type
+		case "Downcomer":
+		"Capacity factor"
+	csb=(0.0744*Ts*'1/m'+0.0117)*(log(abs(1/fp)))+0.0304*Ts*'1/m'+0.0153;
+		case "Dualflow":
+		"Capacity factor"
+	csb=(0.1317*fp^2-0.1747*fp+0.1124)*(0.6649*Ts*'1/m'+0.5667);
+	end
+	
+	"Flood velocity"
+	uf = csb*(sigma*'1/(N/m)'/0.02)^.2*(abs((rhoL-rhoV)/rhoV))^.5*(fi/.1)^.44*'m/s';
+	
+	switch tray_type
+		case "Downcomer":
+		"Flood Factor"
+	ff=us/uf;
+		case "Dualflow":
+		"Flood Factor"
+	ff=ua/uf;
+	end
+		
+	
+	#Prado, Garcia and Fair Model#
+	
+		#Liquid Phase#
+	
+	"General Factor in equations of Units of Mass Transfer"
+	ftm=(rhoL*Mv*Dl^.5)/(3.1416^.5*rhoV*Ml);
+	
+			#Zone One#
+	
+	switch tray_type
+		case "Downcomer":
+		"Fraction of holes with vapour flow"
+	xf=0.9;
+		case "Dualflow":
+		"Fraction of holes with vapour flow"
+	xf=0.4668*(fi/0.2)^.8*(Ts*'1/m'/0.61)^.2*exp(-0.35*(abs(ff*100-90)/45));
+	end
+	
+	
+	"Jet diameter"
+	dj=1.1*dh+0.25*hcl;
+	
+	"Jet velocity"
+	uj=(uh*dh^2)/(xf*dj^2);
+	
+	"Reynolds number for vapour flow through hole"
+	Reh=dh*uh*rhoV/Miv;
+	
+	"Jet Height"
+	hj=1.1e-3*(dh*'1/m')^.2*Reh^.46*'m';
+	
+	"Residence time in Zone One"
+	tg1=hj/uj;
+	
+	"Number of vapour phase transfer units in Zone One"
+	NL1=(8*ftm*tg1^.5)/dj;
+	
+			#Zone Two#
+	
+	"Small Bubble Diameter"
+	dbs=3.34/(ua*'s/m'*9.8)^.4*(sigma*'m/N'/(rhoL*'m^3/kg'))^.6*(Mil/Miv)^.1*'m';
+	
+	"Large Bubble Diameter"
+	dbl=dbs*(0.83+41.5*((sigma*'m/N')^.6*(Mil*'1/cP'/(rhoV*'m^3/kg'))^.1));
+	
+	if sigma > 5e-3 then
+		sigCSB=1;
+	else 
+		sigCSB=3*(sigma*'m/N')^.6;
+	end
+	if Mil > .6e-3 then
+		MilCSB=4.13*(Mil*'1/cP')^1.5;
+	else
+		MilCSB=1;
+	end
+	
+	fi3=1*MilCSB*sigCSB;
+	
+	"Sauter diameters"
+	dbls=fi3*.605*(dh*'1/m')^.84*(uh*'s/m')^.18/((Ql*'s/m^3')/(lw*'1/m')^.07)*'m';
+	dbss=fi3*.660*(dh*'1/m')^.84*(uh*'s/m')^.085/((Ql*'s/m^3')/(lw*'1/m')^.08)*'m';
+	
+	"Eotvos Number"
+	eo=g*(rhoL-rhoV)*dbs^2/sigma;
+	
+	"Morton Number"
+	mo=g*Mil^4*(rhoL-rhoV)/(rhoL^2*sigma^3);
+	
+	"Constant h"
+	h=4/3*eo*mo^-0.149*((Mil*'1/cP')/9.12e-4)^-.14;
+	
+	if h > 59.3 then
+		j=3.42*h^.441;
+	else
+		j=0.94*h^.757;
+	end
+	
+	"Terminal velocity of small bubbles"
+	usb=Mil/(rhoL*dbs)*mo^-.149*(j-0.857);
+	
+	"Terminal velocity of small bubbles using Sauter diameter"
+	ubss=Mil/(rhoL*dbs)*mo^-.149*(j-0.857);
+	
+	"Fraction of small bubbles in froth"
+	aj=1-0.463*((sigma*'m/N')/0.07282)^0.6*((Mil/9.12e-4)*(1.845e-5/Miv))^0.1*(994.7/(rhoL*'m^3/kg'))^0.6*(1.183/(rhoV*'m^3/kg'))^0.1;
+	
+	"Terminal velocity of large bubbles"
+	ulb =  us/((1 - aj)*e) - usb*aj/(1-aj);
+ 
+	if hf > hj then
+         tg2s = (hf-hj)/usb;
+         tg2l = (hf-hj)/ulb;
+	else
+         tg2s = hf/usb;
+         tg2l = hf/ulb;
+	end
+ 
+	"Number of liquid phase transfer units in Zone Two"
+	NL2S = 12*ftm*tg2s^0.5/dbs;
+	NL2L = 12*ftm*tg2l^0.5/dbl;
+ 
+			#Zone Three#
+	
+    "Terminal velocity of large bubbles in Zone Three"
+	ulb3 = us/e;
+	
+	"Residence time in Zone Three"
+	tg3 = dbls/ulb3;
+ 
+    "Number of liquid phase transfer units in Zone Three"
+	NL3 = 12*ftm*tg3^0.5/dbls;
+ 
+			#Zone Four#
+	
+	if hf > dbls then
+		tg4s = (hf-dbls)/usb;
+		tg4l = (hf-dbls)/ulb;
+	else
+		tg4s = hf/usb;
+		tg4l = hf/ulb;
+	end
+ 
+    "Number of liquid phase transfer units in Zone Four"
+	NL4S=12*ftm*tg4s^0.5/dbs;
+	NL4L=12*ftm*tg4l^0.5/dbl;
+ 
+			#Zone Five#
+	
+	"Residence time in Zone Five"
+	tg5=hf/ulb3;
+	
+	"Number of liquid phase transfer units in Zone Five"
+	NL5=12*ftm*tg5^0.5/dbss;
+	
+	#Fraction of holes in jet regime estimation
+
+	"Superficial velocity based on Aa in the transition point of froth regime to spay regime"
+	uatp=((0.04302*(rhoV*'m^3/kg')^(-0.5)*(rhoL*'m^3/kg')^0.692*(sigma*'m/N')^0.06*fi^0.25*((Ql*'s/m^3')/(lw*'1/m'))^.05*(dh*'1/m')^(-0.1))*(2.58717*(hw*'1/m')+0.86))*'m/s';       
+    
+	"Fraction of active holes that are in jetting"
+	fj=ua*0.6/uatp;
+ 
+	"Fraction of active holes that are producing small bubbles"
+	fsb=165.65*(dh*'1/m')^1.32*fi^1.33;
+	
+	"Fraction of active holes that are producing large bubbles"
+	flb=1-fj-fsb;
+ 	
+		#Vapour Phase#
+	
+	"General Factor in equations of Units of Mass Transfer" 
+	ftmg=(Ml*rhoV)/(Mv*rhoL); 
+ 
+			#Zone One#
+    "Reynolds number of jet"
+	Rej=uj*dj*rhoV/Miv;
+ 
+    "Schimdt number on vapour phase"
+	Scg=Miv/(rhoV*Dv);
+ 
+	"Vapour phase mass transfer coefficient in Zone One"
+	kg1=0.046*((Dv*'s/m^2')/(dj*'1/m'))*Rej^0.96*Scg^0.44;
+ 
+    "Liquid phase mass transfer coefficient in Zone One"
+	kl1=1.13*((Dl*'s/m^2')/(tg1*'1/s'))^0.5;
+ 
+    "Number of vapour phase transfer units in Zone One"
+	NG1=ftmg*kg1*NL1/kl1;
+	
+			#Zones Two,Three, Four and Five#
+	
+	"Peclet number"
+	Peg2s=dbs*usb/Dv;
+	Peg2l=dbl*ulb/Dv;
+	Peg3=dbls*ulb3/Dv;
+	Peg4s=dbs*usb/Dv;
+	Peg4l=dbl*ulb/Dv;
+	Peg5=dbss*ubss/Dv;
+	
+	if Peg2s > 200  then
+         Sh2s=17.9;
+	else
+		 Sh2s=-11.878+25.879*log(Peg2s)-5.640*(log(Peg2s))^2;
+	end
+	
+	if Peg2l > 200  then
+         Sh2l=17.9;
+	else
+		 Sh2l=-11.878+25.879*log(Peg2l)-5.640*(log(Peg2l))^2;
+	end
+	
+	if Peg3 > 200  then
+         Sh3=17.9;
+	else
+		 Sh3=-11.878+25.879*log(Peg3)-5.640*(log(Peg3))^2;
+	end
+	
+	if Peg4s > 200  then
+         Sh4s=17.9;
+	else
+		 Sh4s=-11.878+25.879*log(Peg4s)-5.640*(log(Peg4s))^2;
+	end
+	
+	if Peg4l > 200  then
+         Sh4l=17.9;
+	else
+		 Sh4l=-11.878+25.879*log(Peg4l)-5.640*(log(Peg4l))^2;
+	end
+	
+	if Peg5 > 200  then
+         Sh5=17.9;
+	else
+		 Sh5=-11.878+25.879*log(Peg5)-5.640*(log(Peg5))^2;
+	end
+	
+	"Vapour phase mass transfer coefficient"
+	kg2s=Sh2s*(Dv*'s/m^2')/(dbs*'1/m');
+	kg2l=Sh2l*(Dv*'s/m^2')/(dbl*'1/m');
+	kg3=Sh3*(Dv*'s/m^2')/(dbls*'1/m');
+	kg4s=Sh4s*(Dv*'s/m^2')/(dbs*'1/m');
+	kg4l=Sh4l*(Dv*'s/m^2')/(dbl*'1/m');
+	kg5=Sh5*(Dv*'s/m^2')/(dbss*'1/m');
+ 
+    "Liquid phase mass transfer coefficient"
+	kl2s=1.13*((Dl*'s/m^2')/(tg2s*'1/s'))^0.5;
+	kl2l=1.13*((Dl*'s/m^2')/(tg2l*'1/s'))^0.5;
+	kl3=1.13*((Dl*'s/m^2')/(tg3*'1/s'))^0.5;
+	kl4s=1.13*((Dl*'s/m^2')/(tg4s*'1/s'))^0.5;
+	kl4l=1.13*((Dl*'s/m^2')/(tg4l*'1/s'))^0.5;
+	kl5=1.13*((Dl*'s/m^2')/(tg5*'1/s'))^0.5;
+	
+	"Number of vapour phase transfer units"
+	NG2S=ftmg*kg2s*NL2S/kl2s;
+	NG2L=ftmg*kg2l*NL2L/kl2l;
+	NG3=ftmg*kg3*NL3/kl3;
+	NG4S=ftmg*kg4s*NL4S/kl4s;
+	NG4L=ftmg*kg4l*NL4L/kl4l;
+	NG5=ftmg*kg5*NL5/kl5;
+	
+	"Number of Vapour phase transfer units of jetting"
+	NGFJ=NG1-ln(1e-8+abs(1-(aj*(1-exp(-NG2S))+(1-aj)*(1-exp(-NG2L)))));
+	
+	"Number of Vapour phase transfer units of large bubbles"
+	NGFLB= NG3-ln(1e-8+abs(1-(aj*(1-exp(-NG4S))+(1-aj)*(1-exp(-NG4L)))));
+    
+	"Point Efficiency"
+	EOG=fj*(1-exp(-NGFJ))+flb*(1-exp(-NGFLB))+fsb*(1-exp(-NG5));
+	
+	#Liquid Mixing Models#
+	
+	"Eddy diffusivity for liquid mixing"
+	De=(0.0005+0.01285*ua*'s/m'+6.32*(Ql*'s/m^3'/(lw*'1/m'))+0.312*hw*'1/m')^2;
+	
+	"Peclet Number"
+	Pe=(OutletL.F*d)/(lw*hcl*(1/vL)*De*'m^2/s');
+	
+	"Constant n"
+	n=Pe/2*((1+4*lambda*EOG/Pe)^.5-1);
+
+	if Pe equal 0 then
+		Emv1=EOG;
+	else 
+		if Pe < 20 then
+			Emv1/EOG=(1-exp(-(n+Pe)))/((n+Pe)*(1+(n+Pe)/n))+(exp(n)-1)/(n*(1+n/(n+Pe)));
+		else
+			lambda*Emv1=(exp(lambda*EOG)-1);
+		end
+	end
+	
+	#Entrainment and Weeping Correction#
+	
+	"Height on spray regime"
+	hb=hcl*(265*((ua/(g*hcl)^.5)*(rhoV/rhoL)^.5)^1.7+1);
+	
+	"Fraction of entrained liquid"
+	l=1e-8*(hb/Ts)^3*(uh/(Ql/Aa))^2;
+	
+	switch tray_type
+		case "Downcomer":
+		"Apparent Murphree tray efficiency"
+	Emv1=Emv2*(1+l*Emv1);
+		case "Dualflow":
+		"Apparent Murphree tray efficiency"
+	Emv1=Emv2*(1+Emv1*psi/(1-psi));
+	
+	end
+	
+	switch tray_type
+		case "Downcomer":
+		"Apparent Murphree tray efficiency"
+	Emv2=Emv3;
+		case "Dualflow":
+		"Apparent Murphree tray efficiency"
+	Emv2=Emv3*(1+Emv2*psi1/(1-psi1));
+	
+	end
+
+	Emv=Emv3;
+end

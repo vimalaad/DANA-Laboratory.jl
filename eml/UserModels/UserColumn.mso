@@ -1,0 +1,738 @@
+#*-------------------------------------------------------------------
+* EMSO Model Library (EML) Copyright (C) 2004 - 2007 ALSOC.
+*
+* This LIBRARY is free software; you can distribute it and/or modify
+* it under the therms of the ALSOC FREE LICENSE as available at
+* http://www.enq.ufrgs.br/alsoc.
+*
+* EMSO Copyright (C) 2004 - 2007 ALSOC, original code
+* from http://www.rps.eng.br Copyright (C) 2002-2004.
+* All rights reserved.
+*
+* EMSO is distributed under the therms of the ALSOC LICENSE as
+* available at http://www.enq.ufrgs.br/alsoc.
+*
+*----------------------------------------------------------------------
+* File containg user models of columns
+* 
+*
+* The default nomenclature is:
+*		Type_Column_reboilertype_condensertyper
+*
+* where:
+*	Type = refluxed or reboiled or section
+*	Column = Stripping, Absorption, Rectifier, Distillation
+*	Reboiler type (if exists) = kettle or thermosyphon 
+*	Condenser type (if exists) = with subccoling or without subcooling
+* 
+*-----------------------------------------------------------------------
+* Author: Based on Models written by Paula B. Staudt
+* $Id$
+*---------------------------------------------------------------------*#
+
+using "UserTray";
+using "stage_separators/reboiler";
+using "stage_separators/condenser";
+using "mixers_splitters/splitter";
+using "stage_separators/tank";
+using "pressure_changers/pump";
+
+# The complete documentation for these models needs to be updated !!!
+
+#*----------------------------------------------------------------------
+* Model of a  basic column section with:
+*	- NumberOfTrays=number of trays.
+* 
+*---------------------------------------------------------------------*# 
+Model User_Section_ColumnBasic
+
+ATTRIBUTES
+	Pallete 	= false;
+	Icon 		= "icon/SectionColumn"; 
+	Brief 	= "Model of a column section.";
+	Info 		=
+"== Model of a column section containing ==
+* NumberOfTrays trays.
+	
+== Specify ==
+* the feed stream of each tray (Inlet);
+* the Murphree eficiency for each tray Emv;
+* the InletL stream of the top tray;
+* the InletV stream of the bottom tray.
+	
+== Initial Conditions ==
+* the trays temperature (OutletL.T);
+* the trays liquid level (Level) OR the trays liquid flow (OutletL.F);
+* (NoComps - 1) OutletL (OR OutletV) compositions for each tray.
+";
+
+PARAMETERS
+	outer PP 										as Plugin			(Brief="External Physical Properties", Type="PP");
+	outer NComp 								as Integer 			(Brief="Number of components");
+	NumberOfTrays 								as Integer			(Brief="Number of trays", Default=8);
+	FeedTrayIndex(NumberOfTrays) 	as Integer			(Brief="Number of trays", Default=0,Hidden=true);
+	LiqSideTrayIndex(NumberOfTrays) 	as Integer			(Brief="Number of trays", Default=0,Hidden=true);
+	VapSideTrayIndex(NumberOfTrays) 	as Integer			(Brief="Number of trays", Default=0,Hidden=true);
+	FeedTrayLocation							as Integer			(Brief="Feed tray Location", Default=2);
+	LiquidSideStreamLocation							as Integer			(Brief="Liquid Side Stream Location", Default=2);
+	VapourSideStreamLocation							as Integer			(Brief="Vapour Side Stream Location", Default=2);
+	g 													as acceleration 	(Brief="Gravity Acceleration",Default=9.81,Hidden=true);
+	Mw(NComp)  									as molweight 	(Brief="Component Mol Weight",Hidden=true);
+	
+	VapourFlowModel 	as Switcher	(Valid = ["Reepmeyer", "Feehery_Fv", "Roffel_Fv", "Klingberg", "Wang_Fv", "Elgue"], Default = "Reepmeyer");
+	LiquidFlowModel 		as Switcher	(Valid = ["default", "Wang_Fl", "Olsen", "Feehery_Fl", "Roffel_Fl"], Default = "default");
+
+	VolumeOfTray 		as volume		(Brief="Total Volume of the tray");
+	HeatSupply 			as heat_rate 	(Brief="Rate of heat supply"); 
+	PlateArea 				as area 			(Brief="Plate area = Atray - Adowncomer");
+
+	HolesArea 			as area 				(Brief="Total holes area");
+	WeirLength			as length 			(Brief="Weir length");
+	WeirHeight 			as length 			(Brief="Weir height");
+	FeeheryCoeff		as Real 			(Brief="Feeherys correlation coefficient", Unit='1/m^4', Default=1);
+	ElgueCoeff			as Real 			(Brief="Elgues correlation coefficient", Unit='kg/m/mol^2', Default=1);
+	OlsenCoeff			as Real 			(Brief="Olsens correlation coefficient", Default=1);
+	TrayLiquidPasses 	as Real 			(Brief="Number of liquid passes in the tray", Default=1);
+	
+	TopTemperature 		as temperature;
+	TbottomTemperature 	as temperature;
+	LevelFraction			as fraction	(Brief = "Level Fraction");
+
+	TopComposition(NComp) 			as fraction	(Brief = "Component Molar Fraction at Top");
+	BottomComposition(NComp) 		as fraction	(Brief = "Component Molar Fraction at Bottom");
+	
+	V 					as volume		(Brief="Total Volume of the tray",Hidden=true);
+	Q 					as heat_rate 	(Brief="Rate of heat supply",Hidden=true); 
+	Ap 				as area 			(Brief="Plate area = Atray - Adowncomer",Hidden=true);
+
+	Ah 				as area 				(Brief="Total holes area",Hidden=true);
+	lw 				as length 			(Brief="Weir length",Hidden=true);
+	hw 				as length 			(Brief="Weir height",Hidden=true);
+	beta 				as fraction 		(Brief="Aeration fraction");
+	alfa 				as fraction 		(Brief="Dry pressure drop coefficient");
+	w 					as Real 			(Brief="Feeherys correlation coefficient", Unit='1/m^4', Default=1,Hidden=true);
+	btray 			as Real 			(Brief="Elgues correlation coefficient", Unit='kg/m/mol^2', Default=1,Hidden=true);
+	fw 				as Real 			(Brief="Olsens correlation coefficient", Default=1,Hidden=true);
+	Np 				as Real 			(Brief="Number of liquid passes in the tray", Default=1,Hidden=true);
+	
+	VapourFlow 	as Switcher	(Valid = ["on", "off"], Default = "on",Hidden=true);
+	LiquidFlow 	as Switcher	(Valid = ["on", "off"], Default = "on",Hidden=true);
+
+SET
+	FeedTrayIndex(FeedTrayLocation) =1;
+	VapSideTrayIndex(FeedTrayLocation) =1;
+	LiqSideTrayIndex(FeedTrayLocation) =1;
+	Mw = PP.MolecularWeight();
+
+	V=VolumeOfTray;
+	Q=HeatSupply;
+	Ap=PlateArea;
+	Ah=HolesArea;
+	lw=WeirLength;
+	hw=WeirHeight ;
+	w=FeeheryCoeff;
+	btray=ElgueCoeff;
+	fw=OlsenCoeff;
+	Np=TrayLiquidPasses;
+
+VARIABLES
+
+	in	FeedTray 				as stream		 		(Brief="Feed stream", PosX=0, PosY=0.55);
+	VapourDrawOffFlow  as flow_mol 			(Brief = "Stream Molar Flow Rate");
+	LiquidDrawOffFlow   as flow_mol 			(Brief = "Stream Molar Flow Rate");
+	
+	trays(NumberOfTrays) as User_tray			(Brief="Number of trays");
+
+	MurphreeEff 				as Real 	(Brief = "Murphree efficiency");
+
+CONNECTIONS
+
+	trays([2:NumberOfTrays]).OutletV 	to trays([1:NumberOfTrays-1]).InletV;
+	trays([1:NumberOfTrays-1]).OutletL 	to trays([2:NumberOfTrays]).InletL;
+	
+	
+EQUATIONS
+# Connecting Trays
+	FeedTray.F*FeedTrayIndex= trays.Inlet.F;
+	FeedTray.T = trays.Inlet.T;
+	FeedTray.P = trays.Inlet.P;
+	FeedTray.z = trays.Inlet.z;
+	FeedTray.v = trays.Inlet.v;
+	FeedTray.h = trays.Inlet.h;
+	
+for i in [1:NumberOfTrays]
+
+"Murphree Efficiency"
+	trays(i).OutletV.z =  MurphreeEff * (trays(i).yideal - trays(i).InletV.z) + trays(i).InletV.z;
+
+"Level of clear liquid over the weir"
+	trays(i).Level = trays(i).ML*trays(i).vL/Ap;
+
+"Geometry Constraint"
+	V = trays(i).ML* trays(i).vL + trays(i).MV*trays(i).vV;
+
+"Energy Holdup"
+	trays(i).E = trays(i).ML*trays(i).OutletL.h + trays(i).MV*trays(i).OutletV.h - trays(i).OutletL.P*V;
+
+"Energy Balance"
+	diff(trays(i).E) = ( trays(i).Inlet.F*trays(i).Inlet.h + trays(i).InletL.F*trays(i).InletL.h + trays(i).InletV.F*trays(i).InletV.h- trays(i).OutletL.F*trays(i).OutletL.h - trays(i).OutletV.F*trays(i).OutletV.h
+	-trays(i).VapourSideStream.F*trays(i).VapourSideStream.h - trays(i).LiquidSideStream.F*trays(i).LiquidSideStream.h + Q );
+
+switch LiquidFlow
+		case "on":
+			switch LiquidFlowModel
+				case "default":
+				"Francis Equation"
+				trays(i).OutletL.F*trays(i).vL = 1.84*'1/s'*lw*((trays(i).Level-(beta*hw))/(beta))^2;
+			
+				case "Wang_Fl":
+				trays(i).OutletL.F*trays(i).vL = 1.84*'m^0.5/s'*lw*((trays(i).Level-(beta*hw))/(beta))^1.5;
+			
+				case "Olsen":
+				trays(i).OutletL.F / 'mol/s'= lw*Np*trays(i).rhoL/sum(Mw*trays(i).OutletV.z)/(0.665*fw)^1.5 * ((trays(i).ML*sum(Mw*trays(i).OutletL.z)/trays(i).rhoL/Ap)-hw)^1.5 * 'm^0.5/mol';
+			
+				case "Feehery_Fl":
+				trays(i).OutletL.F = lw*trays(i).rhoL/sum(Mw*trays(i).OutletL.z) * ((trays(i).Level-hw)/750/'mm')^1.5 * 'm^2/s';
+			
+				case "Roffel_Fl":
+				trays(i).OutletL.F = 2/3*sqrt(2*g)*trays(i).rhoL/sum(Mw*trays(i).OutletL.z)*lw*(2*trays(i).btemp-1)*(trays(i).ML*sum(Mw*trays(i).OutletL.z)/(Ap*1.3)/trays(i).rhoL/(2*trays(i).btemp-1))^1.5;
+			end
+		when trays(i).Level < (beta *hw) switchto "off";
+		
+		case "off":
+		"Low level"
+		trays(i).OutletL.F = 0 * 'mol/h';
+		when trays(i).Level > (beta * hw) + 1e-6*'m' switchto "on";
+	end
+	
+	trays(i).btemp = 1 - 0.3593/'Pa^0.0888545'*abs(trays(i).OutletV.F*sum(Mw*trays(i).OutletV.z)/(Ap*1.3)/sqrt(trays(i).rhoV))^0.177709; #/'(kg/m)^0.0888545/s^0.177709';
+
+switch VapourFlow
+		case "on":
+			switch VapourFlowModel
+				case "Reepmeyer":
+				trays(i).InletV.F*trays(i).vV = sqrt((trays(i).InletV.P - trays(i).OutletV.P)/(trays(i).rhoV*alfa))*Ah;
+			
+				case "Feehery_Fv":
+				trays(i).InletV.F = trays(i).rhoV/Ap/w/sum(Mw*trays(i).OutletV.z) * sqrt(((trays(i).InletV.P - trays(i).OutletV.P)-(trays(i).rhoV*g*trays(i).ML*trays(i).vL/Ap))/trays(i).rhoV);
+			
+				case "Roffel_Fv":
+				trays(i).InletV.F^1.08 * 0.0013 * 'kg/m/mol^1.08/s^0.92*1e5' = (trays(i).InletV.P - trays(i).OutletV.P)*1e5 - (beta*sum(trays(i).M*Mw)/(Ap*1.3)*g*1e5) * (trays(i).rhoV*Ah/sum(Mw*trays(i).OutletV.z))^1.08 * 'm^1.08/mol^1.08';
+			
+				case "Klingberg":
+				trays(i).InletV.F * trays(i).vV = Ap * sqrt(((trays(i).InletV.P - trays(i).OutletV.P)-trays(i).rhoL*g*trays(i).Level)/trays(i).rhoV);
+			
+				case "Wang_Fv":
+				trays(i).InletV.F * trays(i).vV = Ap * sqrt(((trays(i).InletV.P - trays(i).OutletV.P)-trays(i).rhoL*g*trays(i).Level)/trays(i).rhoV*alfa);
+				
+				case "Elgue":
+				trays(i).InletV.F  = sqrt((trays(i).InletV.P - trays(i).OutletV.P)/btray);
+			end
+		when trays(i).InletV.F < 1e-6 * 'kmol/h' switchto "off";
+		
+		case "off":
+		trays(i).InletV.F = 0 * 'mol/s';
+		when trays(i).InletV.P > trays(i).OutletV.P + trays(i).Level*g*trays(i).rhoL + 1e-1 * 'atm' switchto "on";
+	end
+
+end
+
+INITIAL
+
+for i in [1:NumberOfTrays]
+	
+"The initial temperature of the trays"
+	trays(i).OutletL.T = TopTemperature+(TbottomTemperature-TopTemperature)*((i-1)/(NumberOfTrays-1));
+
+"The initial Level of the trays"
+	trays(i).Level = LevelFraction*hw;
+
+end
+
+for i in [1:NComp-1]
+	
+for j in [1:NumberOfTrays]
+
+"The initial composition of the trays"
+	trays(j).OutletL.z(i) = TopComposition(i) +(BottomComposition(i)-TopComposition(i) )*((j-1)/(NumberOfTrays-1));
+
+end
+
+end
+
+end
+
+Model User_Section_Column as User_Section_ColumnBasic
+
+ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/SectionColumn"; 
+	Brief 	= "Model of a column section.";
+	Info 		=
+"== Model of a column section containing ==
+* NumberOfTrays trays.
+	
+== Specify ==
+* the feed stream of each tray (Inlet);
+* the Murphree eficiency for each tray Emv;
+* the InletL stream of the top tray;
+* the InletV stream of the bottom tray.
+	
+== Initial Conditions ==
+* the trays temperature (OutletL.T);
+* the trays liquid level (Level) OR the trays liquid flow (OutletL.F);
+* (NoComps - 1) OutletL (OR OutletV) compositions for each tray.
+";
+
+VARIABLES
+
+	out	VapourDrawOff	as vapour_stream		(Brief="Vapour Outlet in the section", PosX=1, PosY=0.35,Protected = true);
+	out	LiquidDrawOff		as liquid_stream			(Brief="Liquid Outlet in the section", PosX=1, PosY=0.65,Protected = true);
+	
+	in		LiquidInlet		as	stream				(Brief="Liquid Inlet in the section", PosX=0.80, PosY=0);
+	out	VapourOutlet		as vapour_stream	(Brief="Vapour Outlet in the section", PosX=0.30, PosY=0);
+	
+	in		VapourInlet		as stream				(Brief="Vapour Inlet in the section", PosX=0.30, PosY=1);
+	out	LiquidOutlet		as liquid_stream		(Brief="Liquid Outlet in the section", PosX=0.80, PosY=1);
+	
+	LiquidConnector	as stream	(Brief="Liquid connection at the middle trays", PosX=0.75, PosY=1,Hidden=true);
+	VapourConnector	as stream	(Brief="Vapour connection at the middle trays", PosX=0.55, PosY=0,Hidden=true);
+
+CONNECTIONS
+
+	LiquidConnector to trays(1).InletL;
+	VapourConnector to trays(NumberOfTrays).InletV;
+	
+EQUATIONS
+
+	LiquidConnector.F= LiquidInlet.F;
+	LiquidConnector.T = LiquidInlet.T;
+	LiquidConnector.P = LiquidInlet.P;
+	LiquidConnector.z = LiquidInlet.z;
+	LiquidConnector.v = LiquidInlet.v;
+	LiquidConnector.h = LiquidInlet.h;
+	
+	VapourConnector.F= VapourInlet.F;
+	VapourConnector.T = VapourInlet.T;
+	VapourConnector.P = VapourInlet.P;
+	VapourConnector.z = VapourInlet.z;
+	VapourConnector.v = VapourInlet.v;
+	VapourConnector.h = VapourInlet.h;
+	
+	LiquidOutlet.F= trays(NumberOfTrays).OutletL.F;
+	LiquidOutlet.T = trays(NumberOfTrays).OutletL.T;
+	LiquidOutlet.P = trays(NumberOfTrays).OutletL.P;
+	LiquidOutlet.z = trays(NumberOfTrays).OutletL.z;
+	
+	VapourOutlet.F= trays(1).OutletV.F;
+	VapourOutlet.T = trays(1).OutletV.T;
+	VapourOutlet.P = trays(1).OutletV.P;
+	VapourOutlet.z = trays(1).OutletV.z;
+	
+	VapourDrawOff.F*VapSideTrayIndex= trays.VapourSideStream.F;
+	VapourDrawOff.T = trays(VapourSideStreamLocation).VapourSideStream.T;
+	VapourDrawOff.P = trays(VapourSideStreamLocation).VapourSideStream.P;
+	VapourDrawOff.z = trays(VapourSideStreamLocation).VapourSideStream.z;
+
+	LiquidDrawOff.F*LiqSideTrayIndex= trays.LiquidSideStream.F;
+	LiquidDrawOff.T = trays(LiquidSideStreamLocation).LiquidSideStream.T;
+	LiquidDrawOff.P = trays(LiquidSideStreamLocation).LiquidSideStream.P;
+	LiquidDrawOff.z = trays(LiquidSideStreamLocation).LiquidSideStream.z;
+
+	VapourDrawOffFlow = VapourDrawOff.F;
+	LiquidDrawOffFlow = LiquidDrawOff.F;
+
+end
+
+#*----------------------------------------------------------------------
+* Model of a  distillation column containing:
+*	- NumberOfTrays like tray;
+*	- a kettle reboiler;
+*	- dynamic condenser;
+*	- a splitter which separate reflux and distillate;
+*	- a pump in reflux stream;
+*---------------------------------------------------------------------*# 
+Model User_Distillation_kettle_cond as User_Section_ColumnBasic
+
+ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/DistillationKettleCond"; 
+	Brief 		= "Model of a distillation column with dynamic condenser and dynamic reboiler.";
+	Info 		=
+"== Specify ==
+* the feed stream of each tray (Inlet);
+* the Murphree eficiency for each tray Emv;
+* the pump pressure difference;
+* the heat supllied in reboiler and condenser;
+* the condenser vapor outlet flow (OutletV.F);
+* the reboiler liquid outlet flow (OutletL.F);
+* both splitter outlet flows OR one of the splitter outlet flows and the splitter frac.
+	
+== Initial Conditions ==
+* the trays temperature (OutletL.T);
+* the trays liquid level (Level) OR the trays liquid flow (OutletL.F);
+* (NoComps - 1) OutletL (OR OutletV) compositions for each tray;
+	
+* the condenser temperature (OutletL.T);
+* the condenser liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions;
+	
+* the reboiler temperature (OutletL.T);
+* the reboiler liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions.
+";
+	
+PARAMETERS
+	CondenserVapourFlow 		as Switcher	(Valid = ["on", "off"], Default = "on",Hidden=true);
+	
+VARIABLES
+	out	VapourDrawOff	as vapour_stream		(Brief="Vapour Outlet in the section", PosX=1, PosY=0.46,Protected = true);
+	out	LiquidDrawOff		as liquid_stream			(Brief="Liquid Outlet in the section", PosX=1, PosY=0.58,Protected = true);
+	CondenserUnity 	as condenser;
+	ReboilerUnity 	as reboiler;
+	SplitterTop 	as splitter;
+	PumpUnity 		as pump;
+	alfaTopo 		as Real;
+
+out		HeatToReboiler 		as energy_stream 				(Brief="Heat supplied to Reboiler",Hidden=true);
+out		HeatToCondenser		as energy_stream 				(Brief="Heat supplied to Condenser",Hidden=true);
+
+RebNoFlow 	as sourceNoFlow	(Brief="No Inlet Flow to Reboiler",Hidden=true);
+
+out	VapourDistillate 				as vapour_stream	(Brief="Vapour outlet stream From Top Condenser", PosX=0.67, PosY=0);
+in		ConnectorCondenserVout 	as stream	(Brief="Connector for Vapour outlet stream From Top Condenser", Hidden=true);
+
+out	LiquidDistillate 				as liquid_stream	(Brief="Liquid outlet stream From Top Splitter", PosX=1, PosY=0.33);
+in		ConnectorSplitterOut 	as stream	(Brief="Connector for Liquid outlet stream From Top Splitter", Hidden=true);
+
+out	BottomProduct 				as liquid_stream	(Brief="Liquid outlet stream From Reboiler", PosX=1, PosY=1);
+in		ConnectorReboilerLout 	as stream	(Brief="Connector for Liquid outlet stream From Reboiler", Hidden=true);
+
+EQUATIONS
+
+switch CondenserVapourFlow
+
+	case "on":
+		CondenserUnity.InletV.F*trays(1).vV = alfaTopo *Ah * sqrt(2*(trays(1).OutletV.P -
+		CondenserUnity.OutletL.P + 1e-8 * 'atm') / (alfa*trays(1).rhoV));
+		when CondenserUnity.InletV.F < 1e-6 * 'kmol/h' switchto "off";
+
+	case "off":
+		CondenserUnity.InletV.F = 0 * 'mol/s';
+		when trays(1).OutletV.P > CondenserUnity.OutletL.P + 1e-1 * 'atm' switchto "on";
+
+end	
+
+# Condenser Connector Equations
+	ConnectorCondenserVout.T = VapourDistillate.T;
+	ConnectorCondenserVout.P = VapourDistillate.P;
+	ConnectorCondenserVout.F = VapourDistillate.F;
+	ConnectorCondenserVout.z = VapourDistillate.z;
+
+# Splitter Connector Equations
+	ConnectorSplitterOut.T = LiquidDistillate.T;
+	ConnectorSplitterOut.P = LiquidDistillate.P;
+	ConnectorSplitterOut.F = LiquidDistillate.F;
+	ConnectorSplitterOut.z = LiquidDistillate.z;
+
+# Reboiler Connector Equations
+	ConnectorReboilerLout.T = BottomProduct.T;
+	ConnectorReboilerLout.P = BottomProduct.P;
+	ConnectorReboilerLout.F = BottomProduct.F;
+	ConnectorReboilerLout.z = BottomProduct.z;
+
+	VapourDrawOff.F*VapSideTrayIndex= trays.VapourSideStream.F;
+	VapourDrawOff.T = trays(VapourSideStreamLocation).VapourSideStream.T;
+	VapourDrawOff.P = trays(VapourSideStreamLocation).VapourSideStream.P;
+	VapourDrawOff.z = trays(VapourSideStreamLocation).VapourSideStream.z;
+
+	LiquidDrawOff.F*LiqSideTrayIndex= trays.LiquidSideStream.F;
+	LiquidDrawOff.T = trays(LiquidSideStreamLocation).LiquidSideStream.T;
+	LiquidDrawOff.P = trays(LiquidSideStreamLocation).LiquidSideStream.P;
+	LiquidDrawOff.z = trays(LiquidSideStreamLocation).LiquidSideStream.z;
+
+	VapourDrawOffFlow = VapourDrawOff.F;
+	LiquidDrawOffFlow = LiquidDrawOff.F;
+	
+CONNECTIONS
+#vapor
+	ReboilerUnity.OutletV 	to 	trays(NumberOfTrays).InletV;
+	trays(1).OutletV 				to 	CondenserUnity.InletV;
+
+#liquid
+	CondenserUnity.OutletL 		to 	SplitterTop.Inlet;	
+	SplitterTop.Outlet2 				to 	PumpUnity.Inlet;
+	PumpUnity.Outlet 					to 	trays(1).InletL;
+	trays(NumberOfTrays).OutletL 	to 	ReboilerUnity.InletL;
+
+#Connectors
+HeatToReboiler 	to ReboilerUnity.InletQ;
+HeatToCondenser 	to CondenserUnity.InletQ;
+RebNoFlow.Outlet  to ReboilerUnity.Inlet;
+
+CondenserUnity.OutletV to ConnectorCondenserVout;
+SplitterTop.Outlet1 		to ConnectorSplitterOut;
+ReboilerUnity.OutletL 	to ConnectorReboilerLout;
+
+end
+
+
+#* -------------------------------------------------------------------
+* Distillation Column model with:
+*
+*	- NumberOfTrays like tray;
+*	- a vessel in the bottom of column;
+*	- a splitter who separate the bottom product and the stream to reboiler;
+*	- steady state reboiler (thermosyphon);
+*	- a steady state condenser with subcooling;
+*	- a vessel drum (layed cilinder);
+*	- a splitter which separate reflux and distillate;
+*	- a pump in reflux stream.
+*
+* ------------------------------------------------------------------*# 
+Model User_Distillation_thermosyphon_subcooling as User_Section_ColumnBasic
+
+ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/DistillationThermosyphonSubcooling"; 
+	Brief 		= "Model of a distillation column with steady condenser and steady reboiler.";
+	Info 		=
+"== Specify ==
+* the feed stream of each tray (Inlet);
+* the Murphree eficiency for each tray Emv;
+* the pump head;
+* the condenser pressure drop;
+* the heat supllied in top and bottom tanks;
+* the heat supllied in condenser and reboiler;
+* the Outlet1 flow in the bottom splitter (spbottom.Outlet1.F) that corresponds to the bottom product;
+* both  top splitter outlet flows OR one of the splitter outlet flows and the splitter frac.
+	
+== Initial Conditions ==
+* the trays temperature (OutletL.T);
+* the trays liquid level (Level) OR the trays liquid flow (OutletL.F);
+* (NoComps - 1) OutletL (OR OutletV) compositions for each tray;
+	
+* the top tank temperature (OutletL.T);
+* the top tank liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions;
+	
+* the bottom tank temperature (OutletL.T);
+* the bottom tank liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions.
+";
+	
+PARAMETERS
+
+	CondenserVapourFlow as Switcher(Valid = ["on", "off"], Hidden=true, Default = "on");
+
+VARIABLES
+	out	VapourDrawOff	as vapour_stream		(Brief="Vapour Outlet in the section", PosX=1, PosY=0.41,Protected = true);
+	out	LiquidDrawOff		as liquid_stream			(Brief="Liquid Outlet in the section", PosX=1, PosY=0.515,Protected = true);
+	CondenserUnity as condenserSteady;
+	TopVessel 		as tank_cylindrical;
+	TopSplitter 		as splitter;
+	PumpUnity 		as pump;
+	ReboilerUnity 	as reboilerSteady;
+	BottomVessel	as tank;
+	BottomSplitter 	as splitter;
+
+
+	alfaTopo 			as Real;
+
+out		HeatToCondenser		as energy_stream 				(Brief="Heat supplied to Condenser",Hidden=true);
+out		HeatToReboiler 		as energy_stream 				(Brief="Heat supplied to Reboiler",Hidden=true);
+out		HeatToBottomVessel	as energy_stream 				(Brief="Heat supplied to Bottom Vessel",Hidden=true);
+out		HeatToTopVessel		as energy_stream 				(Brief="Heat supplied to Top Vessel",Hidden=true);
+
+out	LiquidDistillate 				as liquid_stream	(Brief="Liquid outlet stream From Top Splitter", PosX=1, PosY=0.30);
+in		ConnectorSplitterTop		as stream			(Brief="Connector for Liquid outlet stream From Top Splitter", Hidden=true);
+
+out	BottomProduct 					as liquid_stream	(Brief="Liquid outlet stream From Bottom Splitter", PosX=1, PosY=1);
+in		ConnectorSplitterBottom 	as stream			(Brief="Connector for Liquid outlet stream From Reboiler", Hidden=true);
+
+EQUATIONS
+
+# Top Splitter Connector Equations
+	ConnectorSplitterTop.T = LiquidDistillate.T;
+	ConnectorSplitterTop.P = LiquidDistillate.P;
+	ConnectorSplitterTop.F = LiquidDistillate.F;
+	ConnectorSplitterTop.z = LiquidDistillate.z;
+
+# Bottom Splitter Connector Equations
+	ConnectorSplitterBottom.T = BottomProduct.T;
+	ConnectorSplitterBottom.P = BottomProduct.P;
+	ConnectorSplitterBottom.F = BottomProduct.F;
+	ConnectorSplitterBottom.z = BottomProduct.z;
+
+	VapourDrawOff.F*VapSideTrayIndex= trays.VapourSideStream.F;
+	VapourDrawOff.T = trays(VapourSideStreamLocation).VapourSideStream.T;
+	VapourDrawOff.P = trays(VapourSideStreamLocation).VapourSideStream.P;
+	VapourDrawOff.z = trays(VapourSideStreamLocation).VapourSideStream.z;
+
+	LiquidDrawOff.F*LiqSideTrayIndex= trays.LiquidSideStream.F;
+	LiquidDrawOff.T = trays(LiquidSideStreamLocation).LiquidSideStream.T;
+	LiquidDrawOff.P = trays(LiquidSideStreamLocation).LiquidSideStream.P;
+	LiquidDrawOff.z = trays(LiquidSideStreamLocation).LiquidSideStream.z;
+
+	VapourDrawOffFlow = VapourDrawOff.F;
+	LiquidDrawOffFlow = LiquidDrawOff.F;
+	
+switch CondenserVapourFlow
+
+	case "on":
+		CondenserUnity.InletV.F*trays(1).vV = alfaTopo * Ah * sqrt(2*(trays(1).OutletV.P -
+		CondenserUnity.OutletL.P + 1e-8 * 'atm') / (alfa*trays(1).rhoV));
+		when CondenserUnity.InletV.F < 1e-6 * 'kmol/h' switchto "off";
+
+	case "off":
+		CondenserUnity.InletV.F = 0 * 'mol/s';
+		when trays(1).OutletV.P > CondenserUnity.OutletL.P + 1e-1 * 'atm' switchto "on";
+
+end	
+	
+CONNECTIONS
+#vapor
+	ReboilerUnity.OutletV 	to trays(NumberOfTrays).InletV;
+	trays(1).OutletV 				to CondenserUnity.InletV;
+
+#liquid
+	CondenserUnity.OutletL 		to TopVessel.Inlet;	
+	TopVessel.Outlet 					to TopSplitter.Inlet;
+	TopSplitter.Outlet2 				to PumpUnity.Inlet;	
+	PumpUnity.Outlet 					to trays(1).InletL;
+	trays(NumberOfTrays).OutletL 	to BottomVessel.Inlet;
+	BottomVessel.Outlet 				to BottomSplitter.Inlet;
+	BottomSplitter.Outlet2 			to ReboilerUnity.InletL;
+
+#Connectors
+HeatToCondenser 			to CondenserUnity.InletQ;
+HeatToReboiler 			to ReboilerUnity.InletQ;
+HeatToBottomVessel 	to BottomVessel.InletQ;
+HeatToTopVessel		 	to TopVessel.InletQ;
+TopSplitter.Outlet1 		to ConnectorSplitterTop;
+BottomSplitter.Outlet1 	to ConnectorSplitterBottom;
+
+end
+
+
+#* -------------------------------------------------------------------
+* Distillation Column model with:
+*
+*	- NumberOfTrays like tray;
+*	- a vessel in the bottom of column;
+*	- a splitter who separate the bottom product and the stream to reboiler;
+*	- steady state reboiler (thermosyphon);
+*	- a dynamic condenser without subcooling;
+*	- a splitter which separate reflux and distillate;
+*	- a pump in reflux stream.
+*
+* ------------------------------------------------------------------*#
+Model User_Distillation_thermosyphon_cond as User_Section_ColumnBasic
+	
+	ATTRIBUTES
+	Pallete 	= true;
+	Icon 		= "icon/DistillationThermosyphonCond"; 
+	Brief 		= "Model of a distillation column with dynamic condenser and steady reboiler.";
+	Info 		=
+"== Specify ==
+* the feed stream of each tray (Inlet);
+* the Murphree eficiency for each tray Emv;
+* the pump head;
+* the condenser vapor outlet flow (OutletV.F);
+* the heat supllied in bottom tank;
+* the heat supllied in condenser and reboiler;
+* the Outlet1 flow in the bottom splitter (spbottom.Outlet1.F) that corresponds to the bottom product;
+	
+== Initial Conditions ==
+* the trays temperature (OutletL.T);
+* the trays liquid level (Level) OR the trays liquid flow (OutletL.F);
+* (NoComps - 1) OutletL (OR OutletV) compositions for each tray;
+	
+* the condenser temperature (OutletL.T);
+* the condenser liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions;
+	
+* the bottom tank temperature (OutletL.T);
+* the bottom tank liquid level (Level);
+* (NoComps - 1) OutletL (OR OutletV) compositions.
+";
+
+PARAMETERS
+	CondenserVapourFlow 	as Switcher	(Valid = ["on", "off"], Default = "on",Hidden=true);
+
+VARIABLES
+
+	CondenserUnity as condenser;
+	SplitterTop 		as splitter;
+	PumpUnity 		as pump;
+	BottomVessel 	as tank;
+	SplitterBottom	as splitter;
+	ReboilerUnity 	as reboilerSteady;
+	alfaTopo 			as Real;
+
+out		HeatToCondenser		as energy_stream 				(Brief="Heat supplied to Condenser",Hidden=true);
+out		HeatToReboiler			as energy_stream 				(Brief="Heat supplied to Reboiler",Hidden=true);
+out		HeatToBottomVessel	as energy_stream 				(Brief="Heat supplied to Bottom Vessel",Hidden=true);
+
+out	VapourDistillate 				as vapour_stream	(Brief="Vapour outlet stream From Top Condenser", PosX=0.73, PosY=0);
+in		ConnectorCondenserVout 	as stream				(Brief="Connector for Vapour outlet stream From Top Condenser", Hidden=true);
+
+out	LiquidDistillate 				as liquid_stream	(Brief="Liquid outlet stream From Top Splitter", PosX=1, PosY=0.45);
+in		ConnectorSplitterTop 	as stream			(Brief="Connector for Liquid outlet stream From Top Splitter", Hidden=true);
+
+out	BottomProduct 					as liquid_stream	(Brief="Liquid outlet stream From Bottom Splitter", PosX=1, PosY=1);
+in		ConnectorSplitterBottom 	as stream			(Brief="Connector for Liquid outlet stream From Reboiler", Hidden=true);
+
+EQUATIONS
+
+# Condenser Connector Equations
+	ConnectorCondenserVout.T = VapourDistillate.T;
+	ConnectorCondenserVout.P = VapourDistillate.P;
+	ConnectorCondenserVout.F = VapourDistillate.F;
+	ConnectorCondenserVout.z = VapourDistillate.z;
+
+# Top Splitter Connector Equations
+	ConnectorSplitterTop.T = LiquidDistillate.T;
+	ConnectorSplitterTop.P = LiquidDistillate.P;
+	ConnectorSplitterTop.F = LiquidDistillate.F;
+	ConnectorSplitterTop.z = LiquidDistillate.z;
+
+# Bottom Splitter Connector Equations
+	ConnectorSplitterBottom.T = BottomProduct.T;
+	ConnectorSplitterBottom.P = BottomProduct.P;
+	ConnectorSplitterBottom.F = BottomProduct.F;
+	ConnectorSplitterBottom.z = BottomProduct.z;
+
+switch CondenserVapourFlow
+		case "on":
+		CondenserUnity.InletV.F*trays(1).vV = alfaTopo * Ah * sqrt(2*(trays(1).OutletV.P -
+		CondenserUnity.OutletL.P + 1e-8 * 'atm') / (alfa*trays(1).rhoV));
+		when CondenserUnity.InletV.F < 1e-6 * 'kmol/h' switchto "off";
+		
+		case "off":
+		CondenserUnity.InletV.F = 0 * 'mol/s';
+		when trays(1).OutletV.P > CondenserUnity.OutletL.P + 1e-1 * 'atm' switchto "on";
+end	
+
+CONNECTIONS
+#vapor
+	ReboilerUnity.OutletV 	to trays(NumberOfTrays).InletV;
+	trays(1).OutletV 				to CondenserUnity.InletV;
+
+#liquid
+	CondenserUnity.OutletL 		to SplitterTop.Inlet;	
+	SplitterTop.Outlet2 				to PumpUnity.Inlet;
+	PumpUnity.Outlet 					to trays(1).InletL;
+	trays(NumberOfTrays).OutletL 	to BottomVessel.Inlet;
+	BottomVessel.Outlet 				to SplitterBottom.Inlet;
+	SplitterBottom.Outlet2 			to ReboilerUnity.InletL;
+
+#Connectors
+HeatToCondenser 			to CondenserUnity.InletQ;
+HeatToReboiler				to ReboilerUnity.InletQ;
+HeatToBottomVessel 	to BottomVessel.InletQ;
+CondenserUnity.OutletV to ConnectorCondenserVout;
+SplitterTop.Outlet1 		to ConnectorSplitterTop;
+SplitterBottom.Outlet1 	to ConnectorSplitterBottom;
+
+end
